@@ -6,10 +6,10 @@ var ajaxUtils = {};
 
 // Returns an HTTP request object
 function getRequestObject() {
-  if (window.XMLHttpRequest) {
+  if (global.XMLHttpRequest) {
     return (new XMLHttpRequest());
   } 
-  else if (window.ActiveXObject) {
+  else if (global.ActiveXObject) {
     // For very old IE browsers (optional)
     return (new ActiveXObject("Microsoft.XMLHTTP"));
   } 
@@ -22,13 +22,11 @@ function getRequestObject() {
 
 // Makes an Ajax GET request to 'requestUrl'
 ajaxUtils.sendGetRequest = 
-  function(requestUrl, responseHandler, isJsonResponse) {
+  function(requestUrl, responseHandler) {
     var request = getRequestObject();
     request.onreadystatechange = 
       function() { 
-        handleResponse(request, 
-                       responseHandler,
-                       isJsonResponse); 
+        handleResponse(request, responseHandler); 
       };
     request.open("GET", requestUrl, true);
     request.send(null); // for POST only
@@ -39,22 +37,10 @@ ajaxUtils.sendGetRequest =
 // function if response is ready
 // and not an error
 function handleResponse(request,
-                        responseHandler,
-                        isJsonResponse) {
+                        responseHandler) {
   if ((request.readyState == 4) &&
      (request.status == 200)) {
-
-    // Default to isJsonResponse = true
-    if (isJsonResponse == undefined) {
-      isJsonResponse = true;
-    }
-
-    if (isJsonResponse) {
-      responseHandler(JSON.parse(request.responseText));
-    }
-    else {
-      responseHandler(request.responseText);
-    }
+    responseHandler(request);
   }
 }
 
