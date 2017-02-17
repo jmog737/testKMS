@@ -305,14 +305,15 @@ $(document).ready(function () {
     if (seguir) {
       var url = "data/handleActivity.php";  
       //var activity = $(this).attr("id");
-      var query = 'update actividades set fecha="'+fecha+'", horaInicio="'+inicio+'", horaFin="'+fin+'", motivo="'+motivo+'", usuario1='+usuario1+', usuario2='+usuario2+', rol1="'+rol1+'", rol2="'+rol2+'"  where idactividades="'+actividad+'"';
+      var query = "update actividades set fecha='" + fecha + "', horaInicio='" + inicio + "', horaFin='" + fin + "', motivo='" + motivo + "', usuario1='" + usuario1 + "', usuario2='" + usuario2 + "', rolUsuario1='" + rol1 + "', rolUsuario2='" + rol2 + "'  where idactividades='" + actividad + "'";
       alert(query);
       
       $.getJSON(url, {query: ""+query+""}).done(function(request) {
         alert('fin');
-        alert(request);
+        alert(request["resultado"]);
       });
-    }                    
+    }
+    
   });
   
 });//*** fin del ready ***
