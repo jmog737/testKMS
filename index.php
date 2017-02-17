@@ -17,7 +17,6 @@
     <?php require_once('header.php'); 
           require_once('data/baseMysql.php');
           
-          
       //Conexión con la base de datos:
       $dbc = crearConexion(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 
@@ -33,29 +32,41 @@
     
     <div id='main-content' class='container'>
       <div class="row">
-        <div id='selector' class='col-md-6'>
+        <div id='selector' class='col-md-6 col-sm-12'>
           <table class='tabla1 derecha' id='origen'>
-            <th>FECHA</th><th>MOTIVO</th>
+            <th>FECHA</th><th colspan="2">MOTIVO</th>
             <?php
             foreach($actividades as $valor)
               {
               echo "
               <tr>
                 <td><a href='#' class='detail' id='".$valor["idactividades"]."'>".$valor["fecha"]."</a></td>
-                <td>".$valor["motivo"]."</td>
+                <td colspan='2'>".$valor["motivo"]."</td>
               </tr>";
-              }
+            }
             ?>
+            <tr>
+              <td><input type="button" id="editar" name="editar" value="EDITAR" onclick="cambiarEdicion()" class="btn-info" disabled="true"></td>
+              <td><input type="button" id="actualizar" name="actualizar" value="ACTUALIZAR" class="btn-warning" disabled="true"></td>
+              <td><input type="button" id="eliminar" name="eliminar" value="ELIMINAR" class="btn-danger" disabled="true"></td>
+            </tr>
+            <tr>
+              <td style="display:none"><input type="text" id="flagEditar" name="flagEditar"></td>
+              <td style="display:none"><input type="text" id="flagEliminar" name="flagEliminar"></td>
+              <td style="display:none"><input type="text" id="fuente" name="fuente" value="actividad"></td>
+            </tr>
+            <tr>
+              <td colspan="4"><input type="submit" value="AGREGAR" class="btn-warning"></td>
+            </tr>
           </table>
         </div>
 
-        <div id="content" class='col-md-6'>
+        <div id="content" class='col-md-6 col-sm-12'>
 
         </div> 
       </div>    
       
-    </div>
-    
+    </div>  
     <?php require_once('footer.php');?>
   </body>
 </html>

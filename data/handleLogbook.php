@@ -20,8 +20,14 @@ $usuario2 = $datos['actividad']['usuario2'];
 // Reacomodo fecha a formato habitual: dd/mm/aaaa
 $fecha = $datos['actividad']['fecha'];
 $separo = explode('-', $fecha);
-$datos['actividad']['fecha'] = $separo[2]."/".$separo[1]."/".$separo[0];
+//$datos['actividad']['fecha'] = $separo[2]."/".$separo[1]."/".$separo[0];
 
+$consultaUsuarios = "select idusuarios, nombre, apellido from usuarios where estado='activo' and empresa='EMSA'";
+$result1 = consultarBD($consultaUsuarios, $dbc);
+while (($fila = $result1->fetch_array(MYSQLI_ASSOC)) != NULL) { 
+  $datos['usuarios'][] = $fila;
+}
+/*
 $consultaUsuario1 = "select nombre, apellido from usuarios where idusuarios='".$usuario1."'";
 $result1 = consultarBD($consultaUsuario1, $dbc);
 while (($fila = $result1->fetch_array(MYSQLI_ASSOC)) != NULL) { 
@@ -33,8 +39,8 @@ $result2 = consultarBD($consultaUsuario2, $dbc);
 while (($fila = $result2->fetch_array(MYSQLI_ASSOC)) != NULL) { 
   $datos['usuario2'] = $fila;
 }
-
-$consultaRef = "select codigo, resumen, slot from referencias where actividad='".$actividad."'";
+*/
+$consultaRef = "select idreferencias, codigo, resumen, slot from referencias where actividad='".$actividad."'";
 $result3 = consultarBD($consultaRef, $dbc);
 while (($fila = $result3->fetch_array(MYSQLI_ASSOC)) != NULL) { 
   $datos['referencia'][] = $fila;
