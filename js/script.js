@@ -304,19 +304,47 @@ $(document).ready(function () {
     //seguir = false; //se pone en false durante las pruebas//
     if (seguir) {
       var url = "data/handleActivity.php";  
-      //var activity = $(this).attr("id");
       var query = "update actividades set fecha='" + fecha + "', horaInicio='" + inicio + "', horaFin='" + fin + "', motivo='" + motivo + "', usuario1='" + usuario1 + "', usuario2='" + usuario2 + "', rolUsuario1='" + rol1 + "', rolUsuario2='" + rol2 + "'  where idactividades='" + actividad + "'";
-      alert(query);
       
       $.getJSON(url, {query: ""+query+""}).done(function(request) {
-        alert('fin');
-        alert(request["resultado"]);
+        var resultado = request["resultado"];
+        if (resultado === "OK") {
+          alert('Registro modificado correctamente!');
+        }
+        else {
+          alert('Hubo un error. Por favor verifique.');
+        }
       });
     }
     
   });
   
+  //Disparar funcion al hacer clic en el botón eliminar.
+  //Esto hace que el registro correspondiente a la actividad pase a estado de inactiva.
+  $("#eliminar").click(function () {
+    var pregunta = confirm('Está a punto de eliminar el registro. ¿Desea continuar?');
+    if (pregunta) {
+      var url = "data/handleActivity.php";
+      var actividad = document.getElementById("activity").value;
+      var query = "update actividades set estado='inactiva' where idactividades='" + actividad + "'";
+      
+      $.getJSON(url, {query: ""+query+""}).done(function(request) {
+        var resultado = request["resultado"];
+        if (resultado === "OK") {
+          alert('Registro modificado correctamente!');
+        }
+        else {
+          alert('Hubo un error. Por favor verifique.');
+        }
+      });
+    }
+    else {
+      //alert('no quiso borrar');
+    }
+  });
 });//*** fin del ready ***
+
+
 
 function cambiarEdicion()
   {

@@ -20,7 +20,7 @@
       //Conexión con la base de datos:
       $dbc = crearConexion(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 
-      $consultar = "select idactividades, fecha, motivo from actividades order by idactividades";
+      $consultar = "select idactividades, fecha, motivo from actividades where estado='activa' order by idactividades";
       $result = consultarBD($consultar, $dbc);
 
       $actividades = array();
@@ -38,9 +38,11 @@
             <?php
             foreach($actividades as $valor)
               {
+              $separada = explode('-', $valor["fecha"]);
+              $fechaMostrar = $separada[2].'/'.$separada[1].'/'.$separada[0];
               echo "
               <tr>
-                <td><a href='#' class='detail' id='".$valor["idactividades"]."'>".$valor["fecha"]."</a></td>
+                <td><a href='#' class='detail' id='".$valor["idactividades"]."'>".$fechaMostrar."</a></td>
                 <td colspan='2'>".$valor["motivo"]."</td>
               </tr>";
             }
@@ -56,7 +58,7 @@
               <td style="display:none"><input type="text" id="fuente" name="fuente" value="actividad"></td>
             </tr>
             <tr>
-              <td colspan="4"><input type="submit" value="AGREGAR" class="btn-warning"></td>
+              <td colspan="4"><input type="submit" value="AGREGAR" class="btn-success"></td>
             </tr>
           </table>
         </div>
