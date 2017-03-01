@@ -1,8 +1,40 @@
 $(document).ready(function () {
+  var url = "data/loadActivities.php";
+  var query = "select idactividades, fecha, motivo from actividades where estado='activa' order by idactividades";
+      
+  $.getJSON(url, {query: ""+query+""}).done(function(request) {
+    var actividad = request.actividad;
+    tabla = '<table class="tabla1 derecha" id="origen">';
+    tabla += '<tr><th>FECHA</th><th colspan="2">MOTIVO</th></tr>';
+    tr = '';
+    for (var index in actividad) {
+      tr += '<tr>\n\
+              <td><a href="#" class="detail" id="'+actividad[index]["idactividades"]+'" >'+actividad[index]["fecha"]+'</a></td>\n\
+              <td colspan="2">'+actividad[index]["motivo"]+'</td>\n\
+            </tr>';
+    };
+    
+    tr += '<tr><td><input type="button" id="editar" name="editar" value="EDITAR" onclick="cambiarEdicion()" class="btn-info" disabled="true"></td>\n\
+              <td><input type="button" id="actualizar" name="actualizar" value="ACTUALIZAR" class="btn-warning" disabled="true"></td>\n\
+              <td><input type="button" id="eliminar" name="eliminar" value="ELIMINAR" class="btn-danger" disabled="true"></td>\n\
+          </tr>';
+    tr += '<tr>\n\
+             <td style="display:none"><input type="text" id="flagEditar" name="flagEditar"></td>\n\
+             <td style="display:none"><input type="text" id="flagEliminar" name="flagEliminar"></td>\n\
+             <td style="display:none"><input type="text" id="fuente" name="fuente" value="actividad"></td>\n\
+           </tr>';
+    tr += '<tr>\n\
+             <td colspan="4"><input type="submit" value="AGREGAR" class="btn-success"></td>\n\
+           </tr>';
+          
+    tabla += tr;
+    tabla += '</table>';
+    $('#selector').html(tabla);
+  });
   
   //Disparar funcion al hacer clic en el link de la actividad.
   //Se cargan en el DIV #content los datos de la misma.
-  $(".detail").click(function () {
+  $(".detail").click(function () {alert('llame');
     var url = "data/handleLogbook.php";  
     var activity = $(this).attr("id");
     var query = "select * from actividades where estado='activa' and idactividades='"+activity+"'";
@@ -53,7 +85,6 @@ $(document).ready(function () {
       
       slot = slot1.nombre;
           
-      
       tabla = '<table id="datos" class="tabla2 izquierda">';
       tabla += '<tr><th colspan="6">GENERAL</th></tr>';
       tabla += '<tr><th>Motivo</th><td colspan="5" style="vertical-align: middle;"><input id="motivo" name="motivo" disabled="true" style="width:100%; resize: none; text-align: center; font-size: 18pt; font-weight: bolder;" value="'+motivo+'"></td></tr>';
@@ -120,7 +151,7 @@ $(document).ready(function () {
       formu = '<form name="activity" method="post" action="index.php">';
       formu += tabla;
       formu += '</form>';
-      $('#content').html( formu );
+      $('#content').html(formu);
     });//** fin del getJSON req1 ***       
   });//*** fin del click ***
     
