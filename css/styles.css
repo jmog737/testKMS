@@ -1,3 +1,12 @@
+/**
+******************************************************
+*  @file styles.css
+*  @brief Archivo con todas las hojas de estilo usadas en el programa.
+*  @author Juan Martín Ortega
+*  @version 1.0
+*  @date Marzo 2017
+*
+*******************************************************/
 * {
   margin: 0px;
   padding: 0px;
@@ -101,9 +110,19 @@ body {
 .izquierda {
   float: left;
 }
+#main-content {
+  text-align: center;
+  background-color: #ffff99;
+  padding: 15px;
+}
+#fila {
+  background-color: #99ffff;
+  padding: 30px;
+}
 #selector {
-  background-color: #61122f;
-  padding-right: 0px; 
+  /*background-color: #61122f;*/
+  background-color: #99ff99;
+  /*padding-right: 0px; */
   position: relative;
 }
 #selector a:hover, a:focus {
@@ -114,7 +133,8 @@ body {
   color: #080571;
 }
 #content {
-  background-color: #61122f;
+ /* background-color: #61122f;*/
+ background-color: #ffcc99;
   padding-left: 50px;
   position: relative;
 }
@@ -124,7 +144,10 @@ body {
   border: white 2px solid;
   background-color: #48403e;
   text-align: center;
+  color: #000;
   border-collapse: separate;
+  margin: 0 auto;
+  max-width: 40%;
 }
 .tabla1 th {
   background-color: #0066cc;
@@ -138,11 +161,15 @@ body {
 .tabla1 td {
   border: white 2px solid;
 }
+.tabla1 td input {
+  width: 100%;
+  text-align: center;
+}
 
 
 .tabla2 {
   border: white 2px solid;
-  background-color: #63c26e;
+  background-color: white;
   text-align: center;
   color: #000;
   border-collapse: separate;
@@ -159,13 +186,17 @@ body {
 .tabla2 td {
   border: white 2px solid;
 }
+.tabla2 td input {
+  width: 100%;
+  text-align: center;
+}
 
 
 #data {
   background-color: red;
 }
-.detail {
-  background-color: #ffff00;
+.detailActivity {
+  background-color: #ffff99;
 }
 /************************* END HOME PAGE *************************************/
 

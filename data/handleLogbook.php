@@ -6,7 +6,7 @@ $dbc = crearConexion(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 
 $query = $_GET["query"];
 $actividad = $_GET["actividad"];
-
+//$query = "select * from actividades where estado='activa' and idactividades=3";$actividad = 3;
 $result = consultarBD($query, $dbc);
 
 $datos = array();
@@ -41,16 +41,22 @@ while (($fila = $result2->fetch_array(MYSQLI_ASSOC)) != NULL) {
 */
 $consultaRef = "select idreferencias, codigo, resumen, slot from referencias where actividad='".$actividad."'";
 $result3 = consultarBD($consultaRef, $dbc);
-while (($fila = $result3->fetch_array(MYSQLI_ASSOC)) != NULL) { 
-  $datos['referencia'][] = $fila;
-  $slot = $fila['slot'];
-}
+if ($result3->num_rows > 0) {
+  while (($fila = $result3->fetch_array(MYSQLI_ASSOC)) != NULL) { 
+    $datos['referencia'][] = $fila;
+    $slot = $fila['slot'];
+  }
 
-$consultaSlot = "select nombre from slots where idslots='".$slot."'";
-$result4 = consultarBD($consultaSlot, $dbc);
-while (($fila = $result4->fetch_array(MYSQLI_ASSOC)) != NULL) { 
-  $datos['slot'] = $fila;
+  $consultaSlot = "select nombre from slots where idslots='".$slot."'";
+  $result4 = consultarBD($consultaSlot, $dbc);
+  while (($fila = $result4->fetch_array(MYSQLI_ASSOC)) != NULL) { 
+    $datos['slot'] = $fila;
+  }
 }
+else {
+  $datos['referencia'] = null;
+  $datos['slot'] = null;
+  }
 
 $json = json_encode($datos);
 echo $json;

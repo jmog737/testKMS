@@ -1,6 +1,14 @@
 <?php
 require_once("connectvars.php");
 
+/**
+ * \brief Función usada para conectarse a la base de datos especificada.
+ * @param string $servidor Especifica cual es el servidor al que debe conectarse.
+ * @param string $usuario Indica el usuario con el que debe realizar la conexión.
+ * @param string $pass Indica la contraseña del usuario.
+ * @param string $base Determina la base de datos a la cual se hará la conexión.
+ * @return object Devuelve el tipo de objeto mysqli que será usado para realizar las consultas.
+ */
 function crearConexion($servidor, $usuario, $pass, $base)
   {
   if (!isset($pass)) {

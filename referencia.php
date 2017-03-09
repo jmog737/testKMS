@@ -2,8 +2,8 @@
 <?php
 /**
 ******************************************************
-*  @file index.php
-*  @brief Índice general. Muestra la lista de actividades.
+*  @file referencia.php
+*  @brief Detalle de la referencia pasada como parámetro vía URL.
 *  @author Juan Martín Ortega
 *  @version 1.0
 *  @date Marzo 2017
@@ -24,4 +24,3 @@
   </body>
   
 </html>
-
