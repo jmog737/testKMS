@@ -9,7 +9,7 @@ $query = $_GET["query"];
 $result = consultarBD($query, $dbc);
 
 $datos = array();
-
+$datos['rows'] = $result->num_rows;
 while (($fila = $result->fetch_array(MYSQLI_ASSOC)) != NULL) { 
   $datos['resultado'][] = $fila;
 }

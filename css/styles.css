@@ -12,6 +12,7 @@
   padding: 0px;
   box-sizing: border-box;
   font-family: serif, helvetica, arial;
+  text-align: inherit;
 }
 
 body {
@@ -104,6 +105,14 @@ body {
   margin: 0px;
   width: 100%;
 }
+h2 {
+  color: #000;
+  font-weight: bold;
+  text-decoration: underline;
+}
+h3 {
+  color: #000;
+}
 .derecha {
   float: right;
 }
@@ -112,16 +121,22 @@ body {
 }
 #main-content {
   text-align: center;
-  background-color: #ffff99;
+  background-color: #ffff99;/* agregardo durante el desarrollo para diferenciar!!!*/
   padding: 15px;
 }
 #fila {
   background-color: #99ffff;
   padding: 30px;
 }
+#data {
+  background-color: red;
+}
+.detailActivity {
+  background-color: #ffff99;
+}
 #selector {
   /*background-color: #61122f;*/
-  background-color: #99ff99;
+  background-color: #99ff99;/* agregardo durante el desarrollo para diferenciar!!!*/
   /*padding-right: 0px; */
   position: relative;
 }
@@ -133,13 +148,19 @@ body {
   color: #080571;
 }
 #content {
- /* background-color: #61122f;*/
- background-color: #ffcc99;
+  /*background-color: #61122f;*/
+  background-color: #ffcc99;/* agregardo durante el desarrollo para diferenciar!!!*/
   padding-left: 50px;
   position: relative;
 }
-
-
+.resaltado {
+  background-color:#ffff00;
+}
+.encabezado {
+  color: #ff0000;
+  text-decoration: underline;
+  font-weight: bolder;
+}
 .tabla1 {
   border: white 2px solid;
   background-color: #48403e;
@@ -147,7 +168,7 @@ body {
   color: #000;
   border-collapse: separate;
   margin: 0 auto;
-  max-width: 40%;
+  max-width: 70%;
 }
 .tabla1 th {
   background-color: #0066cc;
@@ -161,11 +182,15 @@ body {
 .tabla1 td {
   border: white 2px solid;
 }
-.tabla1 td input {
+.tabla1 td input text{
   width: 100%;
   text-align: center;
 }
 
+#ref table, #ref td, #ref th {
+  padding: 0px;
+  max-width: 70%;
+}
 
 .tabla2 {
   border: white 2px solid;
@@ -173,32 +198,31 @@ body {
   text-align: center;
   color: #000;
   border-collapse: separate;
+  margin: 0 auto;
+  width: auto;
 }
 .tabla2 th {
   background-color: #0066cc;
   text-align: center;
   color: #ffff00;
-  border: white 2px solid;
+  border: white 0px solid;margin: 0px;line-height:none;
 }
 .tabla2 tr {
   border: white 2px solid;
+  padding: 0px;
 }
 .tabla2 td {
-  border: white 2px solid;
+  border: white 0px solid;padding: 0px;
 }
-.tabla2 td input {
+.tabla2 td input[type="text"] {
+  line-height: normal;
   width: 100%;
-  text-align: center;
-}
-
-
-#data {
-  background-color: red;
-}
-.detailActivity {
-  background-color: #ffff99;
+  text-align: center;padding: 0px;
 }
 /************************* END HOME PAGE *************************************/
+
+
+
 
 
 

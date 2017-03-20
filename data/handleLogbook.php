@@ -39,7 +39,7 @@ while (($fila = $result2->fetch_array(MYSQLI_ASSOC)) != NULL) {
   $datos['usuario2'] = $fila;
 }
 */
-$consultaRef = "select idreferencias, codigo, resumen, slot from referencias where actividad='".$actividad."'";
+$consultaRef = "select idreferencias, codigo, resumen, slot from referencias where estado='activa' and actividad='".$actividad."'";
 $result3 = consultarBD($consultaRef, $dbc);
 if ($result3->num_rows > 0) {
   while (($fila = $result3->fetch_array(MYSQLI_ASSOC)) != NULL) { 

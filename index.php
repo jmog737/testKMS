@@ -16,7 +16,7 @@
   <body>
     <?php require_once('header.php');?>
     
-    <div id='main-content' class='container'>
+    <div id='main-content' class='container-fluid'>
          
     </div>
     
