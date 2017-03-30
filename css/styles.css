@@ -113,6 +113,9 @@ h2 {
 h3 {
   color: #000;
 }
+input[type=checkbox] {
+  zoom: 1.7;
+}
 .derecha {
   float: right;
 }
@@ -122,45 +125,56 @@ h3 {
 #main-content {
   text-align: center;
   background-color: #ffff99;/* agregardo durante el desarrollo para diferenciar!!!*/
-  padding: 15px;
+  /*padding: 15px;*/
+  margin: auto;
 }
 #fila {
   background-color: #99ffff;
   padding: 30px;
 }
-#data {
-  background-color: red;
-}
-.detailActivity {
-  background-color: #ffff99;
-}
-#selector {
-  /*background-color: #61122f;*/
-  background-color: #99ff99;/* agregardo durante el desarrollo para diferenciar!!!*/
-  /*padding-right: 0px; */
-  position: relative;
-}
-#selector a:hover, a:focus {
-  color: #080571;
-  text-decoration: underline;
-}
-#cargar {
-  color: #080571;
-}
-#content {
-  /*background-color: #61122f;*/
-  background-color: #ffcc99;/* agregardo durante el desarrollo para diferenciar!!!*/
-  padding-left: 50px;
-  position: relative;
-}
 .resaltado {
   background-color:#ffff00;
+  font-weight: bolder;
+  font-size: 1.2em;
+  color: red;
 }
 .encabezado {
   color: #ff0000;
   text-decoration: underline;
   font-weight: bolder;
 }
+.detailActivity {
+  background-color: #ffff99;
+}
+.detailObject {
+  /*background-color: #99ff99;*/
+}
+a.detailObject:focus, a.detailObject:hover {
+  background-color:#ffff00;
+  font-weight: bolder;
+  font-size: 1.5em;
+}
+
+#selector {
+  /*background-color: #61122f;*/
+  background-color: #99ff99;/* agregardo durante el desarrollo para diferenciar!!!*/
+  position: relative;
+  padding: 0px;
+}
+#selector a:hover, a:focus {
+  color: #080571;
+  text-decoration: underline;
+}
+#content {
+  /*background-color: #61122f;*/
+  background-color: #ffcc99;/* agregardo durante el desarrollo para diferenciar!!!*/
+  /*padding-left: 50px;*/
+  position: relative;
+  padding: 0px;
+}
+
+/* TABLAS */
+
 .tabla1 {
   border: white 2px solid;
   background-color: #48403e;
@@ -198,26 +212,29 @@ h3 {
   text-align: center;
   color: #000;
   border-collapse: separate;
-  margin: 0 auto;
-  width: auto;
+  max-width: 90%;margin: 0 auto;
 }
 .tabla2 th {
   background-color: #0066cc;
   text-align: center;
   color: #ffff00;
-  border: white 0px solid;margin: 0px;line-height:none;
+  border: white 0px solid;
+  margin: 0px;
+  line-height:none;
 }
 .tabla2 tr {
   border: white 2px solid;
   padding: 0px;
 }
 .tabla2 td {
-  border: white 0px solid;padding: 0px;
+  border: white 0px solid;
+  padding: 0px;
 }
 .tabla2 td input[type="text"] {
   line-height: normal;
   width: 100%;
-  text-align: center;padding: 0px;
+  text-align: center;
+  padding: 0px;
 }
 /************************* END HOME PAGE *************************************/
 
