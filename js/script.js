@@ -854,6 +854,7 @@ function cargarObjetos(ref, selector, link, origen, idobject) {
       tabla += '<tr>\n\
                   <td style="display:none"><input type="text" id="codigo" name="codigo" value="'+codigo+'"></td>\n\
                   <td style="display:none"><input type="text" id="slot" name="slot" value="'+slot+'"></td>\n\
+                  <td style="display:none"><input type="text" id="idref" name="idref" value="'+ref+'"></td>\n\
                   <td style="display:none"><input type="text" id="resumen" name="resumen" value="'+resumen+'"></td>\n\
                </tr>';
       if (totalLlaves > 0) {  
@@ -1382,6 +1383,120 @@ function validarCertificado()
   else return false;
 }
 
+/**
+ * \brief Función que carga en el form cert los datos del mismo.
+ * Básicamente a partir de la parte de la url pasada como parámetro, detecta el idcertificado, consulta
+ * a la base de datos y recupera los valores.
+ * @param {String} id Int con el idcertificado del certificado a mostrar.
+ * @param {String} selector String con el div en donde se deben cargar los datos del certificado. 
+ */  
+function mostrarCertificado(id, selector){
+  var url = "data/selectQuery.php";
+  var query = "select certificados.nombre, certificados.owner, certificados.version, certificados.bandera, certificados.vencimiento, \n\
+              tareas.accion, tareas.observaciones, referencias.codigo, referencias.actividad, referencias.resumen, referencias.idreferencias as ref, slots.nombre as slot from certificados inner join tareas on certificados.tarea=tareas.idtareas inner join referencias on referencias.idreferencias=tareas.referencia inner join slots on referencias.slot=slots.idslots where idcertificados='"+id+"' and certificados.estado='activo'";
+  //alert(query);
+  $.getJSON(url, {query: ""+query+""}).done(function(request) {
+    var cert = request.resultado[0];
+    var nombre = cert["nombre"];
+    var owner = cert["owner"];
+    var version = cert["version"];
+    var bandera = cert["bandera"];
+    var vencimiento = cert["vencimiento"];
+    var accion = cert["accion"];
+    var obs = cert["observaciones"];
+    var codigo = cert["codigo"];
+    var actividad = cert["actividad"];
+    var resumen = cert["resumen"];
+    var ref = cert["ref"];
+    var slot = cert["slot"];
+    //alert('idcert: '+idcert+'\nnombre: '+nombre+'\nowner: '+owner+'\nversion: '+version+'\nbandera: '+bandera+'\nvencimiento: '+vencimiento+'\naccion: '+accion+'\nobs: '+obs+'\ncodigo: '+codigo+'\nactividad: '+actividad+'\nresumen: '+resumen+'\nref: '+ref+'\nslot: '+slot);
+    switch (accion)
+      {
+      case 'Carga': carga = 'selected';
+                    break;
+      case 'Generación': genSelected = 'selected';
+                         break;
+      case 'Importación': importacion = 'selected';
+                          break;
+      case 'Exportación': exportacion = 'selected';
+                          break;
+      case 'Borrado': borrado = 'selected';
+                      break;
+      case 'Edición': edicion = 'selected';
+                      break;            
+      default: break;                       
+    }
+    var master = '';
+    var visa = '';
+    var amex = '';
+    switch (bandera)
+      {
+      case 'MASTER': master = 'selected';
+                   break;
+      case 'VISA':  visa = 'selected';
+                   break;
+      case 'AMEX':  amex = 'selected';
+                   break;             
+      default: break;                       
+    }
+    var nom = slot.split('_');
+    var cliente = nom[0];
+    var encabezado = '<h1 class="encabezado">'+codigo+'</h1>';
+    encabezado += '<h3>'+resumen+' <b>('+cliente+')<b></h3>'; 
+    var tabla = '<table id="cert" class="tabla2">';
+    var tr = '<tr><th colspan="6">DATOS GENERALES</th></tr>';
+    tr += '<tr>\n\
+            <th>Nombre:</th><td><input id="nombre" class="resaltado" type="text" value="'+nombre+'"></td>\n\
+            <th>Owner:</th><td><input id="owner" class="resaltado" type="text" value="'+owner+'"></td>\n\
+            <th>Versión:</th><td><input id="version" type="text" value="'+version+'"></td>\n\
+           </tr>';
+    tr += '<tr>\n\
+            <th>Acción:</th>\n\
+            <td>\n\
+              <select id="accion" name="accion" style="width:100%">\n\
+                <option value="Carga"'+ carga +'>Carga</option>\n\
+                <option value="Generaci&oacute;n"'+ genSelected+' >Generaci&oacute;n</option>\n\
+                <option value="Importaci&oacute;n"'+ importacion +'>Importaci&oacute;n</option>\n\
+                <option value="Exportaci&oacute;n" '+ exportacion +'>Exportaci&oacute;n</option>\n\
+                <option value="Borrado" '+ borrado +'>Borrado</option>\n\
+                <option value="Edici&oacute;n" '+ edicion +'>Edici&oacute;n</option>\n\
+              </select>\n\
+            </td>\n\
+            <th>Bandera:</th>\n\
+            <td>\n\
+              <select id="bandera" name="bandera" style="width:100%">\n\
+                <option value="MASTER"'+ master +'>MASTER</option>\n\
+                <option value="VISA"'+ visa+' >VISA</option>\n\
+                <option value="AMEX"'+ amex+' >AMEX</option>\n\
+              </select>\n\
+            </td>\n\
+            <th>Fecha</th>\n\
+            <td><input id="vencimiento" name="vencimiento" type="date" value="'+vencimiento+'" style="width:100%; text-align: center" min="2016-10-01"></td>\n\
+          </tr>';
+    tr += '<tr>\n\
+             <th>Observaciones:</th>\n\
+             <td colspan="7">\n\
+               <textarea id="observaciones" name="observaciones" style="width: 100%;resize: none">'+ obs +'</textarea>\n\
+             </td>\n\
+           </tr>';
+    tr += '<tr>\n\
+              <td colspan="2"><input type="button" id="editarCertificado" name="editarCertificado" value="EDITAR" onclick="cambiarEdicion()" class="btn-info"></td>\n\
+              <td colspan="2"><input type="button" id="actualizarCertificado" name="actualizarCertificado" disabled="true" value="ACTUALIZAR" class="btn-warning"></td>\n\
+              <td colspan="2"><input type="button" id="eliminarCertificado" name="eliminarCertificado" value="ELIMINAR" class="btn-danger"></td>\n\
+              <td style="display:none"><input type="text" id="fuente" name="fuente" value="llave"></td>\n\
+              <td style="display:none"><input type="text" id="idcert" name="idcert" value="'+id+'"></td>\n\
+              <td style="display:none"><input type="text" id="idref" name="idref" value="'+ref+'"></td>\n\
+              <td style="display:none"><input type="text" id="actividad" name="actividad" value="'+actividad+'"></td>\n\
+          </tr>';                              
+    tr += '</table>';
+    tabla += tr;
+    var cargar = '';
+    cargar += encabezado;
+    cargar += tabla;alert(cargar);
+    $(selector).html(cargar);
+  });    
+}
+
 /***********************************************************************************************************************
 /// ********************************************* FIN FUNCIONES CERTIFICADOS *******************************************
 ************************************************************************************************************************
@@ -1434,7 +1549,7 @@ function todo () {
         var temp2 = temp1[0].split('=');
         var idkey = parseInt(temp2[1], 10);var idkey = temp2[1];
         var temp3 = temp1[1].split('=');
-        var ref = temp3[1];
+        var ref = temp3[1];alert('llave.php: antes de mostrar llave');
         mostrarLlave(idkey, "#content");
         cargarObjetos(ref, "#selector", false, 'llave', idkey);
       }
@@ -1464,7 +1579,7 @@ function todo () {
       else {
         ///ver de eliminar pues nunca llega a ejecturse. Esta parte va en click de detailObject
         var idcert = $(this).attr("id");alert(idcert+' desde ppal sin parametros');
-        mostrarCertificado(idcert, "#content");
+        //mostrarCertificado(idcert, "#content");
       }
       break;
     }
@@ -1615,10 +1730,11 @@ function todo () {
     var url = "data/selectQuery.php";
     $.getJSON(url, {query: ""+query+""}).done(function(request) {
       var usuarios = request.resultado;
+      var tabla = '';
       tabla = '<table id="datos" class="tabla2 table table-bordered table-striped table-hover table-responsive">';
       tabla += '<tr><th colspan="6">GENERAL</th></tr>';
       tabla += '<tr><th>Motivo</th><td colspan="5" style="vertical-align: middle;"><input id="motivo" name="motivo" style="width:100%; resize: none; text-align: center; font-size: 18pt; font-weight: bolder;"></td></tr>';
-      tr = '';
+      var tr = '';
       tr += '<tr><th>Fecha</th><td><input id="fecha" name="fecha" type="date" style="width:100%; text-align: center" min="2016-10-01"></td>\n\
                  <th>Inicio</th><td><input id="horaInicio" name="horaInicio" type="time" style="width:100%; text-align: center" min="09:00" max="18:00" step="600"></td>\n\
                  <th>Fin</th><td><input id="horaFin" name="horaFin" type="time" style="width:100%; text-align: center" min="09:00" max="18:00" step="600"></td>\n\
@@ -1975,29 +2091,6 @@ $(document).on("click", "#eliminarLlave", function () {
 ///Se cargan en el DIV #content los datos del mismo.
 ///y además, se cargan en el DIV selector el listado de objetos de esa referencia
 $(document).on("click", ".detailObject", function () {
-  ///Verifico si la url viene con parámetros o no.
-  ///Si los tiene es porque viene del click de una referencia la cual hay que mostrar.
-  ///Si no los tiene es porque ya estoy en llave.php y debo cargar en content la llave seleccionada.
-  /*
-  var h = $(this).attr('href');
-  var t = h.split('?');
-  var parametros = t[1];
-  
-  if (h !== '#') 
-    {
-    var temp1 = parametros.split('&');
-    var temp2 = temp1[0].split('=');
-    var idkey = parseInt(temp2[1], 10);
-    var temp3 = temp1[1].split('=');
-    var ref = temp3[1];
-    //mostrarLlave(idkey, "#content");
-    //vaciarContent("#selector");
-    //cargarObjetos(ref, "#selector", false);
-  }
-  else {*/
-  /// Al hacer click en el link del objeto, cargo en el DIV content los datos del objeto
-  /// No discrimino si el click lo hago desde la referencia o desde la llave, pues cuando es
-  /// desde la referencia se ejectua en el todo() cuando carga llave.php
   var objeto = $(this).attr("name");
   if (objeto === 'llave') {
     var idkey = $(this).attr("id");
@@ -2005,14 +2098,14 @@ $(document).on("click", ".detailObject", function () {
     cargarObjetos(idref, "#selector", false, 'llave', idkey);
     mostrarLlave(idkey, "#content");
   }
-  else {alert('cert');
+  else {
     var idcert = $(this).attr("id");
     var idref = document.getElementById("idref").value;
     cargarObjetos(idref, "#selector", false, 'certificado', idcert);
+    vaciarContent("#content");
     mostrarCertificado(idcert, "#content");
   }
-  //}
-});//*** fin del click ***
+});
 
 ///Disparar funcion al hacer clic en el botón actualizar.
 ///Se validan todos los campos antes de hacer la actualización, y una vez hecha se inhabilita el form y parte de los botones.
