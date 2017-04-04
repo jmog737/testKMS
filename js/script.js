@@ -64,25 +64,13 @@ function cambiarEdicion()
     case "certificado":
                       if (accion === "habilitar")
                         {
-                        document.getElementById("nombreCertificado").disabled = false;
-                        document.getElementById("owner").disabled = false;
-                        document.getElementById("version").disabled = false;
-                        document.getElementById("bandera").disabled = false;
-                        document.getElementById("accion").disabled = false;
-                        document.getElementById("vencimiento").disabled = false; 
-                        document.getElementById("observaciones").disabled = false;
+                        habilitarCertificado();
                         document.getElementById("editarCertificado").value = "BLOQUEAR";
                         document.getElementById("actualizarCertificado").disabled = false;
                       }
                       else
                         {
-                        document.getElementById("nombreCertificado").disabled = true;
-                        document.getElementById("owner").disabled = true;
-                        document.getElementById("version").disabled = true;
-                        document.getElementById("bandera").disabled = true;
-                        document.getElementById("accion").disabled = true;
-                        document.getElementById("vencimiento").disabled = true;
-                        document.getElementById("observaciones").disabled = true;
+                        inhabilitarCertificado();
                         document.getElementById("editarCertificado").value = "EDITAR";
                         document.getElementById("actualizarCertificado").disabled = true;
                       }
@@ -208,7 +196,7 @@ function cargarActividades (selector, editar, actualizar, eliminar){
           }
           
           tr += '<tr>\n\
-                  <td><a href="#content" class="detailActivity" id="'+actual+'" >'+fecha+'</a></td>\n\
+                  <td><a href="#titulo" class="detailActivity" id="'+actual+'" >'+fecha+'</a></td>\n\
                   <td colspan="2">'+actividad[index]["motivo"]+'</td>\n\
                  </tr>';
         };
@@ -837,9 +825,7 @@ function cargarObjetos(ref, selector, link, origen, idobject) {
       var certificados = request.resultado;
       var tabla = '';
       var tr = '';
-      var codigo = llaves[0]["codigo"];
-      var slot = llaves[0]["slot"];
-      var resumen = llaves[0]["resumen"];
+      
       idobject = parseInt(idobject, 10);
       if (origen === 'llave') {
         var idkey = idobject;
@@ -849,6 +835,24 @@ function cargarObjetos(ref, selector, link, origen, idobject) {
         idkey = 0;
         idcert = idobject;
       }
+      if (totalLlaves > 0){
+        var codigo = llaves[0]["codigo"];
+        var slot = llaves[0]["slot"];
+        var temp = slot.split("_");
+        var cliente = temp[0];
+        var resumen = llaves[0]["resumen"];
+      }
+      else {
+        if (totalCertificados > 0) {
+          if (codigo === "undefined") var codigo = llaves[0]["codigo"];
+          if (slot === "undefined") {
+            var slot = llaves[0]["slot"];
+            var temp = slot.split("_");
+            var cliente = temp[0];
+          }
+          if (resumen === "undefined") var resumen = llaves[0]["resumen"];
+        }
+      }
       tabla = '<table id="objects" class="tabla2">';
       tabla += '<tr><th colspan="5">LLAVES</th></tr>';
       tabla += '<tr>\n\
@@ -857,7 +861,7 @@ function cargarObjetos(ref, selector, link, origen, idobject) {
                   <td style="display:none"><input type="text" id="idref" name="idref" value="'+ref+'"></td>\n\
                   <td style="display:none"><input type="text" id="resumen" name="resumen" value="'+resumen+'"></td>\n\
                </tr>';
-      if (totalLlaves > 0) {  
+      if (totalLlaves > 0) {      
         tr += '<tr>\n\
                  <th>Ítem</th>\n\
                  <th>Acción</th>\n\
@@ -930,7 +934,18 @@ function cargarObjetos(ref, selector, link, origen, idobject) {
       tabla += tr;
       tabla += tr1;
       tabla += '</table>';
-      $(selector).html(tabla);
+      if ($("#content").length === 0) {
+      var divs = "<div id='fila' class='row'>\n\
+                <div id='selector' class='col-md-5 col-sm-12'></div>\n\
+                <div id='content' class='col-md-7 col-sm-12'></div>\n\
+              </div>";
+      $("#main-content").empty();
+      var encabezado = '<h1 class="encabezado" id="titulo">'+codigo+'</h1>';
+      encabezado += '<h3>'+resumen+' <b>('+cliente+')<b></h3>'; 
+      $("#main-content").html(encabezado);
+      $("#main-content").append(divs);
+    }
+    $(selector).html(tabla);
     });
   });
 }
@@ -1227,7 +1242,7 @@ function mostrarLlave(id, selector) {
       $("#main-content").html(encabezado);
       $("#main-content").append(divs);
     } 
-    volver = '<br><a href="#" name="'+actividad+'" id="volverActividad">Volver</a>';
+    var volver = '<br><a href="#" name="'+actividad+'" id="volverActividad">Volver</a>';
     $(selector).html(tabla1);
     $(selector).append(volver);
     inhabilitarLlave();
@@ -1334,18 +1349,45 @@ function validarLlave()
 */
 
 /**
+  \brief Función que deshabilita los input del form Certificado.
+*/
+function inhabilitarCertificado(){
+  document.getElementById("nombre").disabled = true;
+  document.getElementById("owner").disabled = true;
+  document.getElementById("version").disabled = true;
+  document.getElementById("accion").disabled = true;
+  document.getElementById("bandera").disabled = true;
+  document.getElementById("vencimiento").disabled = true;
+  document.getElementById("observaciones").disabled = true;
+}
+
+/**
+  \brief Función que habilita los input del form Certificado.
+*/
+function habilitarCertificado(){
+  document.getElementById("nombre").disabled = false;
+  document.getElementById("owner").disabled = false;
+  document.getElementById("version").disabled = false;
+  document.getElementById("accion").disabled = false;
+  document.getElementById("bandera").disabled = false;
+  document.getElementById("vencimiento").disabled = false;
+  document.getElementById("observaciones").disabled = false;
+}
+
+/**
  * \brief Función que valida los datos pasados para el certificado.
  * @returns {Boolean} Devuelve un booleano que indica si se pasó o no la validación de los datos para el certificado.
  */
 function validarCertificado()
   {
   var seguir = false;
-  var indice = document.getElementById("bandera").selectedIndex;
+  var indiceBandera = document.getElementById("bandera").selectedIndex;
+  var indiceAccion = document.getElementById("accion").selectedIndex;
   
-  if (document.getElementById("nombreCertificado").value.length === 0)
+  if (document.getElementById("nombre").value.length === 0)
     {
     alert('Debe ingresar el nombre del certificado.');
-    document.getElementById("nombreCertificado").focus();
+    document.getElementById("nombre").focus();
     seguir = false;
   }
   else
@@ -1358,27 +1400,42 @@ function validarCertificado()
     } 
     else
       {
-      if (document.getElementById("version").value.length === 0)
+      if (indiceBandera === 0)
         {
-        alert('Debe ingresar la versión del certificado.');
-        document.getElementById("version").focus();
+        alert("Debe seleccionar a que bandera pertenece el certificado.");
+        document.getElementById("bandera").focus();
         seguir = false;
       }
-      else
-        {
+      else {
         if (document.getElementById("vencimiento").value.length === 0)
           {
           alert('Debe ingresar el vencimiento del certificado.');
           document.getElementById("vencimiento").focus();
           seguir = false;
-        }  
-        else
-          {
-          seguir = true;
-        }      
-      }
-    }  
-  }  
+        }
+        else {
+          if (indiceAccion === 0)
+            {
+            alert('Debe seleccionar la acción del certificado.');
+            document.getElementById("accion").focus();
+            seguir = false;
+          }
+          else {
+            if (document.getElementById("version").value.length === 0)
+              {
+              alert('Debe ingresar la versión del certificado.');
+              document.getElementById("version").focus();
+              seguir = false;
+            }
+            else {
+              seguir = true;
+            }
+          }// version
+        }// acción 
+      }// vencimiento
+    } // bandera 
+  }// owner
+  
   if (seguir) return true;
   else return false;
 }
@@ -1394,7 +1451,7 @@ function mostrarCertificado(id, selector){
   var url = "data/selectQuery.php";
   var query = "select certificados.nombre, certificados.owner, certificados.version, certificados.bandera, certificados.vencimiento, \n\
               tareas.accion, tareas.observaciones, referencias.codigo, referencias.actividad, referencias.resumen, referencias.idreferencias as ref, slots.nombre as slot from certificados inner join tareas on certificados.tarea=tareas.idtareas inner join referencias on referencias.idreferencias=tareas.referencia inner join slots on referencias.slot=slots.idslots where idcertificados='"+id+"' and certificados.estado='activo'";
-  //alert(query);
+  
   $.getJSON(url, {query: ""+query+""}).done(function(request) {
     var cert = request.resultado[0];
     var nombre = cert["nombre"];
@@ -1409,7 +1466,13 @@ function mostrarCertificado(id, selector){
     var resumen = cert["resumen"];
     var ref = cert["ref"];
     var slot = cert["slot"];
-    //alert('idcert: '+idcert+'\nnombre: '+nombre+'\nowner: '+owner+'\nversion: '+version+'\nbandera: '+bandera+'\nvencimiento: '+vencimiento+'\naccion: '+accion+'\nobs: '+obs+'\ncodigo: '+codigo+'\nactividad: '+actividad+'\nresumen: '+resumen+'\nref: '+ref+'\nslot: '+slot);
+    //alert('idcert: '+id+'\nnombre: '+nombre+'\nowner: '+owner+'\nversion: '+version+'\nbandera: '+bandera+'\nvencimiento: '+vencimiento+'\naccion: '+accion+'\nobs: '+obs+'\ncodigo: '+codigo+'\nactividad: '+actividad+'\nresumen: '+resumen+'\nref: '+ref+'\nslot: '+slot);
+    var carga = '';
+    var genSelected = '';
+    var importacion = '';
+    var exportacion = '';
+    var borrado = '';
+    var edicion = '';
     switch (accion)
       {
       case 'Carga': carga = 'selected';
@@ -1441,19 +1504,28 @@ function mostrarCertificado(id, selector){
     }
     var nom = slot.split('_');
     var cliente = nom[0];
-    var encabezado = '<h1 class="encabezado">'+codigo+'</h1>';
-    encabezado += '<h3>'+resumen+' <b>('+cliente+')<b></h3>'; 
-    var tabla = '<table id="cert" class="tabla2">';
-    var tr = '<tr><th colspan="6">DATOS GENERALES</th></tr>';
+    var tabla = '<table id="cert" class="tabla2" style="max-width:95%">';
+    var tr = '<tr><th colspan="8">DATOS GENERALES</th></tr>';
     tr += '<tr>\n\
             <th>Nombre:</th><td><input id="nombre" class="resaltado" type="text" value="'+nombre+'"></td>\n\
-            <th>Owner:</th><td><input id="owner" class="resaltado" type="text" value="'+owner+'"></td>\n\
-            <th>Versión:</th><td><input id="version" type="text" value="'+version+'"></td>\n\
+            <th colspan="2">Owner:</th><td><input id="owner" class="resaltado" type="text" value="'+owner+'"></td>\n\
+            <th>Bandera:</th>\n\
+            <td colspan="2">\n\
+              <select id="bandera" name="bandera" style="width:100%">\n\
+                <option value="sleccionar">---SELECCIONAR---</option>\n\
+                <option value="MASTER"'+ master +'>MASTER</option>\n\
+                <option value="VISA"'+ visa+' >VISA</option>\n\
+                <option value="AMEX"'+ amex+' >AMEX</option>\n\
+              </select>\n\
+            </td>\n\
            </tr>';
     tr += '<tr>\n\
+            <th>Fecha</th>\n\
+            <td><input id="vencimiento" name="vencimiento" type="date" value="'+vencimiento+'" style="width:100%; text-align: center" min="2016-10-01"></td>\n\
             <th>Acción:</th>\n\
-            <td>\n\
+            <td colspan="2">\n\
               <select id="accion" name="accion" style="width:100%">\n\
+                <option value="sleccionar">---SELECCIONAR---</option>\n\
                 <option value="Carga"'+ carga +'>Carga</option>\n\
                 <option value="Generaci&oacute;n"'+ genSelected+' >Generaci&oacute;n</option>\n\
                 <option value="Importaci&oacute;n"'+ importacion +'>Importaci&oacute;n</option>\n\
@@ -1462,28 +1534,19 @@ function mostrarCertificado(id, selector){
                 <option value="Edici&oacute;n" '+ edicion +'>Edici&oacute;n</option>\n\
               </select>\n\
             </td>\n\
-            <th>Bandera:</th>\n\
-            <td>\n\
-              <select id="bandera" name="bandera" style="width:100%">\n\
-                <option value="MASTER"'+ master +'>MASTER</option>\n\
-                <option value="VISA"'+ visa+' >VISA</option>\n\
-                <option value="AMEX"'+ amex+' >AMEX</option>\n\
-              </select>\n\
-            </td>\n\
-            <th>Fecha</th>\n\
-            <td><input id="vencimiento" name="vencimiento" type="date" value="'+vencimiento+'" style="width:100%; text-align: center" min="2016-10-01"></td>\n\
+            <th>Versión:</th><td colspan="2"><input id="version" type="text" value="'+version+'"></td>\n\
           </tr>';
     tr += '<tr>\n\
              <th>Observaciones:</th>\n\
-             <td colspan="7">\n\
+             <td colspan="8">\n\
                <textarea id="observaciones" name="observaciones" style="width: 100%;resize: none">'+ obs +'</textarea>\n\
              </td>\n\
            </tr>';
     tr += '<tr>\n\
               <td colspan="2"><input type="button" id="editarCertificado" name="editarCertificado" value="EDITAR" onclick="cambiarEdicion()" class="btn-info"></td>\n\
-              <td colspan="2"><input type="button" id="actualizarCertificado" name="actualizarCertificado" disabled="true" value="ACTUALIZAR" class="btn-warning"></td>\n\
+              <td colspan="3"><input type="button" id="actualizarCertificado" name="actualizarCertificado" disabled="true" value="ACTUALIZAR" class="btn-warning"></td>\n\
               <td colspan="2"><input type="button" id="eliminarCertificado" name="eliminarCertificado" value="ELIMINAR" class="btn-danger"></td>\n\
-              <td style="display:none"><input type="text" id="fuente" name="fuente" value="llave"></td>\n\
+              <td style="display:none"><input type="text" id="fuente" name="fuente" value="certificado"></td>\n\
               <td style="display:none"><input type="text" id="idcert" name="idcert" value="'+id+'"></td>\n\
               <td style="display:none"><input type="text" id="idref" name="idref" value="'+ref+'"></td>\n\
               <td style="display:none"><input type="text" id="actividad" name="actividad" value="'+actividad+'"></td>\n\
@@ -1491,9 +1554,22 @@ function mostrarCertificado(id, selector){
     tr += '</table>';
     tabla += tr;
     var cargar = '';
-    cargar += encabezado;
-    cargar += tabla;alert(cargar);
+    cargar += tabla;
+    if ($("#content").length === 0) {
+      var divs = "<div id='fila' class='row'>\n\
+                <div id='selector' class='col-md-5 col-sm-12'></div>\n\
+                <div id='content' class='col-md-7 col-sm-12'></div>\n\
+              </div>";
+      $("#main-content").empty();
+      var encabezado = '<h1 class="encabezado" id="titulo">'+codigo+'</h1>';
+      encabezado += '<h3>'+resumen+' <b>('+cliente+')<b></h3>'; 
+      $("#main-content").html(encabezado);
+      $("#main-content").append(divs);
+    }
+    var volver = '<br><a href="#" name="'+actividad+'" id="volverActividad">Volver</a>';
     $(selector).html(cargar);
+    $(selector).append(volver);
+    inhabilitarCertificado();
   });    
 }
 
@@ -1549,7 +1625,7 @@ function todo () {
         var temp2 = temp1[0].split('=');
         var idkey = parseInt(temp2[1], 10);var idkey = temp2[1];
         var temp3 = temp1[1].split('=');
-        var ref = temp3[1];alert('llave.php: antes de mostrar llave');
+        var ref = temp3[1];
         mostrarLlave(idkey, "#content");
         cargarObjetos(ref, "#selector", false, 'llave', idkey);
       }
@@ -1579,7 +1655,7 @@ function todo () {
       else {
         ///ver de eliminar pues nunca llega a ejecturse. Esta parte va en click de detailObject
         var idcert = $(this).attr("id");alert(idcert+' desde ppal sin parametros');
-        //mostrarCertificado(idcert, "#content");
+        mostrarCertificado(idcert, "#content");
       }
       break;
     }
@@ -2051,11 +2127,11 @@ $(document).on("click", "#eliminarLlave", function () {
       var indiceActual = ids.indexOf(llave);
       var llave1 = 0;
       
-      if (total === 0)  {
+      if (total === 1)  {
         var volver = '<br><a href="referencia.php?idreferencia='+idref+' name="'+idref+'" id="volverReferencia">Volver</a>';
-        var texto = '<h2>Ya NO quedan objetos!.</h2>';
+        var texto = '<h2>Ya NO quedan llaves!.</h2>';
         texto += volver;
-        $("#selector").html(texto);
+        $("#content").html(texto);
       }
       else {
         if ((indiceActual !== 0)&&(indiceActual !== -1)) {
@@ -2073,8 +2149,10 @@ $(document).on("click", "#eliminarLlave", function () {
       $.getJSON(url, {query: ""+query+""}).done(function(request) {
         var resultado = request["resultado"];
         if (resultado === "OK") {
+          if (total >= 1) {
+            mostrarLlave(ids[llave1], "#content");
+          }
           cargarObjetos(idref, "#selector", false, 'llave', ids[llave1]);
-          mostrarLlave(ids[llave1], "#content");
         }
         else {
           alert('Hubo un error. Por favor verifique.');
@@ -2392,8 +2470,267 @@ $(document).on("click", "#agregarLlave", function(){
     });
   }
 });
+
 /**************************************************************************************************************************
 /// ***************************************************** FIN LLAVES ******************************************************
+***************************************************************************************************************************
+*/
+
+
+
+/***************************************************************************************************************************
+/// Comienzan las funciones que manejan los eventos relacionados a las CERTIFICADOS como ser creación, edición y eliminación.
+****************************************************************************************************************************
+*/
+
+///Disparar funcion al hacer click en el botón eliminar.
+///Esto hace que el registro correspondiente al certificado pase a estado de inactivo.
+///Además, se "limpia" el form del div #selector quitando el certificado eliminado.
+$(document).on("click", "#eliminarCertificado", function () {
+  var pregunta = confirm('Está a punto de eliminar el registro. ¿Desea continuar?');
+  if (pregunta) {
+    ///Se hace consulta primero para averiguar todos los idcerts correspondientes a la actividad.
+    ///De esta forma, al eliminar el certificado se resalta automáticamente el anterior (si hay).
+    var url = "data/selectQuery.php";
+    var cert = document.getElementById("idcert").value;
+    var idref = document.getElementById("idref").value;
+    var query = "select idcertificados as idcerts from certificados inner join tareas on tareas.idtareas=certificados.tarea inner join referencias on referencias.idreferencias=tareas.referencia where certificados.estado='activo' and referencias.idreferencias='"+idref+"' order by owner";
+    
+    $.getJSON(url, {query: ""+query+""}).done(function(request) {
+      var ids = new Array();
+      var idks = request["resultado"];
+      var total = request["rows"];//alert(total);
+      var ids = new Array();
+      for (var index in idks) {
+        ids.push(idks[index]["idcerts"]);
+      }
+      
+      var indiceActual = ids.indexOf(cert);//alert(indiceActual);
+      var cert1 = 0;
+      
+      if (total === 1)  {//alert('total = 1. Este es el último');
+        var volver = '<br><a href="referencia.php?idreferencia='+idref+' name="'+idref+'" id="volverReferencia">Volver</a>';
+        var texto = '<h2>Ya NO quedan certificados!.</h2>';
+        texto += volver;
+        $("#content").html(texto);
+      }
+      else {
+        if ((indiceActual !== 0)&&(indiceActual !== -1)) {
+          cert1 = indiceActual - 1;
+        }
+        else {
+          if (indiceActual === 0) {
+            cert1 = indiceActual + 1;
+          }
+        }
+      }
+      var url = "data/updateQuery.php";
+      var query = "update certificados set estado='inactivo' where idcertificados='" + cert + "'";
+      
+      $.getJSON(url, {query: ""+query+""}).done(function(request) {
+        var resultado = request["resultado"];
+        if (resultado === "OK") {
+          if (total >= 1) {
+            mostrarCertificado(ids[cert1], "#content");
+          }
+          cargarObjetos(idref, "#selector", false, 'cert', ids[cert1]);
+        }
+        else {
+          alert('Hubo un error. Por favor verifique.');
+        }
+      });
+    });
+  }
+  else {
+    //alert('no quiso borrar');
+  }
+});
+
+///Disparar funcion al hacer clic en el botón actualizar.
+///Se validan todos los campos antes de hacer la actualización, y una vez hecha se inhabilita el form y parte de los botones.
+$(document).on("click", "#actualizarCertificado", function (){
+    var seguir = true;
+    seguir = validarCertificado();
+    
+    ///En caso de que se valide todo, se prosigue a enviar la consulta con la actualización en base a los parámetros pasados
+    if (seguir) {
+      ///Recupero valores editados y armo la consulta para el update:
+      var idcert = document.getElementById("idcert").value;
+      var idref = document.getElementById("idref").value;
+      var nombre = document.getElementById("nombre").value;
+      var owner = document.getElementById("owner").value;
+      var bandera = document.getElementById("bandera").value;
+      var vencimiento = document.getElementById("vencimiento").value;
+      var version = document.getElementById("version").value;
+      var accion = document.getElementById("accion").value;
+      var obs = document.getElementById("observaciones").value;
+      //alert('idcert: '+idcert+'\nidref: '+idref+'\nactividad: '+actividad+'\nnombre: '+nombre +'\nowner: '+owner+'\nbandera: '+bandera+'\naccion: '+accion+'\nversion: '+version+'\nobs: '+obs);
+      
+      var query = "update certificados inner join tareas on certificados.tarea=tareas.idtareas set nombre='" + nombre + "', owner='" + owner + "', vencimiento='"+vencimiento+"' , bandera='"+bandera+"', version='" + version + "', accion='"+accion+"', tareas.observaciones='"+obs+"' where idcertificados='" + idcert + "'";
+      var url = "data/updateQuery.php";
+      //alert(query);
+      ///Ejecuto la consulta y muestro mensaje según resultado:
+      $.getJSON(url, {query: ""+query+""}).done(function(request) {
+        var resultado = request["resultado"];
+        if (resultado === "OK") {
+          alert('Registro modificado correctamente!');  
+          $("#actualizarCertificado").attr("disabled", "disabled");
+          document.getElementById("editarCertificado").value = "EDITAR";
+          inhabilitarCertificado();
+          cargarObjetos(idref, "#selector", false, 'cert', idcert);
+        }
+        else {
+          alert('Hubo un error. Por favor verifique.');
+        }
+      });
+    }
+  });
+
+///Disparar función al hacer click en el botón Nueva Llave.
+///Se vuelve al DIV #main-content y se genera un form en blanco para agregar los datos de la llave.
+$(document).on("click", "#nuevoCertificado", function() {
+  var idref = document.getElementById("nuevoCertificado").name;
+  var codigo = document.getElementById("codigo").value;
+  var resumen = document.getElementById("resumen").value;
+  var slot = document.getElementById("slot").value;
+  //var actividad = document.getElementById("actividad").value;
+  var nom = slot.split('_');
+  var cliente = nom[0];
+  var encabezado = '<h1 class="encabezado">NUEVO CERTIFICADO</h1>';
+  encabezado += '<h3>'+codigo+' <b>('+cliente+')<b></h3>';
+  var tabla = '<table id="newCert" name="newCert" class="tabla2" style="max-width:75%">';
+  var tr = '<tr><th colspan="8">DATOS GENERALES</th></tr>';
+  tr += '<tr>\n\
+          <th>Nombre:</th><td><input id="nombre" name="nombre" class="resaltado" type="text"></td>\n\
+          <th colspan="2">Owner:</th><td><input id="owner" name="owner" class="resaltado" type="text"></td>\n\
+          <th>Bandera:</th>\n\
+          <td colspan="2">\n\
+            <select id="bandera" name="bandera" style="width:100%">\n\
+              <option value="seleccionar" selected="yes">---SELECCIONAR---</option>\n\
+              <option value="MASTER">MASTER</option>\n\
+              <option value="VISA">VISA</option>\n\
+              <option value="AMEX">AMEX</option>\n\
+            </select>\n\
+          </td>\n\
+         </tr>';
+  tr += '<tr>\n\
+          <th>Fecha</th>\n\
+          <td><input id="vencimiento" name="vencimiento" type="date" " style="width:100%; text-align: center" min="2016-10-01"></td>\n\
+          <th>Acción:</th>\n\
+          <td colspan="2">\n\
+            <select id="accion" name="accion" style="width:100%">\n\
+              <option value="seleccionar" selected="yes">---SELECCIONAR---</option>\n\
+              <option value="Carga">Carga</option>\n\
+              <option value="Generaci&oacute;n">Generaci&oacute;n</option>\n\
+              <option value="Importaci&oacute;n">Importaci&oacute;n</option>\n\
+              <option value="Exportaci&oacute;n">Exportaci&oacute;n</option>\n\
+              <option value="Borrado">Borrado</option>\n\
+              <option value="Edici&oacute;n">Edici&oacute;n</option>\n\
+            </select>\n\
+          </td>\n\
+          <th>Versión:</th><td colspan="2"><input id="version" name="version" type="text"></td>\n\
+        </tr>';
+  tr += '<tr>\n\
+           <th>Observaciones:</th>\n\
+           <td colspan="8">\n\
+             <textarea id="observaciones" name="observaciones" style="width: 100%;resize: none"></textarea>\n\
+           </td>\n\
+         </tr>';                             
+  tr += '<tr>\n\
+            <td colspan="8"><input type="button" id="agregarCertificado" name="agregarCertificado" value="AGREGAR" class="btn-success"></td>\n\
+            <td style="display:none"><input type="text" id="fuente" name="fuente" value="certificado"></td>\n\
+            <td style="display:none"><input type="text" id="idref" name="idref" value="'+idref+'"></td>\n\
+            <td style="display:none"><input type="text" id="codigo" name="codigo" value="'+codigo+'"></td>\n\
+            <td style="display:none"><input type="text" id="resumen" name="resumen" value="'+resumen+'"></td>\n\
+            <td style="display:none"><input type="text" id="cliente" name="cliente" value="'+cliente+'"></td>\n\
+        </tr>';                            
+  tr += '</table>';
+  tabla += tr;
+  var cargar = encabezado;
+  cargar += tabla;
+  var volver = '<br><a href="referencia.php?idreferencia='+idref+'" id="volverReferencia">Volver</a>';
+  cargar += volver;
+  vaciarContent("#main-content");
+  $("#main-content").html(cargar);  
+});
+
+///Disparar función al hacer click en el botón Agregar Certificado.
+///Se validan los datos para el certificado, luego 
+///se cargan los dos DIVs (#selector y #content), en #selector se cargan todos los objetos de la referencia y en 
+///#content los datos del certificado recién agregado, siempre y cuando haya pasado la validación.
+$(document).on("click", "#agregarCertificado", function(){
+  var seguir = true;
+  seguir = validarCertificado();
+  
+  ///En caso de que se valide todo, se prosigue a enviar la consulta con la actualización en base a los parámetros pasados
+  if (seguir) {
+    ///Recupero valores editados y armo la consulta para el update:
+    var idref = document.getElementById("idref").value;
+    var nombre = document.getElementById("nombre").value;
+    var owner = document.getElementById("owner").value;
+    var bandera = document.getElementById("bandera").value;
+    var vencimiento = document.getElementById("vencimiento").value;
+    var version = document.getElementById("version").value;
+    var accion = document.getElementById("accion").value;
+    var obs = document.getElementById("observaciones").value;
+    var codigo = document.getElementById("codigo").value;
+    var cliente = document.getElementById("cliente").value;
+    var resumen = document.getElementById("resumen").value;
+    //alert('idref: '+idref+'\nnombre: '+nombre +'\nowner: '+owner+'\nbandera: '+bandera+'\nvencimiento'+vencimiento+'\naccion: '+accion+'\nversion: '+version+'\nobs: '+obs);
+
+    var query = 'insert into tareas (referencia, accion, observaciones) values ('+idref+', "'+accion+'", "'+obs+'")';
+    var url = "data/updateQuery.php";
+    $.getJSON(url, {query: ""+query+""}).done(function(request) {
+      var resultado = request["resultado"];
+      if (resultado === "OK") {
+        var query = 'select max(idtareas) as ultimaTarea from tareas';
+        var url = "data/selectQuery.php";
+        $.getJSON(url, {query: ""+query+""}).done(function(request) {
+          var idtarea = request.resultado[0]["ultimaTarea"];
+           
+          var query = "insert into certificados (tarea, nombre, owner, version, bandera, vencimiento, estado) values \n\
+                ("+idtarea+", '" + nombre + "', '" + owner + "', '" + version + "', '" + bandera + "', '" + vencimiento + "', 'activo')";
+          var url = "data/updateQuery.php";
+          
+          $.getJSON(url, {query: ""+query+""}).done(function(request) {
+            var resultado = request["resultado"];
+            if (resultado === "OK") {
+              var query = 'select max(idcertificados) as ultimoCert from certificados';
+              var url = "data/selectQuery.php";
+              $.getJSON(url, {query: ""+query+""}).done(function(request) {
+                var idcert = request.resultado[0]["ultimoCert"];
+                alert('Registro agregado correctamente!');
+                if ($("#content").length === 0) {
+                  var divs = "<div id='fila' class='row'>\n\
+                            <div id='selector' class='col-md-5 col-sm-12'></div>\n\
+                            <div id='content' class='col-md-7 col-sm-12'></div>\n\
+                          </div>";
+                }  
+                $("#main-content").empty();
+                var encabezado = '<h1 class="encabezado" id="titulo">'+codigo+'</h1>';
+                encabezado += '<h3>'+resumen+' <b>('+cliente+')<b></h3>'; 
+                $("#main-content").html(encabezado);
+                $("#main-content").append(divs);
+                cargarObjetos(idref, "#selector", false, 'cert', idcert);
+                mostrarCertificado(idcert, "#content");
+                inhabilitarCertificado();
+              });
+            }
+            else {
+              alert('Hubo un error... Por favor verifique.');
+            }
+          });
+        });
+      }
+      else {
+        alert('Hubo un error. Por favor verifique.');
+      }
+    });
+  }
+});
+
+/**************************************************************************************************************************
+/// ************************************************** FIN CERTIFICADOS ***************************************************
 ***************************************************************************************************************************
 */
 }
