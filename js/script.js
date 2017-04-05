@@ -34,7 +34,9 @@ function cambiarEdicion()
     case "llave": editar = document.getElementById("editarLlave").value;
                   break;
     case "certificado": editar = document.getElementById("editarCertificado").value;
-                        break; 
+                        break;
+    case "usuario": editar = document.getElementById("editarUsuario").value;
+                        break;                  
     default: break;
   }
   
@@ -78,27 +80,13 @@ function cambiarEdicion()
     case "actividad":
                     if (accion === "habilitar")
                       {
-                      document.getElementById("fecha").disabled = false;
-                      document.getElementById("horaInicio").disabled = false;
-                      document.getElementById("horaFin").disabled = false;
-                      document.getElementById("motivo").disabled = false;
-                      document.getElementById("usuario1").disabled = false;
-                      document.getElementById("rol1").disabled = false; 
-                      document.getElementById("usuario2").disabled = false;
-                      document.getElementById("rol2").disabled = false; 
+                      habilitarActividad(); 
                       document.getElementById("editarActividad").value = "BLOQUEAR";
                       document.getElementById("actualizarActividad").disabled = false;
                     }
                     else
                       {
-                      document.getElementById("fecha").disabled = true;
-                      document.getElementById("horaInicio").disabled = true;
-                      document.getElementById("horaFin").disabled = true;
-                      document.getElementById("motivo").disabled = true;
-                      document.getElementById("usuario1").disabled = true;
-                      document.getElementById("rol1").disabled = true; 
-                      document.getElementById("usuario2").disabled = true;
-                      document.getElementById("rol2").disabled = true; 
+                      inhabilitarActividad();
                       document.getElementById("editarActividad").value = "EDITAR";
                       document.getElementById("actualizarActividad").disabled = true;
                     }
@@ -106,29 +94,31 @@ function cambiarEdicion()
     case "referencia":
                       if (accion === "habilitar")
                         {
-                        document.getElementById("lugar").disabled = false;
-                        document.getElementById("hsm").disabled = false;
-                        document.getElementById("slot").disabled = false;
-                        document.getElementById("aplicacion").disabled = false;
-                        document.getElementById("plataforma").disabled = false;
-                        document.getElementById("resumen").disabled = false; 
-                        document.getElementById("detalles").disabled = false;
+                        habilitarReferencia();
                         document.getElementById("editarReferencia").value = "BLOQUEAR";
                         document.getElementById("actualizarReferencia").disabled = false;
                       }
                       else
                         {
-                        document.getElementById("lugar").disabled = true;
-                        document.getElementById("hsm").disabled = true;
-                        document.getElementById("slot").disabled = true;
-                        document.getElementById("aplicacion").disabled = true;
-                        document.getElementById("plataforma").disabled = true;
-                        document.getElementById("resumen").disabled = true; 
-                        document.getElementById("detalles").disabled = true; 
+                        inhabilitarReferencia(); 
                         document.getElementById("editarReferencia").value = "EDITAR";
                         document.getElementById("actualizarReferencia").disabled = true;
                       }
                       break;
+    case "usuario":
+                      if (accion === "habilitar")
+                        {
+                        habilitarUsuario();
+                        document.getElementById("editarUsuario").value = "BLOQUEAR";
+                        document.getElementById("actualizarUsuario").disabled = false;
+                      }
+                      else
+                        {
+                        inhabilitarUsuario();
+                        document.getElementById("editarUsuario").value = "EDITAR";
+                        document.getElementById("actualizarUsuario").disabled = true;
+                      }
+                      break;                  
     default: break;                  
   }  
 }
@@ -156,7 +146,9 @@ function validarEntero(valor)
 ************************************************************************************************************************
 */
 
-
+function cargarMenu() {
+  alert('en cargar menu');
+}
 
 /***********************************************************************************************************************
 /// *********************************************** FUNCIONES ACTIVIDADES **********************************************
@@ -179,9 +171,9 @@ function cargarActividades (selector, editar, actualizar, eliminar){
       var actividad = request.actividad;
       var total = Array.isArray(actividad);
       if (total) {
-        tabla = '<table class="tabla2" id="listaActividades">';
+        var tabla = '<table class="tabla2" id="listaActividades">';
         tabla += '<tr><th>FECHA</th><th colspan="2">MOTIVO</th></tr>';
-        tr = '';
+        var tr = '';
         var mayor = parseInt(actividad[0]["idactividades"], 10);
         for (var index in actividad) {
           ///Acomodo la fecha para que se vea en el formato habitual de dd/mm/aaaa
@@ -214,7 +206,7 @@ function cargarActividades (selector, editar, actualizar, eliminar){
                </tr>';     
         tabla += tr;
         tabla += '</table>';
-        cargar = '<h2>ACTIVIDADES</h2>';
+        var cargar = '<h2>ACTIVIDADES</h2>';
         cargar += tabla;
         $(selector).html(cargar);
         if (editar) {
@@ -430,7 +422,20 @@ function inhabilitarActividad() {
   document.getElementById("rol1").disabled = true; 
   document.getElementById("usuario2").disabled = true;
   document.getElementById("rol2").disabled = true; 
-  document.getElementById("newActivity").disabled = true;
+}
+
+/**
+  \brief Función que habilita los input del form Actividad.
+*/
+function habilitarActividad() {
+  document.getElementById("fecha").disabled = false;
+  document.getElementById("horaInicio").disabled = false;
+  document.getElementById("horaFin").disabled = false;
+  document.getElementById("motivo").disabled = false;
+  document.getElementById("usuario1").disabled = false;
+  document.getElementById("rol1").disabled = false; 
+  document.getElementById("usuario2").disabled = false;
+  document.getElementById("rol2").disabled = false; 
 }
 
 /**
@@ -440,12 +445,14 @@ function inhabilitarActividad() {
 function cargarDetalleActividad(activity){
   var url = "data/handleLogbook.php"; 
   var query = "select * from actividades where estado='activa' and idactividades='"+activity+"'";
-  var divs = "<div id='fila' class='row'>\n\
-                <div id='selector' class='col-md-6 col-sm-12'></div>\n\
-                <div id='content' class='col-md-6 col-sm-12'></div>\n\
-              </div>";
-  $("#main-content").empty();
-  $("#main-content").append(divs);
+  if ($("#content").length === 0) {
+    var divs = "<div id='fila' class='row'>\n\
+                  <div id='selector' class='col-md-6 col-sm-12'></div>\n\
+                  <div id='content' class='col-md-6 col-sm-12'></div>\n\
+                </div>";
+    $("#main-content").empty();
+    $("#main-content").append(divs);
+  }
   cargarActividades('#selector', true, false, true);
   $("#selector").css('padding-right', '30px');
 
@@ -461,14 +468,14 @@ function cargarDetalleActividad(activity){
     var usuarios = request.usuarios;
     var km1 ='', km2='', ciso1='', ciso2='', testigo1='', testigo2='', ninguno1='', ninguno2 ='';
 
-    fecha = actividad.fecha;
-    horaInicio = actividad.horaInicio;
-    horaFin = actividad.horaFin;
-    motivo = actividad.motivo;
-    rol1 = actividad.rolUsuario1;
-    rol2 = actividad.rolUsuario2;
-    userId1 = actividad.usuario1;
-    userId2 = actividad.usuario2;
+    var fecha = actividad.fecha;
+    var horaInicio = actividad.horaInicio;
+    var horaFin = actividad.horaFin;
+    var motivo = actividad.motivo;
+    var rol1 = actividad.rolUsuario1;
+    var rol2 = actividad.rolUsuario2;
+    var userId1 = actividad.usuario1;
+    var userId2 = actividad.usuario2;
 
     switch (rol1)
       {
@@ -494,10 +501,10 @@ function cargarDetalleActividad(activity){
               break;                       
     }
 
-    tabla = '<table id="datosActividad" class="tabla2">';
+    var tabla = '<table id="datosActividad" class="tabla2">';
     tabla += '<tr><th colspan="6">GENERAL</th></tr>';
     tabla += '<tr><th>Motivo</th><td colspan="5" style="vertical-align: middle;"><input type="text" id="motivo" name="motivo" disabled="true" style="width:100%; text-align: center; font-size: 18pt; font-weight: bolder;" value="'+motivo+'"></td></tr>';
-    tr = '';
+    var tr = '';
     tr += '<tr><th>Fecha</th><td><input id="fecha" name="fecha" type="date" disabled="true" style="width:100%; text-align: center" min="2016-10-01" value='+fecha+'></td>\n\
                <th>Inicio</th><td><input id="horaInicio" name="horaInicio" disabled="true" type="time" style="width:100%; text-align: center" min="09:00" max="18:00" step="600" value='+horaInicio+'></td>\n\
                <th>Fin</th><td><input id="horaFin" name="horaFin" disabled="true" type="time" style="width:100%; text-align: center" min="09:00" max="18:00" step="600" value='+horaFin+'></td>\n\
@@ -507,6 +514,7 @@ function cargarDetalleActividad(activity){
     tr += '<tr>\n\
               <td colspan="3"><select id="usuario1" name="usuario1" style="width:100%;" disabled="true">\n\
                                 <option value="ninguno" selected="yes">--- SELECCIONAR ---</option>';
+    var elegido = '';
     for (var index in usuarios) {
       if (usuarios[index]["idusuarios"] === userId1) {
         elegido = "selected";
@@ -514,7 +522,7 @@ function cargarDetalleActividad(activity){
       else {
         elegido = "";
       };
-      tr += '<option value="'+usuarios[index]["idusuarios"]+'" '+elegido+'>'+usuarios[index]["nombre"]+' '+usuarios[index]["apellido"]+'</option>';
+      tr += '<option value="'+usuarios[index]["idusuarios"]+'" '+elegido+'><a href="#">'+usuarios[index]["nombre"]+' '+usuarios[index]["apellido"]+'</a></option>';
     };
 
     tr += '</select></td>';
@@ -536,7 +544,7 @@ function cargarDetalleActividad(activity){
       else {
         elegido = "";
       };
-      tr += '<option value="'+usuarios[index]["idusuarios"]+'" '+elegido+'>'+usuarios[index]["nombre"]+' '+usuarios[index]["apellido"]+'</option>';
+      tr += '<option value="'+usuarios[index]["idusuarios"]+'" '+elegido+'><a href="#">'+usuarios[index]["nombre"]+' '+usuarios[index]["apellido"]+'</a></option>';
     };
     tr += '</select></td>';
     tr += '<td colspan="3">\n\
@@ -560,9 +568,9 @@ function cargarDetalleActividad(activity){
     tr += '<tr><td style="display:none"><input type="text" id="activity" name="activity" value='+activity+'></td></tr>';
     tabla += tr;
     tabla += '</table>';
-    cargar = '<h2>DETALLES</h2>';
+    var cargar = '<h2>DETALLES</h2>';
     cargar += tabla;
-    formu = '<form name="activity" method="post" action="referencia.php">';
+    var formu = '<form name="activity" method="post" action="referencia.php">';
     formu += '<h2></h2>';
     formu += tabla;
     formu += '</form>';
@@ -580,6 +588,7 @@ function cargarDetalleActividad(activity){
 /***********************************************************************************************************************
 /// *********************************************** FUNCIONES REFERENCIAS **********************************************
 ************************************************************************************************************************
+*/
 
 /**
  * \brief Función que carga en el form referencia los datos de la referencia.
@@ -726,6 +735,21 @@ function inhabilitarReferencia() {
   document.getElementById("plataforma").disabled = true;
   document.getElementById("resumen").disabled = true; 
   document.getElementById("detalles").disabled = true; 
+  document.getElementById("editarReferencia").value = "EDITAR";
+  document.getElementById("actualizarReferencia").disabled = true;
+}
+
+/**
+  \brief Función que habilita los input del form Referencia.
+*/
+function habilitarReferencia() {
+  document.getElementById("lugar").disabled = false;
+  document.getElementById("hsm").disabled = false;
+  document.getElementById("slot").disabled = false;
+  document.getElementById("aplicacion").disabled = false;
+  document.getElementById("plataforma").disabled = false;
+  document.getElementById("resumen").disabled = false; 
+  document.getElementById("detalles").disabled = false; 
   document.getElementById("editarReferencia").value = "EDITAR";
   document.getElementById("actualizarReferencia").disabled = true;
 }
@@ -1578,6 +1602,216 @@ function mostrarCertificado(id, selector){
 ************************************************************************************************************************
 **/
 
+
+
+/***********************************************************************************************************************
+/// ************************************************* FUNCIONES USUARIOS ***********************************************
+************************************************************************************************************************
+*/
+
+/**
+ * \brief Función que carga en el form pasado como parámetro todos los usuarios.
+ * @param {String} selector String con el DIV donde se deben de cargar los datos.
+ * @param {Int} user Id del usuario a resaltar en el listado.
+ */ 
+function cargarUsuarios(selector, user){
+  var url = "data/selectQuery.php";
+  var query = "select idusuarios, apellido, nombre, empresa from usuarios where estado='activo' order by empresa asc, apellido asc, idusuarios asc";
+  
+  $.getJSON(url, {query: ""+query+""}).done(function(request) {
+    var usuario = request.resultado;
+    var total = parseInt(request.rows, 10);
+    var encabezado = '<h2 id="titulo" class="encabezado">LISTADO DE USUARIOS</h2>';
+    var cargar = '';
+    cargar += encabezado;
+    if (total >= 1) {
+      var tabla = '<table id="usuarios" name="usuarios" class="tabla2">';
+      var tr = '<tr>\n\
+                  <th colspan="4">USUARIOS</th>\n\
+                </tr>';
+      tr += '<tr>\n\
+                <th>Ítem</th>\n\
+                <th>Nombre</th>\n\
+                <th>Apellido</th>\n\
+                <th>Empresa</th>\n\
+            </tr>';
+      for (var index in usuario) {
+        var nombre = usuario[index]["nombre"];
+        var apellido = usuario[index]["apellido"];
+        var empresa = usuario[index]["empresa"];
+        var id = usuario[index]["idusuarios"];
+        var i = parseInt(index, 10) + 1;
+        var clase = '';
+        if ((id !== 0) && (id === user)){
+                clase = 'resaltado';
+            }
+            else {
+              clase = '';
+            }
+        tr += '<tr>\n\
+                  <td>'+i+'</td>\n\
+                  <td><a href="#" id="'+id+'" class="detailUser '+clase+'">'+apellido+'</a></td>\n\
+                  <td><a href="#" id="'+id+'" class="detailUser '+clase+'">'+nombre+'</a></td>\n\
+                  <td>'+empresa+'</td>\n\
+              </tr>';
+      }
+      tr += '</table>';
+      tabla += tr;
+      cargar += tabla;
+      $(selector).html(cargar);
+    }
+    else {
+      var texto = '<h2>Ya NO quedan usuarios activos!.</h2>';
+      cargar += texto;
+      vaciarContent("#main-content");
+      $("#main-content").html(cargar);
+    }    
+    
+  });
+}
+
+/**
+  \brief Función que recupera y carga los datos del usuario pasado como parámetro.
+  @param {Int} user Entero con el índice del usuario a recuperar.
+*/
+function cargarDetalleUsuario(user) {
+  var url = "data/selectQuery.php"; 
+  var query = "select nombre, apellido, empresa, mail, telefono, observaciones from usuarios where idusuarios='"+user+"'";
+  
+  $.getJSON(url, {query: ""+query+""}).done(function(request) {
+    var usuario = request.resultado[0];
+    var nombre = usuario["nombre"];
+    var apellido = usuario["apellido"];
+    var empresa = usuario["empresa"];
+    var mail = usuario["mail"];if (mail === null) mail = '';
+    var tel = usuario["telefono"];if (tel === null) tel = '';
+    var obs = usuario["observaciones"];if (obs === null) obs = '';
+    if ($("#content").length === 0) {
+      var divs = "<div id='fila' class='row'>\n\
+                    <div id='selector' class='col-md-6 col-sm-12'></div>\n\
+                    <div id='content' class='col-md-6 col-sm-12'></div>\n\
+                  </div>";
+      $("#main-content").empty();
+      $("#main-content").append(divs);
+    }
+    cargarUsuarios('#selector', user);
+    $("#selector").css('padding-right', '30px');
+    
+    var tabla = '<table id="detalleUsuario" name="detalleUsuario" class="tabla2">';
+    var tr = '<tr>\n\
+                <th colspan="4">DATOS DEL USUARIO</th>\n\
+              </tr>';
+    tr += '<tr>\n\
+              <th>Apellido</th>\n\
+              <td><input id="apellido" name="apellido" class="resaltado" type="text" value="'+apellido+'" disabled="true"></td>\n\
+              <th>Nombre</th>\n\
+              <td><input id="nombre" name="nombre" class="resaltado" type="text" value="'+nombre+'" disabled="true"></td>\n\
+          </tr>';
+    tr += '<tr>\n\
+              <th>Empresa</th>\n\
+              <td colspan="3"><b><input id="empresa" name="empresa" type="text" value="'+empresa+'" disabled="true"></b></td>\n\
+          </tr>';
+    tr += '<tr>\n\
+              <th>Mail</th>\n\
+              <td colspan="3"><input id="mail" name="mail" type="text" value="'+mail+'" disabled="true"></td>\n\
+           </tr>';
+    tr += '<tr>\n\
+              <th>Teléfono</th>\n\
+              <td colspan="3"><input id="telefono" name="telefono" type="text" value="'+tel+'" disabled="true"></td>\n\
+           </tr>';
+    tr += '<tr>\n\
+              <th>Observaciones</th>\n\
+              <td colspan="3"><textarea id="observaciones" name="observaciones" style="width: 100%;resize: none" disabled="true">'+ obs +'</textarea></td>\n\
+           </tr>';
+    tr += '<tr>\n\
+              <td><input type="button" id="editarUsuario" name="editarUsuario" value="EDITAR" onclick="cambiarEdicion()" class="btn-info"></td>\n\
+              <td colspan="2"><input type="button" id="actualizarUsuario" name="actualizarUsuario" disabled="true" value="ACTUALIZAR" class="btn-warning"></td>\n\
+              <td><input type="button" id="eliminarUsuario" name="eliminarUsuario" value="ELIMINAR" class="btn-danger"></td>\n\
+              <td style="display:none"><input type="text" id="fuente" name="fuente" value="usuario"></td>\n\
+              <td style="display:none"><input type="text" id="iduser" name="iduser" value="'+user+'"></td>\n\
+          </tr>'; 
+    tr += '</table>';
+    tabla += tr;
+    var encabezado = '<h3 id="titulo" class="encabezado">DETALLES</h3>';
+    var cargar = '';
+    cargar += encabezado;
+    cargar += tabla;
+    $("#content").html(cargar);
+  });
+}
+
+/**
+  \brief Función que deshabilita los input del form Usuario.
+*/
+function inhabilitarUsuario(){
+  document.getElementById("nombre").disabled = true;
+  document.getElementById("apellido").disabled = true;
+  document.getElementById("empresa").disabled = true;
+  document.getElementById("mail").disabled = true;
+  document.getElementById("telefono").disabled = true;
+  document.getElementById("observaciones").disabled = true;
+}
+
+/**
+  \brief Función que habilita los input del form Usuario.
+*/
+function habilitarUsuario(){
+  document.getElementById("nombre").disabled = false;
+  document.getElementById("apellido").disabled = false;
+  document.getElementById("empresa").disabled = false;
+  document.getElementById("mail").disabled = false;
+  document.getElementById("telefono").disabled = false;
+  document.getElementById("observaciones").disabled = false;
+}
+
+/**
+ * \brief Función que valida los datos pasados para el usuario.
+ * @returns {Boolean} Devuelve un booleano que indica si se pasó o no la validación de los datos para el usuario.
+ */
+function validarUsuario()
+  {
+  var seguir = false;
+  
+  if (document.getElementById("nombre").value.length === 0)
+    {
+    alert('Debe ingresar el nombre del usuario.');
+    document.getElementById("nombre").focus();
+    seguir = false;
+  }
+  else
+    {
+    if (document.getElementById("apellido").value.length === 0)
+      {
+      alert('Debe ingresar el apellido del usuario.');
+      document.getElementById("apellido").focus();
+      seguir = false;
+    } 
+    else
+      {
+      if (document.getElementById("empresa").value.length === 0)
+        {
+        alert('Debe ingresar la empresa donde trabaja el usuario.');
+        document.getElementById("empresa").focus();
+        seguir = false;
+      }
+      else
+        {
+        seguir = true;
+      }// empresa
+    }// apellido
+  }// nombre
+  
+  if (seguir) return true;
+  else return false;
+}
+
+/***********************************************************************************************************************
+/// *********************************************** FIN FUNCIONES USUARIOS *********************************************
+************************************************************************************************************************
+**/
+
+
+
 /**
   \brief Función que se ejecuta al cargar la página.
 En la misma se ve primero desde que página se llamó, y en base a eso
@@ -1657,6 +1891,11 @@ function todo () {
         var idcert = $(this).attr("id");alert(idcert+' desde ppal sin parametros');
         mostrarCertificado(idcert, "#content");
       }
+      break;
+    }
+    case "/testKMS/usuario.php": 
+      {
+      cargarUsuarios("#main-content", 0);
       break;
     }
     default: break;
@@ -2497,7 +2736,6 @@ $(document).on("click", "#eliminarCertificado", function () {
     var query = "select idcertificados as idcerts from certificados inner join tareas on tareas.idtareas=certificados.tarea inner join referencias on referencias.idreferencias=tareas.referencia where certificados.estado='activo' and referencias.idreferencias='"+idref+"' order by owner";
     
     $.getJSON(url, {query: ""+query+""}).done(function(request) {
-      var ids = new Array();
       var idks = request["resultado"];
       var total = request["rows"];//alert(total);
       var ids = new Array();
@@ -2733,6 +2971,122 @@ $(document).on("click", "#agregarCertificado", function(){
 /// ************************************************** FIN CERTIFICADOS ***************************************************
 ***************************************************************************************************************************
 */
+
+/**************************************************************************************************************************
+/// Comienzan las funciones que manejan los eventos relacionados a las USUARIOS como ser creación, edición y eliminación.
+***************************************************************************************************************************
+*/
+
+///Disparar funcion al hacer clic en el link del usuario.
+///Se cargan en el DIV #content los datos del mismo.
+$(document).on("click", ".detailUser", function () {
+    var user = $(this).attr("id");
+    cargarDetalleUsuario(user);
+  });//*** fin del click ***
+  
+///Disparar funcion al hacer click en el botón eliminar.
+///Esto hace que el registro correspondiente al certificado pase a estado de inactivo.
+///Además, se "limpia" el form del div #selector quitando el usuario eliminado.
+$(document).on("click", "#eliminarUsuario", function () {
+  var pregunta = confirm('Está a punto de eliminar el registro. ¿Desea continuar?');
+  if (pregunta) {
+    ///Se hace consulta primero para averiguar todos los idcerts correspondientes a la actividad.
+    ///De esta forma, al eliminar el certificado se resalta automáticamente el anterior (si hay).
+    var url = "data/selectQuery.php";
+    var user = document.getElementById("iduser").value;
+    var query = "select idusuarios as iduser from usuarios where estado='activo' order by empresa asc, apellido asc, idusuarios asc";
+    
+    $.getJSON(url, {query: ""+query+""}).done(function(request) {
+      var idks = request["resultado"];
+      var total = request["rows"];
+      var ids = new Array();
+      for (var index in idks) {
+        ids.push(idks[index]["iduser"]);
+      }
+      
+      var indiceActual = ids.indexOf(user);//alert(indiceActual);
+      var user1 = 0;
+      
+      if (total === 1)  {//alert('total = 1. Este es el último');
+        var volver = '<br><a href="index.php">Volver</a>';
+        var texto = '<h2>Ya NO quedan usuarios!.</h2>';
+        texto += volver;
+        vaciarContent("#main-content");
+        $("#main-content").html(texto);
+      }
+      else {
+        if ((indiceActual !== 0)&&(indiceActual !== -1)) {
+          user1 = indiceActual - 1;
+        }
+        else {
+          if (indiceActual === 0) {
+            user1 = indiceActual + 1;
+          }
+        }
+      }
+      var url = "data/updateQuery.php";
+      var query = "update usuarios set estado='inactivo' where idusuarios='" + user + "'";
+      
+      $.getJSON(url, {query: ""+query+""}).done(function(request) {
+        var resultado = request["resultado"];
+        if (resultado === "OK") {
+          if (total > 1) {
+            cargarDetalleUsuario(ids[user1]);
+          }
+        }
+        else {
+          alert('Hubo un error. Por favor verifique.');
+        }
+      });
+    });
+  }
+  else {
+    //alert('no quiso borrar');
+  }
+});
+
+///Disparar funcion al hacer clic en el botón actualizar.
+///Se validan todos los campos antes de hacer la actualización, y una vez hecha se inhabilita el form y parte de los botones.
+$(document).on("click", "#actualizarUsuario", function (){
+    var seguir = true;
+    seguir = validarUsuario();
+
+    ///En caso de que se valide todo, se prosigue a enviar la consulta con la actualización en base a los parámetros pasados
+    if (seguir) {
+      ///Recupero valores editados y armo la consulta para el update:
+      var iduser = document.getElementById("iduser").value;
+      var nombre = document.getElementById("nombre").value;
+      var apellido = document.getElementById("apellido").value;
+      var empresa = document.getElementById("empresa").value;
+      var mail = document.getElementById("mail").value;
+      var tel = document.getElementById("telefono").value;
+      var obs = document.getElementById("observaciones").value;
+      //alert('iduser: '+iduser+'\nnombre: '+nombre +'\napellido: '+apellido+'\nempresa: '+empresa+'\nmail: '+mail+'\ntel: '+tel+'\nobs: '+obs);
+      
+      var query = "update usuarios set nombre='" + nombre + "', apellido='" + apellido + "', empresa='"+empresa+"' , mail='"+mail+"', telefono='" + tel +"', observaciones='"+obs+"' where idusuarios='" + iduser + "'";
+      var url = "data/updateQuery.php";
+      //alert(query);
+      ///Ejecuto la consulta y muestro mensaje según resultado:
+      $.getJSON(url, {query: ""+query+""}).done(function(request) {
+        var resultado = request["resultado"];
+        if (resultado === "OK") {
+          alert('Registro modificado correctamente!');  
+          $("#actualizarUsuario").attr("disabled", "disabled");
+          document.getElementById("editarUsuario").value = "EDITAR";
+          inhabilitarUsuario();
+          cargarUsuarios("#selector", iduser);
+        }
+        else {
+          alert('Hubo un error. Por favor verifique.');
+        }
+      });
+    }
+  });
+    
+/**************************************************************************************************************************
+/// **************************************************** FIN USUARIOS *****************************************************
+***************************************************************************************************************************
+*/    
 }
 
 /**

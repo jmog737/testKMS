@@ -14,19 +14,32 @@
           <span class='sr-only'>Toggle navigation</span>
           <span class='icon-bar'></span>
           <span class='icon-bar'></span>
-
         </button>
       </div>
 
       <div id='collapsable-nav' class='collapse navbar-collapse'>
         <ul id='nav-list' class='nav navbar-nav navbar-right'>
-          <li id='navHomeButton' class='visible-xs '>
+          <li id='navHomeButton' class='hidden-xs' >
             <a href='index.php'>
-              <span class='glyphicon glyphicon-home'></span> Home</a>
+              <span class='glyphicon glyphicon-home'></span> Home
+            </a>
           </li>
-          <li id='navMenuButton'>
-            <a href='#' onclick='$dc.loadMenuCategories();'>
-              <span class='glyphicon glyphicon-align-justify'></span><br class='hidden-xs'> Menu</a>
+          <li id='navMenuButton' class="dropdown">            
+            <a href="#" class="dropdown-toggle hidden-xs" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+              <span class='glyphicon glyphicon-align-justify'></span><br class='hidden-xs'> Menu
+            </a>
+            <ul class="dropdown-menu menu hidden-xs">
+              <li><a href="index.php">Actividades</a></li>
+              <li><a href="usuario.php">Usuarios</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="#">Administrar</a></li>
+            </ul>
+            
+            <li class='visible-xs'><a href="index.php">Actividades</a></li>
+            <li class='visible-xs'><a href="usuario.php">Usuarios</a></li>
+            <li role="separator" class="divider visible-xs"></li>
+            <li class='visible-xs'><a href="#">Administrar</a></li>
+            
           </li>
         </ul><!-- #nav-list -->
       </div><!-- .collapse .navbar-collapse -->
