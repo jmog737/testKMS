@@ -172,7 +172,7 @@ function cargarActividades (selector, editar, actualizar, eliminar){
       var total = Array.isArray(actividad);
       if (total) {
         var tabla = '<table class="tabla2" id="listaActividades">';
-        tabla += '<tr><th>FECHA</th><th colspan="2">MOTIVO</th></tr>';
+        tabla += '<tr><th class="tituloTablaIzquierdo">FECHA</th><th colspan="2" class="tituloTablaDerecho">MOTIVO</th></tr>';
         var tr = '';
         var mayor = parseInt(actividad[0]["idactividades"], 10);
         for (var index in actividad) {
@@ -202,7 +202,7 @@ function cargarActividades (selector, editar, actualizar, eliminar){
                 <td style="display:none"><input type="text" id="fuente" name="fuente" value="actividad"></td>\n\
                 <td style="display:none"><input type="text" id="ultimaActividad" name="ultimaActividad" value='+mayor+'></tr>';
         tr += '<tr>\n\
-                 <td colspan="4"><input type="button" id="agregarActividad" value="NUEVA" class="btn-success"></td>\n\
+                 <td colspan="4" class="pieTabla"><input type="button" id="agregarActividad" value="NUEVA" class="btn-success"></td>\n\
                </tr>';     
         tabla += tr;
         tabla += '</table>';
@@ -502,14 +502,14 @@ function cargarDetalleActividad(activity){
     }
 
     var tabla = '<table id="datosActividad" class="tabla2">';
-    tabla += '<tr><th colspan="6">GENERAL</th></tr>';
+    tabla += '<tr><th colspan="6" class="tituloTabla">GENERAL</th></tr>';
     tabla += '<tr><th>Motivo</th><td colspan="5" style="vertical-align: middle;"><input type="text" id="motivo" name="motivo" disabled="true" style="width:100%; text-align: center; font-size: 18pt; font-weight: bolder;" value="'+motivo+'"></td></tr>';
     var tr = '';
     tr += '<tr><th>Fecha</th><td><input id="fecha" name="fecha" type="date" disabled="true" style="width:100%; text-align: center" min="2016-10-01" value='+fecha+'></td>\n\
                <th>Inicio</th><td><input id="horaInicio" name="horaInicio" disabled="true" type="time" style="width:100%; text-align: center" min="09:00" max="18:00" step="600" value='+horaInicio+'></td>\n\
                <th>Fin</th><td><input id="horaFin" name="horaFin" disabled="true" type="time" style="width:100%; text-align: center" min="09:00" max="18:00" step="600" value='+horaFin+'></td>\n\
            </tr>';
-    tr += '<tr><th colspan="6">USUARIOS</th></tr>';
+    tr += '<tr><th colspan="6">PERSONAL DE LA EMPRESA</th></tr>';
     tr += '<tr><th colspan="3">Nombre</th><th colspan="3">Rol</th></tr>';
     tr += '<tr>\n\
               <td colspan="3"><select id="usuario1" name="usuario1" style="width:100%;" disabled="true">\n\
@@ -564,7 +564,7 @@ function cargarDetalleActividad(activity){
               </tr>';
       }
     }
-    tr += '<tr><td colspan="6"><input type="button" id="nuevaRef" name="nuevaRef" value="NUEVA REFERENCIA" class="btn-success"></td></tr>'
+    tr += '<tr><td colspan="6" class="pieTabla"><input type="button" id="nuevaRef" name="nuevaRef" value="NUEVA REFERENCIA" class="btn-success"></td></tr>'
     tr += '<tr><td style="display:none"><input type="text" id="activity" name="activity" value='+activity+'></td></tr>';
     tabla += tr;
     tabla += '</table>';
@@ -606,15 +606,12 @@ function mostrarReferencia(parametros) {
   
   $.getJSON(url, {query: ""+query+""}).done(function(request) {
     var referencia = request.referencia;
+    
     var slots = request.slots;
     var hsms = request.hsms;
     var nombreSlot = request.nombreSlot;
     var temp = nombreSlot.split("_");
     var cliente = temp[0];
-    var divs = "<div id='fila' class='row'>\n\
-                  <div id='selector' class='col-md-6 col-sm-12'></div>\n\
-                  <div id='content' class='col-md-6 col-sm-12'></div>\n\
-                </div>";
     var idref = referencia['idreferencias'];
     var actividad = referencia['actividad'];
     var codigo = referencia['codigo'];
@@ -626,101 +623,167 @@ function mostrarReferencia(parametros) {
     var aplicacion = referencia['aplicacion'];
     if (aplicacion === null) aplicacion = '';
     var detalles = referencia['detalles'];
+    //alert('idref: '+idref+'\nactividad: '+actividad+'\ncodigo: '+codigo+'\nresumen: '+resumen+'\nhsm: '+referencia['hsm']+'\nslot: '+referencia['slot']+'\nlugar: '+lugar+'\nplataforma: '+plataforma+'\naplicacion: '+aplicacion+'\ndetalles: '+detalles);
     
     var advantis = '';
     var convego = '';
     var cosmo = '';
     var ninguno = '';
+    var divs = "<div id='fila' class='row'>\n\
+                  <div id='selector' class='col-md-6 col-sm-12'></div>\n\
+                  <div id='content' class='col-md-6 col-sm-12'></div>\n\
+                </div>";
     
-    //alert('idref: '+idref+'\nactividad: '+actividad+'\ncodigo: '+codigo+'\nresumen: '+resumen+'\nhsm: '+referencia['hsm']+'\nslot: '+referencia['slot']+'\nlugar: '+lugar+'\nplataforma: '+plataforma+'\naplicacion: '+aplicacion+'\ndetalles: '+detalles);
+    url = "data/selectQuery.php";
+    query = 'select idusuarios as id, nombre, apellido, empresa from usuarios order by empresa asc, apellido asc';
     
-    tabla = '<table id="ref" class="tabla2">';
-    tabla += '<tr><th colspan="6">GENERAL</th></tr>';
-    tr = '';
-    tr += '<tr>\n\
-             <th>Lugar</th><td><input type="text" id="lugar" name="lugar" value="'+lugar+'"></td>';
-    tr += '<th>HSM</th>\n\
-            <td>\n\
-              <select id="hsm" name="hsm" style="width:100%;" disabled="true">\n\
-                <option value="ninguno" selected="yes">--- SELECCIONAR ---</option>';
-    for (var index in hsms) {
-      if (hsms[index]["idhsm"] === idhsm) {
-        elegido = "selected";
-      }
-      else {
-        elegido = "";
-      };
-      tr += '<option value="'+hsms[index]["nombre"]+'" '+elegido+'>'+hsms[index]["nombre"]+'</option>';
-    };
-    tr += '</select></td>';
-    tr += '<th>SLOT</th>\n\
-            <td>\n\
-              <select id="slot" name="slot" style="width:100%;" disabled="true">\n\
-                <option value="ninguno" selected="yes">--- SELECCIONAR ---</option>';
-    for (var index1 in slots) {
-      if (slots[index1]["nombre"] === nombreSlot) {
-        elegido = "selected";
-      }
-      else {
-        elegido = "";
-      };
-      tr += '<option value="'+slots[index1]["nombre"]+'" ' + elegido + '>' + slots[index1]["nombre"] + '</option>';
-    };
-    tr += '</select></td>';
-    tr += '<tr>\n\
-             <th>Plataforma</th><td colspan="3">';
-    switch (plataforma) {
-      case 'Advantis 4.1': advantis = 'selected';
-                           break;
-      case 'Convego 6.2': convego = 'selected';
+    $.getJSON(url, {query: ""+query+""}).done(function(request) {
+      var usuarios = request.resultado;
+      
+      url = "data/selectQuery.php";
+      query = "select usuario, rol from involucrados inner join usuarios on involucrados.usuario=usuarios.idusuarios where referencia='"+idref+"' order by usuarios.empresa asc, usuarios.apellido asc";
+      
+      $.getJSON(url, {query: ""+query+""}).done(function(request) {
+        var involucrados = request.resultado;
+        
+        var tabla = '<table id="ref" class="tabla2">';
+        tabla += '<tr><th colspan="6" class="tituloTabla">GENERAL</th></tr>';
+        var tr = '';
+        tr += '<tr>\n\
+                 <th>Lugar</th><td><input type="text" id="lugar" name="lugar" value="'+lugar+'"></td>';
+        tr += '<th>HSM</th>\n\
+                <td>\n\
+                  <select id="hsm" name="hsm" style="width:100%;" disabled="true">\n\
+                    <option value="ninguno" selected="yes">--- SELECCIONAR ---</option>';
+        var elegido = '';
+        for (var index in hsms) {
+          if (hsms[index]["idhsm"] === idhsm) {
+            elegido = "selected";
+          }
+          else {
+            elegido = "";
+          };
+          tr += '<option value="'+hsms[index]["nombre"]+'" '+elegido+'>'+hsms[index]["nombre"]+'</option>';
+        };
+        tr += '</select></td>';
+        tr += '<th>SLOT</th>\n\
+                <td>\n\
+                  <select id="slot" name="slot" style="width:100%;" disabled="true">\n\
+                    <option value="ninguno" selected="yes">--- SELECCIONAR ---</option>';
+        for (var index1 in slots) {
+          if (slots[index1]["nombre"] === nombreSlot) {
+            elegido = "selected";
+          }
+          else {
+            elegido = "";
+          };
+          tr += '<option value="'+slots[index1]["nombre"]+'" ' + elegido + '>' + slots[index1]["nombre"] + '</option>';
+        };
+        tr += '</select></td>';
+        tr += '<tr>\n\
+                 <th>Plataforma</th><td colspan="3">';
+        switch (plataforma) {
+          case 'Advantis 4.1': advantis = 'selected';
+                               break;
+          case 'Convego 6.2': convego = 'selected';
+                              break;
+          case 'Cosmo 5': cosmo = 'selected';
                           break;
-      case 'Cosmo 5': cosmo = 'selected';
-                      break;
-      default: ninguno = 'selected';
-               break;
-    }
-    tr += '<select id="plataforma" name="plataforma" style="width:100%">\n\
-            <option value="ninguno" '+ ninguno + '>--- SELECCIONAR ---</option>\n\
-            <option value="Advantis 4.1" '+ advantis + '>Advantis 4.1</option>\n\
-            <option value="Convego 6.2" '+ convego + '>Convego 6.2</option>\n\
-            <option value="Cosmo 5" '+ cosmo + '>Cosmo 5</option>\n\
-          </select>\n\
-          </td>';
-    tr += '<th>Aplicación</th><td><input type="text" id="aplicacion" name="aplicacion" value="'+aplicacion+'"></td>\n\
-          </tr>';
-    tr += '<tr><th colspan="6">RESUMEN</th></tr>';
-    tr += '<tr><td colspan="6"><input type="text" id="resumen" name="resumen" value="'+resumen+'"></td></tr>';
-    tr += '<tr><th colspan="6">DETALLES</th></tr>';
-    tr += '<tr><td colspan="6"><input type="text" id="detalles" name="detalles" value="'+detalles+'" ></td></tr>';
-    tr += '<tr>\n\
-             <td colspan="2"><input type="button" id="editarReferencia" name="editarReferencia" value="EDITAR" onclick="cambiarEdicion()" class="btn-info"></td>\n\
-             <td colspan="2"><input type="button" id="actualizarReferencia" name="actualizarReferencia" value="ACTUALIZAR" class="btn-warning"></td>\n\
-             <td colspan="2"><input type="button" id="eliminarReferencia" name="eliminarReferencia" value="ELIMINAR" class="btn-danger"></td>\n\
-           </tr>';
-    tr += '<tr>\n\
-              <td style="display:none"><input type="text" id="actividad" name="actividad" value="'+actividad+'"></td>\n\
-              <td style="display:none"><input type="text" id="codigo" name="codigo" value="'+codigo+'"></td>\n\
-              <td style="display:none"><input type="text" id="fuente" name="fuente" value="referencia"></td>\n\
-              <td style="display:none"><input type="text" id="idslot" name="idslot" value="'+idslot+'"></td>\n\
-              <td style="display:none"><input type="text" id="idref" name="idref" value="'+idref+'"></td>\n\
-          </tr>';
-    //tr += '<tr><td colspan="6"><input type="button" name="newReference" id="newReference" value="AGREGAR" class="btn-success"></td></tr>';
-    tabla += tr;
-    tabla += '</table>';    
-    formu = '<form name="reference" method="post" action="index.php">';
-    formu += tabla;
-    volver = '<br><a href="#" name="'+actividad+'" id="volverActividad">Volver</a>';
-    cargar = '';
-    cargar += tabla;
-    cargar += volver;
-    encabezado = '<h1 id="titulo" class="encabezado">' + codigo + '</h1>';
-    encabezado += '<h3>'+resumen+' <b>('+cliente+')</b></h3>';
-    $("#main-content").empty();
-    $('#main-content').html(encabezado);
-    $("#main-content").append(divs);
-    $("#selector").html(cargar);
-    inhabilitarReferencia();
-    cargarObjetos(idref, "#content", true, 'llave',0);
+          default: ninguno = 'selected';
+                   break;
+        }
+        tr += '<select id="plataforma" name="plataforma" style="width:100%">\n\
+                <option value="ninguno" '+ ninguno + '>--- SELECCIONAR ---</option>\n\
+                <option value="Advantis 4.1" '+ advantis + '>Advantis 4.1</option>\n\
+                <option value="Convego 6.2" '+ convego + '>Convego 6.2</option>\n\
+                <option value="Cosmo 5" '+ cosmo + '>Cosmo 5</option>\n\
+              </select>\n\
+              </td>';
+        tr += '<th>Aplicación</th><td><input type="text" id="aplicacion" name="aplicacion" value="'+aplicacion+'"></td>\n\
+              </tr>';
+        tr += '<tr><th colspan="6">RESUMEN</th></tr>';
+        tr += '<tr><td colspan="6"><input type="text" id="resumen" name="resumen" value="'+resumen+'"></td></tr>';
+        tr += '<tr><th colspan="6">DETALLES</th></tr>';
+        tr += '<tr><td colspan="6"><input type="text" id="detalles" name="detalles" value="'+detalles+'" ></td></tr>';
+        tr += '<tr><th colspan="6">INVOLUCRADOS</th></tr>';
+        tr += '<tr>\n\
+                  <th colspan="2">Nombre</th>\n\
+                  <th colspan="2">Empresa</th>\n\
+                  <th colspan="2">Rol</th>\n\
+               </tr>';
+        
+        var roles = ['user/officer', 'Testigo', 'User', 'Officer'];
+        for (var i in involucrados) {
+          tr += '<tr>\n\
+                    <td colspan="2">\n\
+                      <select id="nombreUsuario" name="nombreUsuario" class="nombreUsuario">';
+          var empresa = '';
+          var rol = '';
+          for (var index in usuarios)
+            {
+            if (involucrados[i]["usuario"] === usuarios[index]["id"]) {
+              elegido = 'selected';
+              empresa = usuarios[index]["empresa"];
+              rol = involucrados[i]["rol"];
+            }
+            else {
+              elegido = '';
+            }          
+            tr += '<option id="'+usuarios[index]["id"]+'" value="'+usuarios[index]["id"]+'" '+elegido+'>'+usuarios[index]["nombre"]+' '+usuarios[index]["apellido"]+'</option>';
+          }
+          tr += '</select>\n\
+                  </td>\n\
+                  <td colspan="2">\n\
+                    <input type="text" name="empresaUsuario" value="'+empresa+'">\n\
+                  </td>';
+          tr += '</td>\n\
+                 <td colspan="2">\n\
+                   <select name="rolUsuario" class="rolUsuario">';
+          for (var index in roles)
+            {
+            if (rol === roles[index]) {
+              elegido = 'selected';
+            }
+            else {
+              elegido = '';
+            }          
+            tr += '<option value="'+roles[index]+'" '+elegido+'>'+roles[index]+'</option>';
+          }
+          tr += '</select>\n\
+                </td>\n\
+              </tr>';
+          }
+        tr += '<tr>\n\
+                 <td colspan="2" class="pieTablaIzquierdo"><input type="button" id="editarReferencia" name="editarReferencia" value="EDITAR" onclick="cambiarEdicion()" class="btn-info"></td>\n\
+                 <td colspan="2"><input type="button" id="actualizarReferencia" name="actualizarReferencia" value="ACTUALIZAR" class="btn-warning"></td>\n\
+                 <td colspan="2"  class="pieTablaDerecho"><input type="button" id="eliminarReferencia" name="eliminarReferencia" value="ELIMINAR" class="btn-danger"></td>\n\
+               </tr>';
+        tr += '<tr>\n\
+                  <td style="display:none"><input type="text" id="actividad" name="actividad" value="'+actividad+'"></td>\n\
+                  <td style="display:none"><input type="text" id="codigo" name="codigo" value="'+codigo+'"></td>\n\
+                  <td style="display:none"><input type="text" id="fuente" name="fuente" value="referencia"></td>\n\
+                  <td style="display:none"><input type="text" id="idslot" name="idslot" value="'+idslot+'"></td>\n\
+                  <td style="display:none"><input type="text" id="idref" name="idref" value="'+idref+'"></td>\n\
+              </tr>';
+        //tr += '<tr><td colspan="6"><input type="button" name="newReference" id="newReference" value="AGREGAR" class="btn-success"></td></tr>';
+        tabla += tr;
+        tabla += '</table>';    
+        var formu = '<form name="reference" method="post" action="index.php">';
+        formu += tabla;
+        var volver = '<br><a href="#" name="'+actividad+'" id="volverActividad">Volver</a>';
+        var cargar = '';
+        cargar += tabla;
+        cargar += volver;
+        var encabezado = '<h1 id="titulo" class="encabezado">' + codigo + '</h1>';
+        encabezado += '<h3>'+resumen+' <b>('+cliente+')</b></h3>';
+        $("#main-content").empty();
+        $('#main-content').html(encabezado);
+        $("#main-content").append(divs);
+        $("#selector").html(cargar);
+        inhabilitarReferencia();
+        cargarObjetos(idref, "#content", true, 'llave',0);
+      });
+    });
   });
 }
 
@@ -735,8 +798,10 @@ function inhabilitarReferencia() {
   document.getElementById("plataforma").disabled = true;
   document.getElementById("resumen").disabled = true; 
   document.getElementById("detalles").disabled = true; 
+  $("select[name='nombreUsuario']").prop('disabled', true);
+  $("input[name='empresaUsuario']").prop('disabled', true);
+  $("select[name='rolUsuario']").prop('disabled', true);
   document.getElementById("editarReferencia").value = "EDITAR";
-  document.getElementById("actualizarReferencia").disabled = true;
 }
 
 /**
@@ -752,6 +817,9 @@ function habilitarReferencia() {
   document.getElementById("detalles").disabled = false; 
   document.getElementById("editarReferencia").value = "EDITAR";
   document.getElementById("actualizarReferencia").disabled = true;
+  $("select[name='nombreUsuario']").prop('disabled', false);
+  //$("input[name='empresaUsuario']").prop('disabled', false);
+  $("select[name='rolUsuario']").prop('disabled', false);
 }
 
 /**
@@ -878,7 +946,7 @@ function cargarObjetos(ref, selector, link, origen, idobject) {
         }
       }
       tabla = '<table id="objects" class="tabla2">';
-      tabla += '<tr><th colspan="5">LLAVES</th></tr>';
+      tabla += '<tr><th colspan="5" class="tituloTabla">LLAVES</th></tr>';
       tabla += '<tr>\n\
                   <td style="display:none"><input type="text" id="codigo" name="codigo" value="'+codigo+'"></td>\n\
                   <td style="display:none"><input type="text" id="slot" name="slot" value="'+slot+'"></td>\n\
@@ -954,7 +1022,7 @@ function cargarObjetos(ref, selector, link, origen, idobject) {
                  </tr>';
         }
       }
-      tr1 += '<tr><td colspan="5"><input type="button" id="nuevoCertificado" name="'+ref+'" value="NUEVO CERT." class="btn-success"></td></tr>';
+      tr1 += '<tr><td colspan="5" class="pieTabla"><input type="button" id="nuevoCertificado" name="'+ref+'" value="NUEVO CERT." class="btn-success"></td></tr>';
       tabla += tr;
       tabla += tr1;
       tabla += '</table>';
@@ -2124,6 +2192,47 @@ $(document).on("click", "#actualizarReferencia", function (){
     var seguir = true;  
     seguir = validarReferencia();
     
+    var elementos = $(".nombreUsuario");
+    var tam = elementos.size();
+    var arrayID = [];
+    for (var i=0; i<tam; i++) {
+      var selectActual = $(elementos[i]);
+      var id = $(selectActual).val();
+      arrayID.push(id);
+    }
+    
+    var arrayRoles = [];
+    var elem = $(".rolUsuario");
+    for (var i=0; i<tam; i++) {
+      //var selectActual = $(elem[i]);
+      var rol = $(elem[i]).val();
+      arrayRoles.push(rol);
+    }
+    
+    var i = 1;
+    var j = 0;
+    var repetidos = false;
+    var continuar = true;
+    var subArray = arrayID.slice(0);
+    
+    while ((i<arrayID.length) && (continuar===true)) {
+      subArray.splice(0, 1);
+      var ind = subArray.indexOf(arrayID[j]);
+      if (ind === -1) { 
+        i++;
+        j++;
+      }
+      else {
+        repetidos = true;
+        continuar = false;
+      }
+    }
+    
+    if (repetidos) {
+      alert('Hay involucrados que están repetidos. Por favor verifique.');
+      seguir = false;
+    }
+
     ///En caso de que se valide todo, se prosigue a enviar la consulta con la actualización en base a los parámetros pasados
     if (seguir) {
       ///Recupero valores editados y armo la consulta para el update:
@@ -2142,22 +2251,56 @@ $(document).on("click", "#actualizarReferencia", function (){
         var plataforma = document.getElementById("plataforma").value;
         var resumen = document.getElementById("resumen").value;
         var detalles = document.getElementById("detalles").value;
-        var query = "update referencias set lugar='" + lugar + "', aplicacion='" + aplicacion + "', plataforma='" + plataforma + "', resumen='" + resumen + "', detalles='" + detalles + "', slot='" + idslot + "'  where idreferencias='" + idref + "'";
-        var url = "data/updateQuery.php";
         
-        ///Ejecuto la consulta y muestro mensaje según resultado:
+        query = "select idinvolucrados from involucrados where referencia='"+idref+"'";
+        
         $.getJSON(url, {query: ""+query+""}).done(function(request) {
-          var resultado = request["resultado"];
-          if (resultado === "OK") {
-            alert('Registro modificado correctamente!');
-            $("#actualizarReferencia").attr("disabled", "disabled");
-            document.getElementById("editarReferencia").value = "EDITAR";
-            inhabilitarReferencia();
-          }
-          else {
-            alert('Hubo un error. Por favor verifique.');
-          }
-        });
+          var invo = request["resultado"];
+          
+          var query = "update referencias set lugar='" + lugar + "', aplicacion='" + aplicacion + "', plataforma='" + plataforma + "', resumen='" + resumen + "', detalles='" + detalles + "', slot='" + idslot + "'  where idreferencias='" + idref + "'";
+          var url = "data/updateQuery.php";
+
+          ///Ejecuto la consulta y muestro mensaje según resultado:
+          $.getJSON(url, {query: ""+query+""}).done(function(request) {
+            var resultado = request["resultado"];
+            if (resultado === "OK") {
+              query = "update involucrados set usuario = case idinvolucrados ";
+              for (var i in invo){
+                query += "when "+invo[i]["idinvolucrados"]+" then "+arrayID[i]+" ";
+              }
+              query += "end, rol = case idinvolucrados ";
+              for (var i in invo){
+                query += "when "+invo[i]["idinvolucrados"]+" then '"+arrayRoles[i]+"' ";
+              }
+              query += " end where idinvolucrados in (";
+              var tope = parseInt(invo.length, 10) - 1;
+              for (var j in invo){
+                if (j == tope) {
+                  query += invo[j]["idinvolucrados"]+")";
+                }
+                else {
+                  query += invo[j]["idinvolucrados"]+", ";
+                } 
+              }
+                
+              $.getJSON(url, {query: ""+query+""}).done(function(request){
+                var resultado = request["resultado"];
+                if (resultado === "OK") {
+                  alert('Registro modificado correctamente!');
+                  $("#actualizarReferencia").attr("disabled", "disabled");
+                  document.getElementById("editarReferencia").value = "EDITAR";
+                  inhabilitarReferencia();
+                }
+                else {
+                  alert('Hubo un error. Por favor verifique.');
+                }
+              });
+            }
+            else {
+              alert('Hubo un error. Por favor verifique.');
+            }
+          });
+        }); 
       });
     }  
   });
@@ -2271,8 +2414,6 @@ $(document).on("click", "#nuevaRef", function() {
       $("#main-content").append(formu);
     });
   });
-  
-  
 });
 
 ///Disparar funcion al hacer clic en el botón Agregar (del formulario nueva referencia).
@@ -2330,6 +2471,20 @@ $(document).on("click", "#addRef", function () {
       });
     }
   });
+  
+///Disparar funcion al cambiar alguno de los nombres del select de involucrados.
+///Se busca la empresa a la que corresponde el nuevo usuario y se actualiza el valor del input empresaUsuario.
+$(document).on("change", "#nombreUsuario", function (){
+  var iduser = this.value;
+  var url = "data/selectQuery.php";
+  var query = 'select empresa from usuarios where idusuarios = "'+iduser+'"';
+  var selector = $(this).parent().next().children("input");
+  $.getJSON(url, {query: ""+query+""}).done(function(request){
+    var empresa = request["resultado"][0]["empresa"];
+    $(selector).val(empresa);
+  });
+  
+});  
    
 /**************************************************************************************************************************
 /// ************************************************** FIN REFERENCIAS ****************************************************
@@ -2356,7 +2511,7 @@ $(document).on("click", "#eliminarLlave", function () {
     
     $.getJSON(url, {query: ""+query+""}).done(function(request) {
       var ids = new Array();
-      idks = request["resultado"];
+      var idks = request["resultado"];
       var total = request["rows"];
       var ids = new Array();
       for (var index in idks) {

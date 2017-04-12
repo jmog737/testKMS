@@ -118,7 +118,7 @@ h2 {
   text-decoration: underline;
 }
 h3 {
-  color: #000;
+  color:#fff;
 }
 input[type=checkbox] {
   zoom: 1.4;
@@ -132,11 +132,13 @@ input[type=checkbox] {
 #main-content {
   text-align: center;
   background-color: #ffff99;/* agregardo durante el desarrollo para diferenciar!!!*/
+  background-color: #61122f;
   /*padding: 15px;*/
   margin: auto;
 }
 #fila {
-  background-color: #99ffff;
+  background-color: #61122f;
+  /*background-color: #99ffff;*/
   padding: 30px;
 }
 .resaltado {
@@ -159,6 +161,9 @@ input[type=checkbox] {
 .detailUser {
   text-align: right;
 }
+#volverActividad {
+  color:#fff;
+}
 a.detailObject:focus, a.detailObject:hover {
   background-color:#ffff00;
   font-weight: bolder;
@@ -166,8 +171,8 @@ a.detailObject:focus, a.detailObject:hover {
 }
 
 #selector {
-  /*background-color: #61122f;*/
-  background-color: #99ff99;/* agregardo durante el desarrollo para diferenciar!!!*/
+  background-color: #61122f;
+  /*background-color: #99ff99;/* agregardo durante el desarrollo para diferenciar!!!*/
   position: relative;
   padding: 0px;
 }
@@ -176,15 +181,33 @@ a.detailObject:focus, a.detailObject:hover {
   text-decoration: underline;
 }
 #content {
-  /*background-color: #61122f;*/
-  background-color: #ffcc99;/* agregardo durante el desarrollo para diferenciar!!!*/
+  background-color: #61122f;
+  /*background-color: #ffcc99;/* agregardo durante el desarrollo para diferenciar!!!*/
   /*padding-left: 50px;*/
   position: relative;
   padding: 0px;
 }
 
 /* TABLAS */
+.tituloTabla {
+  border-radius: 25px 25px 0 0;
+}
+.pieTabla {
+  border-radius: 0 0 25px 25px;
+}
+.pieTablaIzquierdo {
+  border-radius: 0 0 0 25px;
+}
+.pieTablaDerecho {
+  border-radius: 0 0 25px 0;
+}
 
+.tituloTablaIzquierdo {
+  border-radius: 25px 0 0 0;
+}
+.tituloTablaDerecho {
+  border-radius: 0 25px 0 0;
+}
 .tabla1 {
   border: white 2px solid;
   background-color: #48403e;
@@ -218,12 +241,13 @@ a.detailObject:focus, a.detailObject:hover {
 
 .tabla2 {
   border: #c0c0c0 1px solid;
-  background-color: white;
+  background-color:#fbffe2;
   text-align: center;
   color: #000;
   border-collapse: separate;
   max-width: 90%;
   margin: 0 auto;
+  border-radius: 25px;
 }
 .tabla2 th {
   background-color: #0066cc;
@@ -232,6 +256,7 @@ a.detailObject:focus, a.detailObject:hover {
   border: #c0c0c0 1px solid;
   margin: 0px;
   line-height:none;
+  
 }
 .tabla2 tr {
   border: #c0c0c0 1px solid;
