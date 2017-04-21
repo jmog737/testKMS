@@ -113,7 +113,7 @@ body {
   width: 100%;
 }
 h2 {
-  color: #000;
+  color:#ffcc66;
   font-weight: bold;
   text-decoration: underline;
 }
@@ -148,7 +148,7 @@ input[type=checkbox] {
   color: red;
 }
 .encabezado {
-  color: #ff0000;
+  color: #ffcc00;
   text-decoration: underline;
   font-weight: bolder;
 }
@@ -161,7 +161,7 @@ input[type=checkbox] {
 .detailUser {
   text-align: right;
 }
-#volverActividad {
+#volverActividad, #volverReferencia, #volverUsuario {
   color:#fff;
 }
 a.detailObject:focus, a.detailObject:hover {

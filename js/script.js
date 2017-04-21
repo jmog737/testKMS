@@ -984,7 +984,7 @@ function cargarObjetos(ref, selector, link, origen, idobject) {
             tr += '<td><a name="llave" href="#titulo" id="'+id+'" class="detailObject '+clase+'">'+llaves[index]["nombre"]+'</a></td>';
           }
           tr +=  '<td>'+llaves[index]["owner"]+'</td>\n\
-                  <td>'+llaves[index]["kcv"]+'</td>\n\
+                  <td style="background-color: #efd874"><b>'+llaves[index]["kcv"]+'</b></td>\n\
                 </tr>';
         }
       }
@@ -1231,7 +1231,7 @@ function mostrarLlave(id, selector) {
     var cliente = temp[0];
     
     tabla1 = '<table id="llave" class="tabla2">';
-    var tr = '<tr><th colspan="10">DATOS GENERALES</th></tr>';
+    var tr = '<tr><th colspan="10" class="tituloTabla">DATOS GENERALES</th></tr>';
     tr += '<tr>\n\
             <th>Nombre:</th><td colspan="2"><input id="nombre" class="resaltado" type="text" value="'+nombre+'"></td>\n\
             <th>Owner:</th><td colspan="3"><input id="owner" class="resaltado" type="text" value="'+owner+'"></td>\n\
@@ -1314,9 +1314,9 @@ function mostrarLlave(id, selector) {
               <td colspan="2" style="text-align: left"><input id="att_deletable" name="att_deletable" type="checkbox"'+ att_deletable +'> Deletable</td>\n\
           </tr>';
     tr += '<tr>\n\
-              <td colspan="4"><input type="button" id="editarLlave" name="editarLlave" value="EDITAR" onclick="cambiarEdicion()" class="btn-info"></td>\n\
+              <td colspan="4" class="pieTablaIzquierdo"><input type="button" id="editarLlave" name="editarLlave" value="EDITAR" onclick="cambiarEdicion()" class="btn-info"></td>\n\
               <td colspan="3"><input type="button" id="actualizarLlave" name="actualizarLlave" disabled="true" value="ACTUALIZAR" class="btn-warning"></td>\n\
-              <td colspan="3"><input type="button" id="eliminarLlave" name="eliminarLlave" value="ELIMINAR" class="btn-danger"></td>\n\
+              <td colspan="3" class="pieTablaDerecho"><input type="button" id="eliminarLlave" name="eliminarLlave" value="ELIMINAR" class="btn-danger"></td>\n\
               <td style="display:none"><input type="text" id="fuente" name="fuente" value="llave"></td>\n\
               <td style="display:none"><input type="text" id="idkey" name="idkey" value="'+id+'"></td>\n\
               <td style="display:none"><input type="text" id="idref" name="idref" value="'+ref+'"></td>\n\
@@ -1597,7 +1597,7 @@ function mostrarCertificado(id, selector){
     var nom = slot.split('_');
     var cliente = nom[0];
     var tabla = '<table id="cert" class="tabla2" style="max-width:95%">';
-    var tr = '<tr><th colspan="8">DATOS GENERALES</th></tr>';
+    var tr = '<tr><th colspan="8" class="tituloTabla">DATOS GENERALES</th></tr>';
     tr += '<tr>\n\
             <th>Nombre:</th><td><input id="nombre" class="resaltado" type="text" value="'+nombre+'"></td>\n\
             <th colspan="2">Owner:</th><td><input id="owner" class="resaltado" type="text" value="'+owner+'"></td>\n\
@@ -1635,9 +1635,9 @@ function mostrarCertificado(id, selector){
              </td>\n\
            </tr>';
     tr += '<tr>\n\
-              <td colspan="2"><input type="button" id="editarCertificado" name="editarCertificado" value="EDITAR" onclick="cambiarEdicion()" class="btn-info"></td>\n\
+              <td colspan="2" class="pieTablaIzquierdo"><input type="button" id="editarCertificado" name="editarCertificado" value="EDITAR" onclick="cambiarEdicion()" class="btn-info"></td>\n\
               <td colspan="3"><input type="button" id="actualizarCertificado" name="actualizarCertificado" disabled="true" value="ACTUALIZAR" class="btn-warning"></td>\n\
-              <td colspan="2"><input type="button" id="eliminarCertificado" name="eliminarCertificado" value="ELIMINAR" class="btn-danger"></td>\n\
+              <td colspan="2" class="pieTablaDerecho"><input type="button" id="eliminarCertificado" name="eliminarCertificado" value="ELIMINAR" class="btn-danger"></td>\n\
               <td style="display:none"><input type="text" id="fuente" name="fuente" value="certificado"></td>\n\
               <td style="display:none"><input type="text" id="idcert" name="idcert" value="'+id+'"></td>\n\
               <td style="display:none"><input type="text" id="idref" name="idref" value="'+ref+'"></td>\n\
@@ -1695,12 +1695,12 @@ function cargarUsuarios(selector, user){
     if (total >= 1) {
       var tabla = '<table id="usuarios" name="usuarios" class="tabla2">';
       var tr = '<tr>\n\
-                  <th colspan="4">USUARIOS</th>\n\
+                  <th colspan="4" class="tituloTabla">USUARIOS</th>\n\
                 </tr>';
       tr += '<tr>\n\
                 <th>Ítem</th>\n\
-                <th>Nombre</th>\n\
                 <th>Apellido</th>\n\
+                <th>Nombre</th>\n\
                 <th>Empresa</th>\n\
             </tr>';
       for (var index in usuario) {
@@ -1720,9 +1720,12 @@ function cargarUsuarios(selector, user){
                   <td>'+i+'</td>\n\
                   <td><a href="#" id="'+id+'" class="detailUser '+clase+'">'+apellido+'</a></td>\n\
                   <td><a href="#" id="'+id+'" class="detailUser '+clase+'">'+nombre+'</a></td>\n\
-                  <td>'+empresa+'</td>\n\
+                  <td><b>'+empresa+'</b></td>\n\
               </tr>';
       }
+      tr += '<tr>\n\
+                <td class="pieTabla" colspan="4"><input type="button" value="NUEVO" id="nuevoUsuario" class="btn-success"></td>\n\
+             </tr>';
       tr += '</table>';
       tabla += tr;
       cargar += tabla;
@@ -1765,9 +1768,24 @@ function cargarDetalleUsuario(user) {
     cargarUsuarios('#selector', user);
     $("#selector").css('padding-right', '30px');
     
+    var emsa = '';
+    var bbva = '';
+    var itau = '';
+    var scotia = '';
+    switch (empresa) {
+      case "EMSA": emsa = 'selected';
+                   break;
+      case "BBVA": bbva = 'selected';
+                   break;
+      case "ITAU": itau = 'selected';
+                   break;
+      case "SCOTIA": scotia = 'selected';
+                     break;
+      default: break;               
+    }
     var tabla = '<table id="detalleUsuario" name="detalleUsuario" class="tabla2">';
     var tr = '<tr>\n\
-                <th colspan="4">DATOS DEL USUARIO</th>\n\
+                <th colspan="4" class="tituloTabla">DATOS DEL USUARIO</th>\n\
               </tr>';
     tr += '<tr>\n\
               <th>Apellido</th>\n\
@@ -1777,7 +1795,15 @@ function cargarDetalleUsuario(user) {
           </tr>';
     tr += '<tr>\n\
               <th>Empresa</th>\n\
-              <td colspan="3"><b><input id="empresa" name="empresa" type="text" value="'+empresa+'" disabled="true"></b></td>\n\
+              <td colspan="3">\n\
+                <select id="empresa" name="empresa" style="width:100%" disabled="true">\n\
+                  <option value="seleccionar">---SELECCIONAR---</option>\n\
+                  <option value="EMSA" '+emsa+'>EMSA</option>\n\
+                  <option value="BBVA" '+bbva+'>BBVA</option>\n\
+                  <option value="ITAU" '+itau+'>ITAU</option>\n\
+                  <option value="SCOTIA" '+scotia+'>SCOTIA</option>\n\
+                </select>\n\
+              </td>\n\
           </tr>';
     tr += '<tr>\n\
               <th>Mail</th>\n\
@@ -1792,15 +1818,15 @@ function cargarDetalleUsuario(user) {
               <td colspan="3"><textarea id="observaciones" name="observaciones" style="width: 100%;resize: none" disabled="true">'+ obs +'</textarea></td>\n\
            </tr>';
     tr += '<tr>\n\
-              <td><input type="button" id="editarUsuario" name="editarUsuario" value="EDITAR" onclick="cambiarEdicion()" class="btn-info"></td>\n\
+              <td class="pieTablaIzquierdo"><input type="button" id="editarUsuario" name="editarUsuario" value="EDITAR" onclick="cambiarEdicion()" class="btn-info"></td>\n\
               <td colspan="2"><input type="button" id="actualizarUsuario" name="actualizarUsuario" disabled="true" value="ACTUALIZAR" class="btn-warning"></td>\n\
-              <td><input type="button" id="eliminarUsuario" name="eliminarUsuario" value="ELIMINAR" class="btn-danger"></td>\n\
+              <td class="pieTablaDerecho"><input type="button" id="eliminarUsuario" name="eliminarUsuario" value="ELIMINAR" class="btn-danger"></td>\n\
               <td style="display:none"><input type="text" id="fuente" name="fuente" value="usuario"></td>\n\
               <td style="display:none"><input type="text" id="iduser" name="iduser" value="'+user+'"></td>\n\
           </tr>'; 
     tr += '</table>';
     tabla += tr;
-    var encabezado = '<h3 id="titulo" class="encabezado">DETALLES</h3>';
+    var encabezado = '<h3 id="titulo" class="encabezado">DETALLES DEL USUARIO</h3>';
     var cargar = '';
     cargar += encabezado;
     cargar += tabla;
@@ -1864,7 +1890,16 @@ function validarUsuario()
       }
       else
         {
-        seguir = true;
+        if (document.getElementById("empresa").value === 'seleccionar')
+          {
+          alert('Debe seleccionar una empresa.');
+          document.getElementById("empresa").focus();
+          seguir = false;
+        }
+        else
+          {
+          seguir = true;
+        }// empresa = seleccionar  
       }// empresa
     }// apellido
   }// nombre
@@ -2027,31 +2062,43 @@ function todo () {
     
     ///En caso de que se valide todo, se prosigue a enviar la consulta con la actualización en base a los parámetros pasados
     if (seguir) {
-      ///Recupero valores editados y armo la consulta para el update:
-      var url = "data/updateQuery.php";  
-      var usuario1 = document.getElementById("usuario1").value;
-      var usuario2 = document.getElementById("usuario2").value;
-      var rol1 = document.getElementById("rol1").value;
-      var rol2 = document.getElementById("rol2").value;
-      var inicio = document.getElementById("horaInicio").value;
-      var fin = document.getElementById("horaFin").value;
-      var motivo = document.getElementById("motivo").value;
-      var fecha = document.getElementById("fecha").value;
-      var actividad = document.getElementById("activity").value;
-      var query = "update actividades set fecha='" + fecha + "', horaInicio='" + inicio + "', horaFin='" + fin + "', motivo='" + motivo + "', usuario1='" + usuario1 + "', usuario2='" + usuario2 + "', rolUsuario1='" + rol1 + "', rolUsuario2='" + rol2 + "'  where idactividades='" + actividad + "'";
+      ///Recupero valores editados y armo la consulta para el update:  
+      var usuario1 = (document.getElementById("usuario1").value).trim();
+      var usuario2 = (document.getElementById("usuario2").value).trim();
+      var rol1 = (document.getElementById("rol1").value).trim();
+      var rol2 = (document.getElementById("rol2").value).trim();
+      var inicio = (document.getElementById("horaInicio").value).trim();
+      var fin = (document.getElementById("horaFin").value).trim();
+      var motivo = (document.getElementById("motivo").value).trim();
+      var fecha = (document.getElementById("fecha").value).trim();
+      var actividad = (document.getElementById("activity").value).trim();
       
-      ///Ejecuto la consulta y muestro mensaje según resultado:
+      var query = "select motivo, fecha from actividades where motivo='"+motivo+"' and fecha='"+fecha+"'";
+      var url = "data/selectQuery.php";
+      //alert(query);
       $.getJSON(url, {query: ""+query+""}).done(function(request) {
-        var resultado = request["resultado"];
-        if (resultado === "OK") {
-          alert('Registro modificado correctamente!');
-          $("#actualizarActividad").attr("disabled", "disabled");
-          document.getElementById("editarActividad").value = "EDITAR";
-          cargarActividades("#selector", true, false, true);
-          inhabilitarActividad();
+        var total = request["rows"];
+        if (total === 0) {
+          var url = "data/updateQuery.php";
+          var query = "update actividades set fecha='" + fecha + "', horaInicio='" + inicio + "', horaFin='" + fin + "', motivo='" + motivo + "', usuario1='" + usuario1 + "', usuario2='" + usuario2 + "', rolUsuario1='" + rol1 + "', rolUsuario2='" + rol2 + "'  where idactividades='" + actividad + "'";
+
+          ///Ejecuto la consulta y muestro mensaje según resultado:
+          $.getJSON(url, {query: ""+query+""}).done(function(request) {
+            var resultado = request["resultado"];
+            if (resultado === "OK") {
+              alert('Registro modificado correctamente!');
+              $("#actualizarActividad").attr("disabled", "disabled");
+              document.getElementById("editarActividad").value = "EDITAR";
+              cargarActividades("#selector", true, false, true);
+              inhabilitarActividad();
+            }
+            else {
+              alert('Hubo un error. Por favor verifique.');
+            }
+          });
         }
         else {
-          alert('Hubo un error. Por favor verifique.');
+          alert('Ya existe una actividad con esos datos. Por favor verifique.');
         }
       });
     }
@@ -2065,30 +2112,42 @@ function todo () {
     
     ///En caso de que se valide todo, se prosigue a enviar la consulta con el ingreso del nuevo registro en base a los parámetros pasados
     if (seguir) {
-      ///Recupero valores editados y armo la consulta para el update:
-      var url = "data/updateQuery.php";  
-      var usuario1 = document.getElementById("usuario1").value;
-      var usuario2 = document.getElementById("usuario2").value;
-      var rolUsuario1 = document.getElementById("rol1").value;
-      var rolUsuario2 = document.getElementById("rol2").value;
-      var horaInicio = document.getElementById("horaInicio").value;
-      var horaFin = document.getElementById("horaFin").value;
-      var motivo = document.getElementById("motivo").value;
-      var fecha = document.getElementById("fecha").value;
-      var query = "insert into actividades (fecha, horaInicio, horaFin, motivo, usuario1, usuario2, rolUsuario1, rolUsuario2, estado) values ('" + fecha + "', '" + horaInicio + "', '" + horaFin + "', '" + motivo + "', " + usuario1 + ", " + usuario2 + ", '" + rolUsuario1 + "', '" + rolUsuario2 + "', 'activa')";
+      ///Recupero valores editados y armo la consulta para el update: 
+      var usuario1 = (document.getElementById("usuario1").value).trim();
+      var usuario2 = (document.getElementById("usuario2").value).trim();
+      var rolUsuario1 = (document.getElementById("rol1").value).trim();
+      var rolUsuario2 = (document.getElementById("rol2").value).trim();
+      var horaInicio = (document.getElementById("horaInicio").value).trim();
+      var horaFin = (document.getElementById("horaFin").value).trim();
+      var motivo = (document.getElementById("motivo").value).trim();
+      var fecha = (document.getElementById("fecha").value).trim();
       
-      ///Ejecuto la consulta y muestro mensaje según resultado:
+      var query = "select motivo, fecha from actividades where motivo='"+motivo+"' and fecha='"+fecha+"'";
+      var url = "data/selectQuery.php";
+      //alert(query);
       $.getJSON(url, {query: ""+query+""}).done(function(request) {
-        var resultado = request["resultado"];
-        if (resultado === "OK") {
-          alert('Registro agregado correctamente!');
-          cargarActividades('#selector', true, false, true);
-          inhabilitarActividad();
-          alert(document.getElementById())
-          $("#newActivity").remove();
+        var total = request["rows"];
+        if (total === 0) {
+          var url = "data/updateQuery.php"; 
+          var query = "insert into actividades (fecha, horaInicio, horaFin, motivo, usuario1, usuario2, rolUsuario1, rolUsuario2, estado) values ('" + fecha + "', '" + horaInicio + "', '" + horaFin + "', '" + motivo + "', " + usuario1 + ", " + usuario2 + ", '" + rolUsuario1 + "', '" + rolUsuario2 + "', 'activa')";
+      
+          ///Ejecuto la consulta y muestro mensaje según resultado:
+          $.getJSON(url, {query: ""+query+""}).done(function(request) {
+            var resultado = request["resultado"];
+            if (resultado === "OK") {
+              alert('Registro agregado correctamente!');
+              cargarActividades('#selector', true, false, true);
+              inhabilitarActividad();
+              //alert(document.getElementById())
+              $("#newActivity").remove();
+            }
+            else {
+              alert('Hubo un error. Por favor verifique.');
+            }
+          });
         }
         else {
-          alert('Hubo un error. Por favor verifique.');
+          alert('Ya existe una actividad con esos datos. Por favor verifique.');
         }
       });
     }
@@ -2115,7 +2174,7 @@ function todo () {
       var usuarios = request.resultado;
       var tabla = '';
       tabla = '<table id="datos" class="tabla2 table table-bordered table-striped table-hover table-responsive">';
-      tabla += '<tr><th colspan="6">GENERAL</th></tr>';
+      tabla += '<tr><th colspan="6" class="tituloTabla">GENERAL</th></tr>';
       tabla += '<tr><th>Motivo</th><td colspan="5" style="vertical-align: middle;"><input id="motivo" name="motivo" style="width:100%; resize: none; text-align: center; font-size: 18pt; font-weight: bolder;"></td></tr>';
       var tr = '';
       tr += '<tr><th>Fecha</th><td><input id="fecha" name="fecha" type="date" style="width:100%; text-align: center" min="2016-10-01"></td>\n\
@@ -2156,7 +2215,7 @@ function todo () {
                   <option value="Testigo">Testigo</option>\n\
               </select>\n\
             </td></tr>';
-      tr += '<tr><td colspan="6"><input type="button" name="newActivity" id="newActivity" value="AGREGAR" class="btn-success"></td></tr>';
+      tr += '<tr><td colspan="6" class="pieTabla"><input type="button" name="newActivity" id="newActivity" value="AGREGAR" class="btn-success"></td></tr>';
       tabla += tr;
       tabla += '</table>';
       formu = '<form name="activity" method="post" action="index.php">';
@@ -2171,7 +2230,15 @@ function todo () {
   ///Esto hace que se vuelvan a cargar los datos de la actividad a la cual pertenece
   $(document).on("click", "#volverActividad", function (){
     var activity = $(this).attr("name");
+    var divs = "<div id='fila' class='row'>\n\
+                <div id='selector' class='col-md-5 col-sm-12'></div>\n\
+                <div id='content' class='col-md-7 col-sm-12'></div>\n\
+              </div>";
+    $("#main-content").empty();
+    $("#main-content").append(divs);
     cargarDetalleActividad(activity);
+    cargarActividades('#selector', true, false, true);
+    inhabilitarActividad();
   });
   
 /**************************************************************************************************************************
@@ -2237,20 +2304,20 @@ $(document).on("click", "#actualizarReferencia", function (){
     if (seguir) {
       ///Recupero valores editados y armo la consulta para el update:
       var url = "data/selectQuery.php";
-      var hsm = document.getElementById("hsm").value;
-      var slot = document.getElementById("slot").value;
+      var hsm = (document.getElementById("hsm").value).trim();
+      var slot = (document.getElementById("slot").value).trim();
       var query = 'select slots.idslots from slots inner join hsm on slots.hsm=hsm.idhsm where slots.nombre="'+slot+'" and hsm.nombre="'+hsm+'"';
       
       ///Ejecuto la consulta y muestro mensaje según resultado:
       $.getJSON(url, {query: ""+query+""}).done(function(request) {
         var resultado = request.resultado;
         var idslot = resultado[0]['idslots'];
-        var lugar = document.getElementById("lugar").value;
+        var lugar = (document.getElementById("lugar").value).trim();
         var idref = document.getElementById("idref").value;
-        var aplicacion = document.getElementById("aplicacion").value;
-        var plataforma = document.getElementById("plataforma").value;
-        var resumen = document.getElementById("resumen").value;
-        var detalles = document.getElementById("detalles").value;
+        var aplicacion = (document.getElementById("aplicacion").value).trim();
+        var plataforma = (document.getElementById("plataforma").value).trim();
+        var resumen = (document.getElementById("resumen").value).trim();
+        var detalles = (document.getElementById("detalles").value).trim();
         
         query = "select idinvolucrados from involucrados where referencia='"+idref+"'";
         
@@ -2357,7 +2424,7 @@ $(document).on("click", "#nuevaRef", function() {
     $.getJSON(url, {query: ""+query+""}).done(function(request) {
       var hsms = request.resultado;
       tabla = '<table id="newRef" class="table table-bordered table-striped table-hover table-responsive tabla2">';
-      tabla += '<tr><th colspan="6">GENERAL</th></tr>';
+      tabla += '<tr><th colspan="6" class="tituloTabla">GENERAL</th></tr>';
       tr = '';
       tr += '<tr><th>CODIGO</th><td colspan="5"><input type="text" name="codigo" id="codigo"></td></tr>';
       tr += '<tr>\n\
@@ -2396,7 +2463,7 @@ $(document).on("click", "#nuevaRef", function() {
       tr += '<tr><th colspan="6">DETALLES</th></tr>';
       tr += '<tr><td colspan="6"><input type="text" id="detalles" name="detalles"></td></tr>';
       tr += '<tr>\n\
-               <td colspan="6"><input type="button" id="addRef" name="addRef" value="AGREGAR" class="btn-success"></td>\n\
+               <td colspan="6" class="pieTabla"><input type="button" id="addRef" name="addRef" value="AGREGAR" class="btn-success"></td>\n\
              </tr>';
       tr += '<tr>\n\
               <td style="display:none"><input type="text" id="actividad" name="actividad" value="'+actividad+'"></td>\n\
@@ -2426,8 +2493,8 @@ $(document).on("click", "#addRef", function () {
       ///Recupero valores editados y armo la consulta para el update:
       var url = "data/selectQuery.php"; 
       
-      var hsm = document.getElementById("hsm").value;
-      var slot = document.getElementById("slot").value;
+      var hsm = (document.getElementById("hsm").value).trim();
+      var slot = (document.getElementById("slot").value).trim();
       //alert('codigo: '+codigo+'\nlugar: '+lugar+'\nhsm: '+hsm+'\nslot: '+slot+'\nplataforma: '+ plataforma+'\napp: '+aplicacion+'\nresumen: '+resumen+'\ndetalles: '+detalles);
       var query = 'select slots.idslots from slots inner join hsm on slots.hsm=hsm.idhsm where hsm.nombre="'+hsm+'" and slots.nombre="'+slot+'"';
       
@@ -2443,31 +2510,41 @@ $(document).on("click", "#addRef", function () {
         
         var url = "data/updateQuery.php";
         
-        var codigo = document.getElementById("codigo").value;
-        var actividad = document.getElementById("actividad").value;
-        var lugar = document.getElementById("lugar").value;
+        var codigo = (document.getElementById("codigo").value).trim();
+        var actividad = (document.getElementById("actividad").value).trim();
+        var lugar = (document.getElementById("lugar").value).trim();
         if (lugar === "undefined") lugar='';
-        var aplicacion = document.getElementById("aplicacion").value;
+        var aplicacion = (document.getElementById("aplicacion").value).trim();
         if (aplicacion === "undefined") aplicacion='';
-        var plataforma = document.getElementById("plataforma").value;
-        var resumen = document.getElementById("resumen").value;
-        var detalles = document.getElementById("detalles").value;
+        var plataforma = (document.getElementById("plataforma").value).trim();
+        var resumen = (document.getElementById("resumen").value).trim();
+        var detalles = (document.getElementById("detalles").value).trim();
         
-        var query = "insert into referencias (codigo, actividad, slot, lugar, plataforma, aplicacion, resumen, detalles, estado) values ('" + codigo + "', " + actividad + ", " + idslot + ", '" + lugar + "', '" + plataforma + "', '" + aplicacion + "', '" + resumen + "', '" + detalles + "', 'activa')";
-               
-        ///Ejecuto la consulta y muestro mensaje según resultado:
+        var query = "select codigo from referencias where codigo='"+codigo+"'";
+        var url = "data/selectQuery.php";
+        //alert(query);
         $.getJSON(url, {query: ""+query+""}).done(function(request) {
-          var resultado = request["resultado"];
-          if (resultado === "OK") {
-            alert('Registro agregado correctamente!');
-            cargarActividades('#selector', true, false, true);
-            cargarDetalleActividad(actividad);
+          var total = request["rows"];
+          if (total === 0) {
+            var query = "insert into referencias (codigo, actividad, slot, lugar, plataforma, aplicacion, resumen, detalles, estado) values ('" + codigo + "', " + actividad + ", " + idslot + ", '" + lugar + "', '" + plataforma + "', '" + aplicacion + "', '" + resumen + "', '" + detalles + "', 'activa')";
+               
+            ///Ejecuto la consulta y muestro mensaje según resultado:
+            $.getJSON(url, {query: ""+query+""}).done(function(request) {
+              var resultado = request["resultado"];
+              if (resultado === "OK") {
+                alert('Registro agregado correctamente!');
+                cargarActividades('#selector', true, false, true);
+                cargarDetalleActividad(actividad);
+              }
+              else {
+                alert('Hubo un error. Por favor verifique.');
+              }
+            });
           }
           else {
-            alert('Hubo un error. Por favor verifique.');
+            alert('Ya existe una referencia con esos datos. Por favor verifique.');
           }
         });
-        
       });
     }
   });
@@ -2590,17 +2667,17 @@ $(document).on("click", "#actualizarLlave", function (){
       ///Recupero valores editados y armo la consulta para el update:
       var llave = document.getElementById("idkey").value;
       var idref = document.getElementById("idref").value;
-      var nombre = document.getElementById("nombre").value;
-      var owner = document.getElementById("owner").value;
-      var kcv = document.getElementById("kcv").value;
-      var tipo = document.getElementById("tipo").value;
+      var nombre = (document.getElementById("nombre").value).trim();
+      var owner = (document.getElementById("owner").value).trim();
+      var kcv = (document.getElementById("kcv").value).trim();
+      var tipo = (document.getElementById("tipo").value).trim();
       var bits = parseInt(document.getElementById("bits").value, 10);
-      var version = document.getElementById("version").value;
-      var accion = document.getElementById("accion").value;
-      var generacion = document.getElementById("generacion").value;
+      var version = (document.getElementById("version").value).trim();
+      var accion = (document.getElementById("accion").value).trim();
+      var generacion = (document.getElementById("generacion").value).trim();
       var exponente;
       if (document.getElementById("exponente").value === '') exponente = 0; else exponente = parseInt(document.getElementById("exponente").value, 10);
-      var obs = document.getElementById("observaciones").value;
+      var obs = (document.getElementById("observaciones").value).trim();
       //alert('nombre: '+nombre+'\nowner: '+owner+'\nkcv: '+kcv+'\ntipo: '+tipo+'\nbits: '+bits+'\nexponente: '+exponente+'\ngeneracion: '+generacion+'\naccion: '+accion+'\nversion: '+version+'\nobs: '+obs);
       
       var uso_encrypt, uso_decrypt, uso_sign, uso_verify, uso_wrap, uso_unwrap, uso_import, uso_export, uso_derive;
@@ -2627,23 +2704,34 @@ $(document).on("click", "#actualizarLlave", function (){
       //alert('encrypt: '+uso_encrypt+'\ndecrypt: '+uso_decrypt+'\nsign: '+uso_sign+'\nverify: '+uso_verify+'\nwrap: '+uso_wrap+'\nunwrap: '+uso_unwrap+'\nexport: '+uso_export+'\nimport: '+uso_import+'\nderive: '+uso_derive);
       //alert('sensitive: '+att_sensitive+'\ntrusted: '+att_trusted+'\nmodifiable: '+att_modifiable+'\nwrap w trusted: '+att_wrapwtrusted+'\nprivate: '+att_private+'\nunwrap mask: '+att_unwrapmask+'\nextractable: '+att_extractable+'\nderive mask: '+att_derivemask+'\nexportable: '+att_exportable+'\ndeletable: '+att_deletable);
       
-      var query = "update llaves inner join tareas on llaves.tarea=tareas.idtareas set nombre='" + nombre + "', owner='" + owner + "', version='" + version + "', tipo='" + tipo + "', modoGeneracion='" + generacion + "', kcv='" + kcv + "', bits=" + bits + ", exponente=" + exponente + ", accion='"+accion+"', tareas.observaciones='"+obs+"', \n\
+      var query = "select nombre from llaves inner join tareas on tareas.idtareas=llaves.tarea where nombre='"+nombre+"' and owner='"+owner+"' and version='"+version+"' and referencia='"+idref+"'";
+      var url = "data/selectQuery.php";
+      //alert(query);
+      $.getJSON(url, {query: ""+query+""}).done(function(request) {
+        var total = request["rows"];
+        if (total === 0) {
+          var query = "update llaves inner join tareas on llaves.tarea=tareas.idtareas set nombre='" + nombre + "', owner='" + owner + "', version='" + version + "', tipo='" + tipo + "', modoGeneracion='" + generacion + "', kcv='" + kcv + "', bits=" + bits + ", exponente=" + exponente + ", accion='"+accion+"', tareas.observaciones='"+obs+"', \n\
                    uso_encrypt="+uso_encrypt+", uso_decrypt="+uso_decrypt+", uso_sign="+uso_sign+", uso_verify="+uso_verify+", uso_wrap="+uso_wrap+", uso_unwrap="+uso_unwrap+", uso_import="+uso_import+", uso_export="+uso_export+", uso_derive="+uso_derive+", \n\
                    att_sensitive="+att_sensitive+", att_trusted="+att_trusted+", att_modifiable="+att_modifiable+", att_wrapwtrusted="+att_wrapwtrusted+", att_private="+att_private+", att_unwrapmask="+att_unwrapmask+", att_extractable="+att_extractable+", att_derivemask="+att_derivemask+", att_exportable="+att_exportable+", att_deletable="+att_deletable+" where idkeys='" + llave + "'";
-      var url = "data/updateQuery.php";
-      
-      ///Ejecuto la consulta y muestro mensaje según resultado:
-      $.getJSON(url, {query: ""+query+""}).done(function(request) {
-        var resultado = request["resultado"];
-        if (resultado === "OK") {
-          alert('Registro modificado correctamente!');  
-          $("#actualizarLlave").attr("disabled", "disabled");
-          document.getElementById("editarLlave").value = "EDITAR";
-          inhabilitarLlave();
-          cargarObjetos(idref, "#selector", false, 'llave', llave);
+          var url = "data/updateQuery.php";
+
+          ///Ejecuto la consulta y muestro mensaje según resultado:
+          $.getJSON(url, {query: ""+query+""}).done(function(request) {
+            var resultado = request["resultado"];
+            if (resultado === "OK") {
+              alert('Registro modificado correctamente!');  
+              $("#actualizarLlave").attr("disabled", "disabled");
+              document.getElementById("editarLlave").value = "EDITAR";
+              inhabilitarLlave();
+              cargarObjetos(idref, "#selector", false, 'llave', llave);
+            }
+            else {
+              alert('Hubo un error. Por favor verifique.');
+            }
+          });
         }
         else {
-          alert('Hubo un error. Por favor verifique.');
+          alert('Ya existe una llave con esos datos. Por favor verifique.');
         }
       });
     }
@@ -2661,7 +2749,7 @@ $(document).on("click", "#nuevaLlave", function() {
   var encabezado = '<h1 class="encabezado">NUEVA LLAVE</h1>';
   encabezado += '<h3>'+codigo+' <b>('+cliente+')<b></h3>';
   var tabla = '<table id="newKey" name="newKey" class="tabla2">';
-  var tr = '<tr><th colspan="10">DATOS GENERALES</th></tr>';
+  var tr = '<tr><th colspan="10" class="tituloTabla">DATOS GENERALES</th></tr>';
   tr += '<tr>\n\
           <th>Nombre:</th><td colspan="2"><input id="nombre" class="resaltado" type="text"></td>\n\
           <th>Owner:</th><td colspan="3"><input id="owner" class="resaltado" type="text"></td>\n\
@@ -2744,7 +2832,7 @@ $(document).on("click", "#nuevaLlave", function() {
             <td colspan="2" style="text-align: left"><input id="att_deletable" name="att_deletable" type="checkbox"> Deletable</td>\n\
         </tr>';
   tr += '<tr>\n\
-            <td colspan="10"><input type="button" id="agregarLlave" name="agregarLlave" value="AGREGAR" class="btn-success"></td>\n\
+            <td colspan="10" class="pieTabla"><input type="button" id="agregarLlave" name="agregarLlave" value="AGREGAR" class="btn-success"></td>\n\
             <td style="display:none"><input type="text" id="fuente" name="fuente" value="llave"></td>\n\
             <td style="display:none"><input type="text" id="idref" name="idref" value="'+idref+'"></td>\n\
             <td style="display:none"><input type="text" id="codigo" name="codigo" value="'+codigo+'"></td>\n\
@@ -2772,21 +2860,21 @@ $(document).on("click", "#agregarLlave", function(){
   ///En caso de que se valide todo, se prosigue a enviar la consulta con la actualización en base a los parámetros pasados
   if (seguir) {
     ///Recupero valores editados y armo la consulta para el update:
-    var codigo = document.getElementById("codigo").value;
-    var resumen = document.getElementById("resumen").value;
-    var cliente = document.getElementById("cliente").value;
+    var codigo = (document.getElementById("codigo").value).trim();
+    var resumen = (document.getElementById("resumen").value).trim();
+    var cliente = (document.getElementById("cliente").value).trim();
     var idref = document.getElementById("idref").value;
-    var nombre = document.getElementById("nombre").value;
-    var owner = document.getElementById("owner").value;
-    var kcv = document.getElementById("kcv").value;
-    var tipo = document.getElementById("tipo").value;
+    var nombre = (document.getElementById("nombre").value).trim();
+    var owner = (document.getElementById("owner").value).trim();
+    var kcv = (document.getElementById("kcv").value).trim();
+    var tipo = (document.getElementById("tipo").value).trim();
     var bits = parseInt(document.getElementById("bits").value, 10);
-    var version = document.getElementById("version").value;
-    var accion = document.getElementById("accion").value;
-    var generacion = document.getElementById("generacion").value;
+    var version = (document.getElementById("version").value).trim();
+    var accion = (document.getElementById("accion").value).trim();
+    var generacion = (document.getElementById("generacion").value).trim();
     var exponente;
     if (document.getElementById("exponente").value === '') exponente = 0; else exponente = parseInt(document.getElementById("exponente").value, 10);
-    var obs = document.getElementById("observaciones").value;
+    var obs = (document.getElementById("observaciones").value).trim();
     //alert('nombre: '+nombre+'\nowner: '+owner+'\nkcv: '+kcv+'\ntipo: '+tipo+'\nbits: '+bits+'\nexponente: '+exponente+'\ngeneracion: '+generacion+'\naccion: '+accion+'\nversion: '+version+'\nobs: '+obs);
     
     var uso_encrypt, uso_decrypt, uso_sign, uso_verify, uso_wrap, uso_unwrap, uso_import, uso_export, uso_derive;
@@ -2813,55 +2901,66 @@ $(document).on("click", "#agregarLlave", function(){
     //alert('encrypt: '+uso_encrypt+'\ndecrypt: '+uso_decrypt+'\nsign: '+uso_sign+'\nverify: '+uso_verify+'\nwrap: '+uso_wrap+'\nunwrap: '+uso_unwrap+'\nexport: '+uso_export+'\nimport: '+uso_import+'\nderive: '+uso_derive);
     //alert('sensitive: '+att_sensitive+'\ntrusted: '+att_trusted+'\nmodifiable: '+att_modifiable+'\nwrap w trusted: '+att_wrapwtrusted+'\nprivate: '+att_private+'\nunwrap mask: '+att_unwrapmask+'\nextractable: '+att_extractable+'\nderive mask: '+att_derivemask+'\nexportable: '+att_exportable+'\ndeletable: '+att_deletable);
 
-    var query = 'insert into tareas (referencia, accion, observaciones) values ('+idref+', "'+accion+'", "'+obs+'")';
-    var url = "data/updateQuery.php";
+    var query = "select nombre from llaves inner join tareas on tareas.idtareas=llaves.tarea where nombre='"+nombre+"' and owner='"+owner+"' and version='"+version+"' and referencia='"+idref+"'";
+      var url = "data/selectQuery.php";
+    //alert(query);
     $.getJSON(url, {query: ""+query+""}).done(function(request) {
-      var resultado = request["resultado"];
-      if (resultado === "OK") {
-        var query = 'select max(idtareas) as ultimaTarea from tareas';
-        var url = "data/selectQuery.php";
+      var total = request["rows"];
+      if (total === 0) {
+        var query = 'insert into tareas (referencia, accion, observaciones) values ('+idref+', "'+accion+'", "'+obs+'")';
+        var url = "data/updateQuery.php";
         $.getJSON(url, {query: ""+query+""}).done(function(request) {
-          var idtarea = request.resultado[0]["ultimaTarea"];
-           
-          var query = "insert into llaves (tarea, nombre, owner, version, tipo, modoGeneracion, kcv, bits, exponente, estado, uso_encrypt, uso_decrypt, uso_sign, uso_verify, uso_wrap, uso_unwrap, uso_export, uso_import, uso_derive,\n\
-                att_sensitive, att_trusted, att_modifiable, att_wrapwtrusted, att_private, att_unwrapmask, att_extractable, att_derivemask, att_exportable, att_deletable) values \n\
-                ("+idtarea+", '" + nombre + "', '" + owner + "', '" + version + "', '" + tipo + "', '" + generacion + "', '" + kcv + "', " + bits + ", " + exponente + ", 'activa', " + uso_encrypt + ", " + uso_decrypt + ", " + uso_sign+ ", " + uso_verify
-                + ", " + uso_wrap + ", " + uso_unwrap + ", " + uso_export + ", " + uso_import + ", " + uso_derive + ", " + att_sensitive + ", " + att_trusted + ", " + att_modifiable + ", " + att_wrapwtrusted + ", " + att_private + ", " + att_unwrapmask
-                + ", " + att_extractable + ", " + att_derivemask + ", " + att_exportable + ", " + att_deletable + ")";
-          var url = "data/updateQuery.php";
-          
-          $.getJSON(url, {query: ""+query+""}).done(function(request) {
-            var resultado = request["resultado"];
-            if (resultado === "OK") {
-              var query = 'select max(idkeys) as ultimaLlave from llaves';
-              var url = "data/selectQuery.php";
+          var resultado = request["resultado"];
+          if (resultado === "OK") {
+            var query = 'select max(idtareas) as ultimaTarea from tareas';
+            var url = "data/selectQuery.php";
+            $.getJSON(url, {query: ""+query+""}).done(function(request) {
+              var idtarea = request.resultado[0]["ultimaTarea"];
+
+              var query = "insert into llaves (tarea, nombre, owner, version, tipo, modoGeneracion, kcv, bits, exponente, estado, uso_encrypt, uso_decrypt, uso_sign, uso_verify, uso_wrap, uso_unwrap, uso_export, uso_import, uso_derive,\n\
+                    att_sensitive, att_trusted, att_modifiable, att_wrapwtrusted, att_private, att_unwrapmask, att_extractable, att_derivemask, att_exportable, att_deletable) values \n\
+                    ("+idtarea+", '" + nombre + "', '" + owner + "', '" + version + "', '" + tipo + "', '" + generacion + "', '" + kcv + "', " + bits + ", " + exponente + ", 'activa', " + uso_encrypt + ", " + uso_decrypt + ", " + uso_sign+ ", " + uso_verify
+                    + ", " + uso_wrap + ", " + uso_unwrap + ", " + uso_export + ", " + uso_import + ", " + uso_derive + ", " + att_sensitive + ", " + att_trusted + ", " + att_modifiable + ", " + att_wrapwtrusted + ", " + att_private + ", " + att_unwrapmask
+                    + ", " + att_extractable + ", " + att_derivemask + ", " + att_exportable + ", " + att_deletable + ")";
+              var url = "data/updateQuery.php";
+
               $.getJSON(url, {query: ""+query+""}).done(function(request) {
-                var idllave = request.resultado[0]["ultimaLlave"];
-                alert('Registro agregado correctamente!');
-                var divs = "<div id='fila' class='row'>\n\
-                            <div id='selector' class='col-md-5 col-sm-12'></div>\n\
-                            <div id='content' class='col-md-7 col-sm-12'></div>\n\
-                          </div>";
-                $("#main-content").empty();
-                encabezado = '<h1 id="titulo" class="encabezado">' + codigo + '</h1>';
-                encabezado += '<h3>'+resumen+'<b>('+cliente+')</b></h3>';
-                $("#main-content").html(encabezado);
-                $("#main-content").append(divs);
-                cargarObjetos(idref, "#selector", false, 'llave', idllave);
-                mostrarLlave(idllave, "#content");
-                inhabilitarLlave();
+                var resultado = request["resultado"];
+                if (resultado === "OK") {
+                  var query = 'select max(idkeys) as ultimaLlave from llaves';
+                  var url = "data/selectQuery.php";
+                  $.getJSON(url, {query: ""+query+""}).done(function(request) {
+                    var idllave = request.resultado[0]["ultimaLlave"];
+                    alert('Registro agregado correctamente!');
+                    var divs = "<div id='fila' class='row'>\n\
+                                <div id='selector' class='col-md-5 col-sm-12'></div>\n\
+                                <div id='content' class='col-md-7 col-sm-12'></div>\n\
+                              </div>";
+                    $("#main-content").empty();
+                    encabezado = '<h1 id="titulo" class="encabezado">' + codigo + '</h1>';
+                    encabezado += '<h3>'+resumen+'<b>('+cliente+')</b></h3>';
+                    $("#main-content").html(encabezado);
+                    $("#main-content").append(divs);
+                    cargarObjetos(idref, "#selector", false, 'llave', idllave);
+                    mostrarLlave(idllave, "#content");
+                    inhabilitarLlave();
+                  });
+                }
+                else {
+                  alert('Hubo un error... Por favor verifique.');
+                }
               });
-            }
-            else {
-              alert('Hubo un error... Por favor verifique.');
-            }
-          });
+            });
+          }
+          else {
+            alert('Hubo un error. Por favor verifique.');
+          }
         });
       }
       else {
-        alert('Hubo un error. Por favor verifique.');
-      }
-    });
+          alert('Ya existe una llave con esos datos. Por favor verifique.');
+        }
+    }); 
   }
 });
 
@@ -2950,37 +3049,48 @@ $(document).on("click", "#actualizarCertificado", function (){
       ///Recupero valores editados y armo la consulta para el update:
       var idcert = document.getElementById("idcert").value;
       var idref = document.getElementById("idref").value;
-      var nombre = document.getElementById("nombre").value;
-      var owner = document.getElementById("owner").value;
-      var bandera = document.getElementById("bandera").value;
+      var nombre = (document.getElementById("nombre").value).trim();
+      var owner = (document.getElementById("owner").value).trim();
+      var bandera = (document.getElementById("bandera").value).trim();
       var vencimiento = document.getElementById("vencimiento").value;
-      var version = document.getElementById("version").value;
-      var accion = document.getElementById("accion").value;
-      var obs = document.getElementById("observaciones").value;
+      var version = (document.getElementById("version").value).trim();
+      var accion = (document.getElementById("accion").value).trim();
+      var obs = (document.getElementById("observaciones").value).trim();
       //alert('idcert: '+idcert+'\nidref: '+idref+'\nactividad: '+actividad+'\nnombre: '+nombre +'\nowner: '+owner+'\nbandera: '+bandera+'\naccion: '+accion+'\nversion: '+version+'\nobs: '+obs);
       
-      var query = "update certificados inner join tareas on certificados.tarea=tareas.idtareas set nombre='" + nombre + "', owner='" + owner + "', vencimiento='"+vencimiento+"' , bandera='"+bandera+"', version='" + version + "', accion='"+accion+"', tareas.observaciones='"+obs+"' where idcertificados='" + idcert + "'";
-      var url = "data/updateQuery.php";
+      var query = "select nombre from certificados inner join tareas on tareas.idtareas=certificados.tarea where nombre='"+nombre+"' and owner='"+owner+"' and version='"+version+"' and referencia='"+idref+"'";
+      var url = "data/selectQuery.php";
       //alert(query);
-      ///Ejecuto la consulta y muestro mensaje según resultado:
       $.getJSON(url, {query: ""+query+""}).done(function(request) {
-        var resultado = request["resultado"];
-        if (resultado === "OK") {
-          alert('Registro modificado correctamente!');  
-          $("#actualizarCertificado").attr("disabled", "disabled");
-          document.getElementById("editarCertificado").value = "EDITAR";
-          inhabilitarCertificado();
-          cargarObjetos(idref, "#selector", false, 'cert', idcert);
+        var total = request["rows"];
+        if (total === 0) {
+          var query = "update certificados inner join tareas on certificados.tarea=tareas.idtareas set nombre='" + nombre + "', owner='" + owner + "', vencimiento='"+vencimiento+"' , bandera='"+bandera+"', version='" + version + "', accion='"+accion+"', tareas.observaciones='"+obs+"' where idcertificados='" + idcert + "'";
+          var url = "data/updateQuery.php";
+          //alert(query);
+          ///Ejecuto la consulta y muestro mensaje según resultado:
+          $.getJSON(url, {query: ""+query+""}).done(function(request) {
+            var resultado = request["resultado"];
+            if (resultado === "OK") {
+              alert('Registro modificado correctamente!');  
+              $("#actualizarCertificado").attr("disabled", "disabled");
+              document.getElementById("editarCertificado").value = "EDITAR";
+              inhabilitarCertificado();
+              cargarObjetos(idref, "#selector", false, 'cert', idcert);
+            }
+            else {
+              alert('Hubo un error. Por favor verifique.');
+            }
+          });
         }
         else {
-          alert('Hubo un error. Por favor verifique.');
+          alert('Ya existe un certificado con esos datos. Por favor verifique.');
         }
-      });
+      });  
     }
   });
 
-///Disparar función al hacer click en el botón Nueva Llave.
-///Se vuelve al DIV #main-content y se genera un form en blanco para agregar los datos de la llave.
+///Disparar función al hacer click en el botón Nuevo Certificado.
+///Se vuelve al DIV #main-content y se genera un form en blanco para agregar los datos del certificado.
 $(document).on("click", "#nuevoCertificado", function() {
   var idref = document.getElementById("nuevoCertificado").name;
   var codigo = document.getElementById("codigo").value;
@@ -2992,7 +3102,7 @@ $(document).on("click", "#nuevoCertificado", function() {
   var encabezado = '<h1 class="encabezado">NUEVO CERTIFICADO</h1>';
   encabezado += '<h3>'+codigo+' <b>('+cliente+')<b></h3>';
   var tabla = '<table id="newCert" name="newCert" class="tabla2" style="max-width:75%">';
-  var tr = '<tr><th colspan="8">DATOS GENERALES</th></tr>';
+  var tr = '<tr><th colspan="8" class="tituloTabla">DATOS GENERALES</th></tr>';
   tr += '<tr>\n\
           <th>Nombre:</th><td><input id="nombre" name="nombre" class="resaltado" type="text"></td>\n\
           <th colspan="2">Owner:</th><td><input id="owner" name="owner" class="resaltado" type="text"></td>\n\
@@ -3030,7 +3140,7 @@ $(document).on("click", "#nuevoCertificado", function() {
            </td>\n\
          </tr>';                             
   tr += '<tr>\n\
-            <td colspan="8"><input type="button" id="agregarCertificado" name="agregarCertificado" value="AGREGAR" class="btn-success"></td>\n\
+            <td colspan="8" class="pieTabla"><input type="button" id="agregarCertificado" name="agregarCertificado" value="AGREGAR" class="btn-success"></td>\n\
             <td style="display:none"><input type="text" id="fuente" name="fuente" value="certificado"></td>\n\
             <td style="display:none"><input type="text" id="idref" name="idref" value="'+idref+'"></td>\n\
             <td style="display:none"><input type="text" id="codigo" name="codigo" value="'+codigo+'"></td>\n\
@@ -3059,66 +3169,77 @@ $(document).on("click", "#agregarCertificado", function(){
   if (seguir) {
     ///Recupero valores editados y armo la consulta para el update:
     var idref = document.getElementById("idref").value;
-    var nombre = document.getElementById("nombre").value;
-    var owner = document.getElementById("owner").value;
-    var bandera = document.getElementById("bandera").value;
+    var nombre = (document.getElementById("nombre").value).trim();
+    var owner = (document.getElementById("owner").value).trim();
+    var bandera = (document.getElementById("bandera").value).trim();
     var vencimiento = document.getElementById("vencimiento").value;
-    var version = document.getElementById("version").value;
-    var accion = document.getElementById("accion").value;
-    var obs = document.getElementById("observaciones").value;
-    var codigo = document.getElementById("codigo").value;
-    var cliente = document.getElementById("cliente").value;
-    var resumen = document.getElementById("resumen").value;
+    var version = (document.getElementById("version").value).trim();
+    var accion = (document.getElementById("accion").value).trim();
+    var obs = (document.getElementById("observaciones").value).trim();
+    var codigo = (document.getElementById("codigo").value).trim();
+    var cliente = (document.getElementById("cliente").value).trim();
+    var resumen = (document.getElementById("resumen").value).trim();
     //alert('idref: '+idref+'\nnombre: '+nombre +'\nowner: '+owner+'\nbandera: '+bandera+'\nvencimiento'+vencimiento+'\naccion: '+accion+'\nversion: '+version+'\nobs: '+obs);
-
-    var query = 'insert into tareas (referencia, accion, observaciones) values ('+idref+', "'+accion+'", "'+obs+'")';
-    var url = "data/updateQuery.php";
+    
+    var query = "select nombre from certificados inner join tareas on tareas.idtareas=certificados.tarea where nombre='"+nombre+"' and owner='"+owner+"' and version='"+version+"' and referencia='"+idref+"'";
+    var url = "data/selectQuery.php";
+    //alert(query);
     $.getJSON(url, {query: ""+query+""}).done(function(request) {
-      var resultado = request["resultado"];
-      if (resultado === "OK") {
-        var query = 'select max(idtareas) as ultimaTarea from tareas';
-        var url = "data/selectQuery.php";
+      var total = request["rows"];
+      if (total === 0) {
+        var query = 'insert into tareas (referencia, accion, observaciones) values ('+idref+', "'+accion+'", "'+obs+'")';
+        var url = "data/updateQuery.php";
         $.getJSON(url, {query: ""+query+""}).done(function(request) {
-          var idtarea = request.resultado[0]["ultimaTarea"];
-           
-          var query = "insert into certificados (tarea, nombre, owner, version, bandera, vencimiento, estado) values \n\
-                ("+idtarea+", '" + nombre + "', '" + owner + "', '" + version + "', '" + bandera + "', '" + vencimiento + "', 'activo')";
-          var url = "data/updateQuery.php";
-          
-          $.getJSON(url, {query: ""+query+""}).done(function(request) {
-            var resultado = request["resultado"];
-            if (resultado === "OK") {
-              var query = 'select max(idcertificados) as ultimoCert from certificados';
-              var url = "data/selectQuery.php";
+          var resultado = request["resultado"];
+          if (resultado === "OK") {
+            var query = 'select max(idtareas) as ultimaTarea from tareas';
+            var url = "data/selectQuery.php";
+            $.getJSON(url, {query: ""+query+""}).done(function(request) {
+              var idtarea = request.resultado[0]["ultimaTarea"];
+
+              var query = "insert into certificados (tarea, nombre, owner, version, bandera, vencimiento, estado) values \n\
+                    ("+idtarea+", '" + nombre + "', '" + owner + "', '" + version + "', '" + bandera + "', '" + vencimiento + "', 'activo')";
+              var url = "data/updateQuery.php";
+
               $.getJSON(url, {query: ""+query+""}).done(function(request) {
-                var idcert = request.resultado[0]["ultimoCert"];
-                alert('Registro agregado correctamente!');
-                if ($("#content").length === 0) {
-                  var divs = "<div id='fila' class='row'>\n\
-                            <div id='selector' class='col-md-5 col-sm-12'></div>\n\
-                            <div id='content' class='col-md-7 col-sm-12'></div>\n\
-                          </div>";
-                }  
-                $("#main-content").empty();
-                var encabezado = '<h1 class="encabezado" id="titulo">'+codigo+'</h1>';
-                encabezado += '<h3>'+resumen+' <b>('+cliente+')<b></h3>'; 
-                $("#main-content").html(encabezado);
-                $("#main-content").append(divs);
-                cargarObjetos(idref, "#selector", false, 'cert', idcert);
-                mostrarCertificado(idcert, "#content");
-                inhabilitarCertificado();
+                var resultado = request["resultado"];
+                if (resultado === "OK") {
+                  var query = 'select max(idcertificados) as ultimoCert from certificados';
+                  var url = "data/selectQuery.php";
+                  $.getJSON(url, {query: ""+query+""}).done(function(request) {
+                    var idcert = request.resultado[0]["ultimoCert"];
+                    alert('Registro agregado correctamente!');
+                    if ($("#content").length === 0) {
+                      var divs = "<div id='fila' class='row'>\n\
+                                <div id='selector' class='col-md-5 col-sm-12'></div>\n\
+                                <div id='content' class='col-md-7 col-sm-12'></div>\n\
+                              </div>";
+                    }  
+                    $("#main-content").empty();
+                    var encabezado = '<h1 class="encabezado" id="titulo">'+codigo+'</h1>';
+                    encabezado += '<h3>'+resumen+' <b>('+cliente+')<b></h3>'; 
+                    $("#main-content").html(encabezado);
+                    $("#main-content").append(divs);
+                    cargarObjetos(idref, "#selector", false, 'cert', idcert);
+                    mostrarCertificado(idcert, "#content");
+                    inhabilitarCertificado();
+                  });
+                }
+                else {
+                  alert('Hubo un error... Por favor verifique.');
+                }
               });
-            }
-            else {
-              alert('Hubo un error... Por favor verifique.');
-            }
-          });
+            });
+          }
+          else {
+            alert('Hubo un error. Por favor verifique.');
+          }
         });
       }
       else {
-        alert('Hubo un error. Por favor verifique.');
-      }
-    });
+          alert('Ya existe un certificado con esos datos. Por favor verifique.');
+        }
+    });  
   }
 });
 
@@ -3210,33 +3331,158 @@ $(document).on("click", "#actualizarUsuario", function (){
     if (seguir) {
       ///Recupero valores editados y armo la consulta para el update:
       var iduser = document.getElementById("iduser").value;
-      var nombre = document.getElementById("nombre").value;
-      var apellido = document.getElementById("apellido").value;
-      var empresa = document.getElementById("empresa").value;
-      var mail = document.getElementById("mail").value;
-      var tel = document.getElementById("telefono").value;
-      var obs = document.getElementById("observaciones").value;
+      var nombre = (document.getElementById("nombre").value).trim();
+      var apellido = (document.getElementById("apellido").value).trim();
+      var empresa = (document.getElementById("empresa").value).trim();
+      var mail = (document.getElementById("mail").value).trim();
+      var tel = (document.getElementById("telefono").value).trim();
+      var obs = (document.getElementById("observaciones").value).trim();
       //alert('iduser: '+iduser+'\nnombre: '+nombre +'\napellido: '+apellido+'\nempresa: '+empresa+'\nmail: '+mail+'\ntel: '+tel+'\nobs: '+obs);
       
-      var query = "update usuarios set nombre='" + nombre + "', apellido='" + apellido + "', empresa='"+empresa+"' , mail='"+mail+"', telefono='" + tel +"', observaciones='"+obs+"' where idusuarios='" + iduser + "'";
-      var url = "data/updateQuery.php";
+      var query = "select apellido from usuarios where nombre='"+nombre+"' and apellido='"+apellido+"' and empresa='"+empresa+"'";
+      var url = "data/selectQuery.php";
       //alert(query);
-      ///Ejecuto la consulta y muestro mensaje según resultado:
       $.getJSON(url, {query: ""+query+""}).done(function(request) {
-        var resultado = request["resultado"];
-        if (resultado === "OK") {
-          alert('Registro modificado correctamente!');  
-          $("#actualizarUsuario").attr("disabled", "disabled");
-          document.getElementById("editarUsuario").value = "EDITAR";
-          inhabilitarUsuario();
-          cargarUsuarios("#selector", iduser);
+        var total = request["rows"];
+        if (total === 0) {
+          var query = "update usuarios set nombre='" + nombre + "', apellido='" + apellido + "', empresa='"+empresa+"' , mail='"+mail+"', telefono='" + tel +"', observaciones='"+obs+"' where idusuarios='" + iduser + "'";
+          var url = "data/updateQuery.php";
+          //alert(query);
+          ///Ejecuto la consulta y muestro mensaje según resultado:
+          $.getJSON(url, {query: ""+query+""}).done(function(request) {
+            var resultado = request["resultado"];
+            if (resultado === "OK") {
+              alert('Registro modificado correctamente!');  
+              $("#actualizarUsuario").attr("disabled", "disabled");
+              document.getElementById("editarUsuario").value = "EDITAR";
+              inhabilitarUsuario();
+              cargarUsuarios("#selector", iduser);
+            }
+            else {
+              alert('Hubo un error. Por favor verifique.');
+            }
+          });
         }
         else {
-          alert('Hubo un error. Por favor verifique.');
+          alert('Ya existe un usuario con esos datos. Por favor verifique.');
         }
-      });
+      });  
     }
   });
+  
+///Disparar función al hacer click en el botón Nuevo Usuario.
+///Se vuelve al DIV #main-content y se genera un form en blanco para agregar los datos del usuario.
+$(document).on("click", "#nuevoUsuario", function() {
+  var encabezado = '<h1 class="encabezado">NUEVO USUARIO</h1>';
+  //encabezado += '<h3>'+codigo+' <b>('+cliente+')<b></h3>';
+  var tabla = '<table id="datosUsuario" name="datosUsuario" class="tabla2" style="max-width:40%">';
+  var tr = '<tr>\n\
+              <th colspan="4" class="tituloTabla">DATOS DEL USUARIO</th>\n\
+            </tr>';
+  tr += '<tr>\n\
+            <th>Apellido</th>\n\
+            <td><input id="apellido" name="apellido" class="resaltado" type="text"></td>\n\
+            <th>Nombre</th>\n\
+            <td><input id="nombre" name="nombre" class="resaltado" type="text"></td>\n\
+        </tr>';
+  tr += '<tr>\n\
+          <th>Empresa</th>\n\
+          <td colspan="3">\n\
+            <select id="empresa" name="empresa" style="width:100%">\n\
+              <option value="seleccionar" selected="yes">---SELECCIONAR---</option>\n\
+              <option value="EMSA" style="margin:auto; padding:auto">EMSA</option>\n\
+              <option value="BBVA">BBVA</option>\n\
+              <option value="ITAU">ITAU</option>\n\
+              <option value="SCOTIA">SCOTIA</option>\n\
+            </select>\n\
+          </td>\n\
+        </tr>';
+  tr += '<tr>\n\
+            <th>Mail</th>\n\
+            <td colspan="3"><input id="mail" name="mail" type="text"></td>\n\
+         </tr>';
+  tr += '<tr>\n\
+            <th>Teléfono</th>\n\
+            <td colspan="3"><input id="telefono" name="telefono" type="text"></td>\n\
+         </tr>';
+  tr += '<tr>\n\
+            <th>Observaciones</th>\n\
+            <td colspan="3"><textarea id="observaciones" name="observaciones" style="width: 100%;resize: none"></textarea></td>\n\
+         </tr>';
+  tr += '<tr>\n\
+            <td colspan="4" class="pieTabla"><input type="button" id="agregarUsuario" name="agregarUsuario" value="AGREGAR" class="btn-success"></td>\n\
+         </tr>'; 
+  tr += '</table>';
+  tabla += tr;
+  var cargar = encabezado;
+  cargar += tabla;
+  var volver = '<br><a id="volverUsuario" href="usuario.php">Volver</a>';
+  cargar += volver;
+  vaciarContent("#main-content");
+  $("#main-content").html(cargar);  
+});
+
+///Disparar función al hacer click en el botón Agregar Usuario.
+///Se validan los datos para el usuario, luego 
+///se cargan los dos DIVs (#selector y #content), en #selector se cargan el listado de usuarios y en 
+///#content los datos del usuario recién agregado, siempre y cuando haya pasado la validación.
+$(document).on("click", "#agregarUsuario", function(){
+  var seguir = true;
+  seguir = validarUsuario();
+  
+  ///En caso de que se valide todo, se prosigue a enviar la consulta con la actualización en base a los parámetros pasados
+  if (seguir) {
+    ///Recupero valores y armo la consulta para el insert:
+    var apellido = (document.getElementById("apellido").value).trim();
+    var nombre = (document.getElementById("nombre").value).trim();
+    var empresa = (document.getElementById("empresa").value).trim();
+    var tel = (document.getElementById("telefono").value).trim();
+    var mail = (document.getElementById("mail").value).trim();
+    var obs = (document.getElementById("observaciones").value).trim();
+    //alert('apellido: '+apellido+'\nnombre: '+nombre +'\nempresa: '+empresa+'\nmail: '+mail+'\ntel: '+tel+'\nobs: '+obs);
+      
+    var query = "select apellido from usuarios where nombre='"+nombre+"' and apellido='"+apellido+"' and empresa='"+empresa+"'";
+    var url = "data/selectQuery.php";
+    //alert(query);
+    $.getJSON(url, {query: ""+query+""}).done(function(request) {
+      var total = request["rows"];
+      if (total === 0) {
+        var query = 'insert into usuarios (nombre, apellido, empresa, telefono, mail, observaciones) values ("'+nombre+'", "'+apellido+'", "'+empresa+'", "'+tel+'", "'+mail+'", "'+obs+'")';
+        var url = "data/updateQuery.php";
+        //alert(query);
+   
+        $.getJSON(url, {query: ""+query+""}).done(function(request) {
+          var resultado = request["resultado"];
+          if (resultado === "OK") {  
+            var query = 'select max(idusuarios) as ultimoUser from usuarios';
+            var url = "data/selectQuery.php";
+            $.getJSON(url, {query: ""+query+""}).done(function(request) {
+              var iduser = request.resultado[0]["ultimoUser"];
+              alert('Registro agregado correctamente!');
+              if ($("#content").length === 0) {
+                var divs = "<div id='fila' class='row'>\n\
+                              <div id='selector' class='col-md-5 col-sm-12'></div>\n\
+                              <div id='content' class='col-md-7 col-sm-12'></div>\n\
+                            </div>";
+              }  
+              $("#main-content").empty();
+              $("#main-content").append(divs);
+              cargarUsuarios("#selector", iduser);
+              cargarDetalleUsuario(iduser);
+              inhabilitarUsuario();
+            });
+          } 
+          else {
+            alert('Hubo un error... Por favor verifique.');
+          }
+        }); 
+      }
+      else {
+        alert('Ya existe un usuario con esos datos. Por favor verifique.');
+      }
+    });
+  }
+});
     
 /**************************************************************************************************************************
 /// **************************************************** FIN USUARIOS *****************************************************
