@@ -36,7 +36,9 @@ function cambiarEdicion()
     case "certificado": editar = document.getElementById("editarCertificado").value;
                         break;
     case "usuario": editar = document.getElementById("editarUsuario").value;
-                        break;                  
+                        break;    
+    case "slot": editar = document.getElementById("editarSlot").value;
+                        break;                    
     default: break;
   }
   
@@ -53,70 +55,60 @@ function cambiarEdicion()
                  if (accion === "habilitar")
                     {
                     habilitarLlave();
-                    document.getElementById("editarLlave").value = "BLOQUEAR";
-                    document.getElementById("actualizarLlave").disabled = false;
                   }
                  else
                     {
-                    inhabilitarLlave();
-                    document.getElementById("editarLlave").value = "EDITAR";
-                    document.getElementById("actualizarLlave").disabled = true;
+                    inhabilitarLlave(); 
                   }
                  break;
     case "certificado":
                       if (accion === "habilitar")
                         {
                         habilitarCertificado();
-                        document.getElementById("editarCertificado").value = "BLOQUEAR";
-                        document.getElementById("actualizarCertificado").disabled = false;
                       }
                       else
                         {
-                        inhabilitarCertificado();
-                        document.getElementById("editarCertificado").value = "EDITAR";
-                        document.getElementById("actualizarCertificado").disabled = true;
+                        inhabilitarCertificado();      
                       }
                       break;
     case "actividad":
                     if (accion === "habilitar")
                       {
                       habilitarActividad(); 
-                      document.getElementById("editarActividad").value = "BLOQUEAR";
-                      document.getElementById("actualizarActividad").disabled = false;
                     }
                     else
                       {
                       inhabilitarActividad();
-                      document.getElementById("editarActividad").value = "EDITAR";
-                      document.getElementById("actualizarActividad").disabled = true;
                     }
                     break;
     case "referencia":
                       if (accion === "habilitar")
                         {
                         habilitarReferencia();
-                        document.getElementById("editarReferencia").value = "BLOQUEAR";
-                        document.getElementById("actualizarReferencia").disabled = false;
                       }
                       else
                         {
                         inhabilitarReferencia(); 
-                        document.getElementById("editarReferencia").value = "EDITAR";
-                        document.getElementById("actualizarReferencia").disabled = true;
                       }
                       break;
     case "usuario":
                       if (accion === "habilitar")
                         {
                         habilitarUsuario();
-                        document.getElementById("editarUsuario").value = "BLOQUEAR";
-                        document.getElementById("actualizarUsuario").disabled = false;
                       }
                       else
                         {
                         inhabilitarUsuario();
-                        document.getElementById("editarUsuario").value = "EDITAR";
-                        document.getElementById("actualizarUsuario").disabled = true;
+                      }
+                      break;
+    case "slot":
+                      if (accion === "habilitar")
+                        {
+                        habilitarSlot();
+                      }
+                      else
+                        {
+                        inhabilitarSlot(); 
                       }
                       break;                  
     default: break;                  
@@ -145,10 +137,6 @@ function validarEntero(valor)
 /// ********************************************** FIN FUNCIONES GENÉRICAS *********************************************
 ************************************************************************************************************************
 */
-
-function cargarMenu() {
-  alert('en cargar menu');
-}
 
 /***********************************************************************************************************************
 /// *********************************************** FUNCIONES ACTIVIDADES **********************************************
@@ -421,7 +409,9 @@ function inhabilitarActividad() {
   document.getElementById("usuario1").disabled = true;
   document.getElementById("rol1").disabled = true; 
   document.getElementById("usuario2").disabled = true;
-  document.getElementById("rol2").disabled = true; 
+  document.getElementById("rol2").disabled = true;
+  document.getElementById("editarActividad").value = "EDITAR";
+  document.getElementById("actualizarActividad").disabled = true;
 }
 
 /**
@@ -435,7 +425,9 @@ function habilitarActividad() {
   document.getElementById("usuario1").disabled = false;
   document.getElementById("rol1").disabled = false; 
   document.getElementById("usuario2").disabled = false;
-  document.getElementById("rol2").disabled = false; 
+  document.getElementById("rol2").disabled = false;
+  document.getElementById("editarActividad").value = "BLOQUEAR";
+  document.getElementById("actualizarActividad").disabled = false;
 }
 
 /**
@@ -802,6 +794,7 @@ function inhabilitarReferencia() {
   $("input[name='empresaUsuario']").prop('disabled', true);
   $("select[name='rolUsuario']").prop('disabled', true);
   document.getElementById("editarReferencia").value = "EDITAR";
+  document.getElementById("actualizarReferencia").disabled = true;
 }
 
 /**
@@ -815,11 +808,10 @@ function habilitarReferencia() {
   document.getElementById("plataforma").disabled = false;
   document.getElementById("resumen").disabled = false; 
   document.getElementById("detalles").disabled = false; 
-  document.getElementById("editarReferencia").value = "EDITAR";
-  document.getElementById("actualizarReferencia").disabled = true;
   $("select[name='nombreUsuario']").prop('disabled', false);
-  //$("input[name='empresaUsuario']").prop('disabled', false);
   $("select[name='rolUsuario']").prop('disabled', false);
+  document.getElementById("editarReferencia").value = "BLOQUEAR";
+  document.getElementById("actualizarReferencia").disabled = false;
 }
 
 /**
@@ -1087,6 +1079,8 @@ function inhabilitarLlave(){
   document.getElementById("att_exportable").disabled = true;
   document.getElementById("att_deletable").disabled = true;
   document.getElementById("att_private").disabled = true;
+  document.getElementById("editarLlave").value = "EDITAR";
+  document.getElementById("actualizarLlave").disabled = true;
 }
 
 /**
@@ -1122,6 +1116,8 @@ function habilitarLlave(){
   document.getElementById("att_exportable").disabled = false;
   document.getElementById("att_deletable").disabled = false;
   document.getElementById("att_private").disabled = false;
+  document.getElementById("editarLlave").value = "BLOQUEAR";
+  document.getElementById("actualizarLlave").disabled = false;
 }
 
 /**
@@ -1451,6 +1447,8 @@ function inhabilitarCertificado(){
   document.getElementById("bandera").disabled = true;
   document.getElementById("vencimiento").disabled = true;
   document.getElementById("observaciones").disabled = true;
+  document.getElementById("editarCertificado").value = "EDITAR";
+  document.getElementById("actualizarCertificado").disabled = true;
 }
 
 /**
@@ -1464,6 +1462,8 @@ function habilitarCertificado(){
   document.getElementById("bandera").disabled = false;
   document.getElementById("vencimiento").disabled = false;
   document.getElementById("observaciones").disabled = false;
+  document.getElementById("editarCertificado").value = "BLOQUEAR";
+  document.getElementById("actualizarCertificado").disabled = false;
 }
 
 /**
@@ -1844,6 +1844,8 @@ function inhabilitarUsuario(){
   document.getElementById("mail").disabled = true;
   document.getElementById("telefono").disabled = true;
   document.getElementById("observaciones").disabled = true;
+  document.getElementById("editarUsuario").value = "EDITAR";
+  document.getElementById("actualizarUsuario").disabled = true;
 }
 
 /**
@@ -1856,6 +1858,8 @@ function habilitarUsuario(){
   document.getElementById("mail").disabled = false;
   document.getElementById("telefono").disabled = false;
   document.getElementById("observaciones").disabled = false;
+  document.getElementById("editarUsuario").value = "BLOQUEAR";
+  document.getElementById("actualizarUsuario").disabled = false;
 }
 
 /**
@@ -1913,6 +1917,314 @@ function validarUsuario()
 ************************************************************************************************************************
 **/
 
+
+
+/***********************************************************************************************************************
+/// ************************************************** FUNCIONES SLOTS *************************************************
+************************************************************************************************************************
+*/
+
+/**
+  \brief Función que habilita los input del form Slot.
+*/
+function habilitarSlot(){
+  document.getElementById("slot").disabled = false;
+  document.getElementById("slotobserva").disabled = false;
+  document.getElementById("nombrehsm").disabled = false;
+  $("select[name='nombreUsuario']").prop('disabled', false);
+  //$("input[name='empresaUsuario']").prop('disabled', false);
+  $("select[name='rolUsuario']").prop('disabled', false);
+  document.getElementById("editarSlot").value = "BLOQUEAR";
+  document.getElementById("actualizarSlot").disabled = false;
+}
+
+/**
+  \brief Función que inhabilita los input del form Slot.
+*/
+function inhabilitarSlot(){
+  document.getElementById("slot").disabled = true;
+  document.getElementById("slotobserva").disabled = true;
+  document.getElementById("nombrehsm").disabled = true;
+  $("select[name='nombreUsuario']").prop('disabled', true);
+  //$("input[name='empresaUsuario']").prop('disabled', true);
+  $("select[name='rolUsuario']").prop('disabled', true);
+  document.getElementById("editarSlot").value = "EDITAR";
+  document.getElementById("actualizarSlot").disabled = true;
+}
+
+/**
+ * \brief Función que carga en el form pasado como parámetro todos los slots.
+ * @param {String} selector String con el DIV donde se deben de cargar los datos.
+ * @param {Int} slot Id del slot a resaltar en el listado.
+ */ 
+function cargarSlots(selector, slot){
+  var url = "data/selectQuery.php";
+  var query = "select idslots, slots.nombre as nombre, hsm.nombre as hsm from slots inner join hsm on slots.hsm=hsm.idhsm where slots.estado='activo' order by slots.nombre asc, hsm.nombre asc";
+  
+  $.getJSON(url, {query: ""+query+""}).done(function(request) {
+    var slots = request.resultado;
+    var total = parseInt(request.rows, 10);
+    var encabezado = '<h2 id="titulo" class="encabezado">LISTADO DE SLOTS</h2>';
+    var cargar = '';
+    cargar += encabezado;
+    if (total >= 1) {
+      var tabla = '<table id="slots" name="slots" class="tabla2">';
+      var tr = '<tr>\n\
+                  <th colspan="3" class="tituloTabla">SLOTS</th>\n\
+                </tr>';
+      tr += '<tr>\n\
+                <th>Ítem</th>\n\
+                <th>Nombre</th>\n\
+                <th>HSM</th>\n\
+            </tr>';
+      for (var index in slots) {
+        var nombre = slots[index]["nombre"];
+        var hsm = slots[index]["hsm"];
+        var id = slots[index]["idslots"];
+        var i = parseInt(index, 10) + 1;
+        var clase = '';
+        if ((id !== 0) && (id === slot)){
+                clase = 'resaltado';
+            }
+            else {
+              clase = '';
+            }
+        tr += '<tr>\n\
+                  <td>'+i+'</td>\n\
+                  <td><a href="#" id="'+id+'" name="'+nombre+'" class="detailSlot '+clase+'">'+nombre+'</a></td>\n\
+                  <td class="pull-left">'+hsm+'</td>\n\
+              </tr>';
+      }
+      tr += '<tr>\n\
+                <td class="pieTabla" colspan="3"><input type="button" value="NUEVO" id="nuevoSlot" class="btn-success"></td>\n\
+             </tr>';
+      tr += '</table>';
+      tabla += tr;
+      cargar += tabla;
+      $(selector).html(cargar);
+    }
+    else {
+      var texto = '<h2>Ya NO quedan slots activos!.</h2>';
+      cargar += texto;
+      vaciarContent("#main-content");
+      $("#main-content").html(cargar);
+    }    
+    
+  });
+}
+
+/**
+  \brief Función que recupera y carga los datos del slot pasado como parámetro.
+  @param {Int} slot Entero con el índice del slot a recuperar.
+  @param {String} nombreSlot String con el nombre del slot a recuperar.                                                                                                                
+*/
+function cargarDetalleSlot(slot, nombreSlot) {
+  var url = "data/selectQuery.php"; 
+  var query = "select * from hsm";
+  
+  var empresa = nombreSlot.split("_")[0];
+  
+  /// datos de los hsms:
+  $.getJSON(url, {query: ""+query+""}).done(function(request) {
+    var hsms = request["resultado"];
+    
+    /// levanto datos de los posibles usuarios del slot. Los que pertenecen al banco o a EMSA
+    var query = "select idusuarios, apellido, nombre, empresa from usuarios where empresa='EMSA' or empresa='"+empresa+"' and estado='activo' order by empresa";
+    
+    $.getJSON(url, {query: ""+query+""}).done(function(request) {
+      var posiblesUsuarios = request["resultado"];
+      
+      /// recupero la información genérica del slot:
+      var query = "select observaciones as slotobserva, hsm from slots where idslots="+slot+"";
+      
+      $.getJSON(url, {query: ""+query+""}).done(function(request) {
+        var datosSlot = request.resultado;
+        var slotobserva = datosSlot[0]["slotobserva"];
+        var idhsm = datosSlot[0]["hsm"];
+        
+        /// recupero la información de los usuarios del slot. No se puede hacer un inner join con la consulta anterior
+        /// pues de hacerlo, si se le llega a dar Quitar al último usuario el inner join daría vacío pues no habría
+        /// ningún usuario con estado='activo'. Por esto se separan las consultas.
+        var query = "select idslotusers, usuario, usuariokms from slotusers where slot="+slot+" and estado='activo'";
+        $.getJSON(url, {query: ""+query+""}).done(function(request) {
+          var datosUsuariosSlot = request.resultado;
+          var totalUsuarios = request.rows;
+          
+          if (totalUsuarios > 0) {
+            var slotUsers = new Array();
+            var rolUsers = new Array();
+            var slotUsersIds = new Array();
+            for (var ind in datosUsuariosSlot) {
+              slotUsers.push(datosUsuariosSlot[ind]["usuario"]);
+              rolUsers.push(datosUsuariosSlot[ind]["usuariokms"]);
+              slotUsersIds.push(datosUsuariosSlot[ind]["idslotusers"]);
+            }
+          }
+          if ($("#content").length === 0) {
+            var divs = "<div id='fila' class='row'>\n\
+                          <div id='selector' class='col-md-6 col-sm-12'></div>\n\
+                          <div id='content' class='col-md-6 col-sm-12'></div>\n\
+                        </div>";
+            $("#main-content").empty();
+            $("#main-content").append(divs);
+          }
+          var elegido = '';
+
+          cargarSlots('#selector', slot);
+          $("#selector").css('padding-right', '30px');
+
+          var tabla = '<table id="detalleSlot" name="detalleSlot" class="tabla2">';
+          var tr = '<tr>\n\
+                      <th colspan="6" class="tituloTabla">DATOS DEL SLOT</th>\n\
+                    </tr>';
+          tr += '<tr>\n\
+                    <th>Slot</th>\n\
+                    <td><input id="slot" name="slot" class="resaltado" type="text" value="'+nombreSlot+'" disabled="true"></td>\n\
+                    <td colspan="4"></td>\n\
+                </tr>';
+          tr += '<tr>\n\
+                    <th>Observaciones</th>\n\
+                    <td colspan="5">\n\
+                      <textarea id="slotobserva" name="slotobserva" style="width: 100%;resize: none" disabled="true">'+ slotobserva +'</textarea>\n\
+                    </td>\n\
+                 </tr>';
+          tr += '<tr>\n\
+                    <th colspan="6">DATOS DEL HSM</th>\n\
+                </tr>';
+          tr += '<th>Nombre</th>\n\
+                    <td>\n\
+                      <select id="nombrehsm" name="nombrehsm" style="width:100%" disabled="true">\n\
+                        <option value="ninguno">---SELECCIONAR---</option>';
+          for (var index in hsms) {
+            if (hsms[index]["idhsm"] === idhsm) {
+              elegido = 'selected';
+              var indice = index;
+            }
+            else {
+              elegido = '';
+            }
+            tr += '<option value="'+hsms[index]["idhsm"]+'" '+elegido+'>'+hsms[index]["nombre"]+'</option>';
+          }
+          tr += '     </select>\n\
+                    </td>\n\
+                    <th>Serie</th>\n\
+                    <td colspan="3"><input id="serie" name="serie" type="text" value="'+hsms[indice]["serie"]+'" disabled="true"></td>\n\
+                 </tr>';
+          tr += '<tr>\n\
+                    <th>Marca</th>\n\
+                    <td><input id="marca" name="marca" type="text" value="'+hsms[indice]["marca"]+'" disabled="true"></td>\n\
+                    <th>Modelo</th>\n\
+                    <td colspan="3"><input id="modelo" name="modelo" type="text" value="'+hsms[indice]["modelo"]+'" disabled="true"></td>\n\
+                 </tr>';
+          tr += '<tr>\n\
+                    <th>Observaciones</th>\n\
+                    <td colspan="5"><textarea id="observaciones" name="observaciones" style="width: 100%;resize: none" disabled="true">'+ hsms[indice]["observaciones"] +'</textarea></td>\n\
+                 </tr>';
+          tr += '<tr>\n\
+                  <th colspan="6">USUARIOS</th>\n\
+                 </tr>';
+          tr += '<tr>\n\
+                  <th colspan="2">Nombre</th>\n\
+                  <th>Empresa</th>\n\
+                  <th colspan="3">Usuario KMS</th>\n\
+                 </tr>';
+          if (totalUsuarios > 0) {
+            var roles = ['so01/us01', 'so02/us02', 'so03/us03', 'so04/us04', 'so01', 'so02', 'so03', 'so04', 'us01', 'us02', 'us03', 'us04'];
+
+            for (var index in slotUsers)
+              {
+              tr += '<tr>\n\
+                       <td colspan="2">\n\
+                         <select id="nombreUsuario" name="nombreUsuario" style="width:100%" disabled="true" class="nombreUsuario">';
+              var empresa = '';
+              for (var i in posiblesUsuarios) {
+                if (posiblesUsuarios[i]["idusuarios"] === slotUsers[index]) {
+                  elegido = 'selected';
+                  empresa = posiblesUsuarios[i]["empresa"];
+                }
+                else {
+                  elegido = '';
+                }
+                tr += '<option id="'+posiblesUsuarios[i]["idusuarios"]+'" value="'+posiblesUsuarios[i]["nombre"]+' '+posiblesUsuarios[i]["apellido"]+'" '+elegido+'>'+posiblesUsuarios[i]["nombre"]+' '+posiblesUsuarios[i]["apellido"]+'</option>';
+              }
+              tr += ' </select>\n\
+                  </td>\n\
+                  <td>\n\
+                    <input type="text" name="empresaUsuario" value="'+empresa+'" disabled="true">\n\
+                  </td>';
+              tr += '<td colspan="2"><select id="rolUsuario" name="rolUsuario" style="width:100%" disabled="true" class="rolUsuario">';
+              for (var j in roles) {
+                if (roles[j] === rolUsers[index]) {
+                  elegido = 'selected';
+                }
+                else {
+                  elegido = '';
+                }          
+                tr += '<option id="'+roles[j]+'" value="'+roles[j]+'" '+elegido+'>'+roles[j]+'</option>';
+              }
+              tr += '</select>\n\
+                    </td>\n\
+                    <td><input type="button" name="quitarUser" class="quitarUser" value="Quitar"></td>\n\
+                    <td style="display:none"><input type="text" id="slotUserId" name="slotUserId" class="slotUserId" value="'+slotUsersIds[index]+'"></td></tr>';
+            }
+          }
+          tr += '<tr><td colspan="6"><input type="button" name="nuevoUsuarioSlot" id="nuevoUsuarioSlot" value="Agregar"></td></tr>';
+          tr += '<tr>\n\
+                    <td class="pieTablaIzquierdo"><input type="button" id="editarSlot" name="editarSlot" value="EDITAR" onclick="cambiarEdicion()" class="btn-info"></td>\n\
+                    <td colspan="2"><input type="button" id="actualizarSlot" name="actualizarSlot" disabled="true" value="ACTUALIZAR" class="btn-warning"></td>\n\
+                    <td class="pieTablaDerecho"><input type="button" id="eliminarSlot" name="eliminarSlot" value="ELIMINAR" class="btn-danger"></td>\n\
+                    <td style="display:none"><input type="text" id="fuente" name="fuente" value="slot"></td>\n\
+                    <td style="display:none"><input type="text" id="idslot" name="idslot" value="'+slot+'"></td>\n\
+                </tr>'; 
+          tr += '</table>';
+          tabla += tr;
+          var encabezado = '<h3 id="titulo" class="encabezado">DETALLES DEL SLOT</h3>';
+          var cargar = '';
+          cargar += encabezado;
+          cargar += tabla;
+          $("#content").html(cargar);
+        });    
+      });
+    });
+  });  
+}
+
+/**
+ * \brief Función que valida los datos pasados para el slot.
+ * @returns {Boolean} Devuelve un booleano que indica si se pasó o no la validación de los datos para el slot.
+ */
+function validarSlot()
+  {
+  var seguir = false;
+  
+  if (document.getElementById("slot").value.length === 0)
+    {
+    alert('Debe ingresar el nombre para el slot.');
+    document.getElementById("slot").focus();
+    seguir = false;
+  }
+  else
+    {
+    if (document.getElementById("nombrehsm").value === "ninguno")
+      {
+      alert('Debe sleleccionar el hsm en el cual se encuentra el slot.');
+      document.getElementById("nombrehsm").focus();
+      seguir = false;
+    } 
+    else
+      {
+      seguir = true;
+    }// nombrehsm
+  }// nombre
+  
+  if (seguir) return true;
+  else return false;
+}
+
+/***********************************************************************************************************************
+/// ************************************************ FIN FUNCIONES SLOTS ***********************************************
+************************************************************************************************************************
+**/
 
 
 /**
@@ -2001,6 +2313,11 @@ function todo () {
       cargarUsuarios("#main-content", 0);
       break;
     }
+    case "/testKMS/slot.php": 
+      {
+      cargarSlots("#main-content", 0);
+      break;
+    }
     default: break;
   }  
   
@@ -2015,7 +2332,7 @@ function todo () {
   $(document).on("click", ".detailActivity", function () {
       var activity = $(this).attr("id");
       cargarDetalleActividad(activity);
-    });//*** fin del click ***
+    });//*** fin del click detailActivity ***
   
   ///Disparar funcion al hacer clic en el botón eliminar.
   ///Esto hace que el registro correspondiente a la actividad pase a estado de inactiva.
@@ -2052,7 +2369,7 @@ function todo () {
       else {
         //alert('no quiso borrar');
       }
-    });
+    });//*** fin del click eliminarActividad ***
   
   ///Disparar funcion al hacer clic en el botón actualizar.
   ///Se validan todos los campos antes de hacer la actualización, y una vez hecha se inhabilita el form y parte de los botones.
@@ -2073,12 +2390,16 @@ function todo () {
       var fecha = (document.getElementById("fecha").value).trim();
       var actividad = (document.getElementById("activity").value).trim();
       
-      var query = "select motivo, fecha from actividades where motivo='"+motivo+"' and fecha='"+fecha+"'";
+      var query = "select idactividades, motivo, fecha from actividades where motivo='"+motivo+"' and fecha='"+fecha+"'";
       var url = "data/selectQuery.php";
       //alert(query);
       $.getJSON(url, {query: ""+query+""}).done(function(request) {
         var total = request["rows"];
-        if (total === 0) {
+        var id;
+        if (total > 0) {
+          var id = request["resultado"][0]["idactividades"];
+        }
+        if (((total <= 1) && (actividad === id)) || ((actividad !== id) && (total < 1))){
           var url = "data/updateQuery.php";
           var query = "update actividades set fecha='" + fecha + "', horaInicio='" + inicio + "', horaFin='" + fin + "', motivo='" + motivo + "', usuario1='" + usuario1 + "', usuario2='" + usuario2 + "', rolUsuario1='" + rol1 + "', rolUsuario2='" + rol2 + "'  where idactividades='" + actividad + "'";
 
@@ -2102,7 +2423,7 @@ function todo () {
         }
       });
     }
-  });
+  });//*** fin del click actualizarActividad ***
     
   ///Disparar funcion al hacer clic en el botón Agregar.
   ///Se validan todos los campos antes de hacer el insert en la base de datos.
@@ -2151,7 +2472,7 @@ function todo () {
         }
       });
     }
-  });  
+  });//*** fin del click newActivity ***
     
   ///Disparar funcion al hacer clic en el botón Nueva ya sea desde el div #selector o #content
   ///Esto genera un nuevo formulario en blanco para Actividades.
@@ -2224,7 +2545,7 @@ function todo () {
       $('#content').html(formu);  
       $("#agregarActividad").attr("disabled", "disabled");   
     });
-  });
+  });//*** fin del click agregarActividad ***
   
   ///Disparar función al hacer click en el link Volver.
   ///Esto hace que se vuelvan a cargar los datos de la actividad a la cual pertenece
@@ -2239,7 +2560,7 @@ function todo () {
     cargarDetalleActividad(activity);
     cargarActividades('#selector', true, false, true);
     inhabilitarActividad();
-  });
+  });//*** fin del click volverActividad ***
   
 /**************************************************************************************************************************
 /// ************************************************** FIN ACTIVIDADES ****************************************************
@@ -2349,7 +2670,7 @@ $(document).on("click", "#actualizarReferencia", function (){
                   query += invo[j]["idinvolucrados"]+", ";
                 } 
               }
-                
+              alert(query);  
               $.getJSON(url, {query: ""+query+""}).done(function(request){
                 var resultado = request["resultado"];
                 if (resultado === "OK") {
@@ -2370,11 +2691,11 @@ $(document).on("click", "#actualizarReferencia", function (){
         }); 
       });
     }  
-  });
+  });//*** fin del click actualizarReferencia ***
 
 ///Disparar funcion al hacer clic en el botón eliminar.
 ///Esto hace que el registro correspondiente a la referencia pase a estado de inactiva.
-///Además, se "limpia" el form del div #selector quitando la actividad eliminada.
+///Además, se "limpia" el form del div #selector quitando la referencia eliminada.
 $(document).on("click", "#eliminarReferencia", function () {
     var pregunta = confirm('Está a punto de eliminar el registro. ¿Desea continuar?');
     if (pregunta) {
@@ -2408,7 +2729,7 @@ $(document).on("click", "#eliminarReferencia", function () {
     else {
       //alert('no quiso borrar');
     }
-  });
+  });//*** fin del click eliminarReferencia ***
   
 ///Función que se dispara al hacer click en el botón Nueva Referencia.
 ///Consulta los hsms y los slots disponibles y genera un nuevo form en blanco
@@ -2481,7 +2802,7 @@ $(document).on("click", "#nuevaRef", function() {
       $("#main-content").append(formu);
     });
   });
-});
+});//*** fin del click nuevaRef ***
 
 ///Disparar funcion al hacer clic en el botón Agregar (del formulario nueva referencia).
 ///Se validan todos los campos antes de hacer el insert en la base de datos.
@@ -2547,7 +2868,7 @@ $(document).on("click", "#addRef", function () {
         });
       });
     }
-  });
+  });//*** fin del click addRef ***
   
 ///Disparar funcion al cambiar alguno de los nombres del select de involucrados.
 ///Se busca la empresa a la que corresponde el nuevo usuario y se actualiza el valor del input empresaUsuario.
@@ -2560,8 +2881,7 @@ $(document).on("change", "#nombreUsuario", function (){
     var empresa = request["resultado"][0]["empresa"];
     $(selector).val(empresa);
   });
-  
-});  
+});//*** fin del change nombreUsuario ***
    
 /**************************************************************************************************************************
 /// ************************************************** FIN REFERENCIAS ****************************************************
@@ -2634,7 +2954,7 @@ $(document).on("click", "#eliminarLlave", function () {
   else {
     //alert('no quiso borrar');
   }
-});
+});//*** fin del click eliminarLlave ***
   
 ///Disparar funcion al hacer click en el link del objeto.
 ///Se cargan en el DIV #content los datos del mismo.
@@ -2654,7 +2974,7 @@ $(document).on("click", ".detailObject", function () {
     vaciarContent("#content");
     mostrarCertificado(idcert, "#content");
   }
-});
+});//*** fin del click detailObject ***
 
 ///Disparar funcion al hacer clic en el botón actualizar.
 ///Se validan todos los campos antes de hacer la actualización, y una vez hecha se inhabilita el form y parte de los botones.
@@ -2704,12 +3024,16 @@ $(document).on("click", "#actualizarLlave", function (){
       //alert('encrypt: '+uso_encrypt+'\ndecrypt: '+uso_decrypt+'\nsign: '+uso_sign+'\nverify: '+uso_verify+'\nwrap: '+uso_wrap+'\nunwrap: '+uso_unwrap+'\nexport: '+uso_export+'\nimport: '+uso_import+'\nderive: '+uso_derive);
       //alert('sensitive: '+att_sensitive+'\ntrusted: '+att_trusted+'\nmodifiable: '+att_modifiable+'\nwrap w trusted: '+att_wrapwtrusted+'\nprivate: '+att_private+'\nunwrap mask: '+att_unwrapmask+'\nextractable: '+att_extractable+'\nderive mask: '+att_derivemask+'\nexportable: '+att_exportable+'\ndeletable: '+att_deletable);
       
-      var query = "select nombre from llaves inner join tareas on tareas.idtareas=llaves.tarea where nombre='"+nombre+"' and owner='"+owner+"' and version='"+version+"' and referencia='"+idref+"'";
+      var query = "select idkeys, nombre from llaves inner join tareas on tareas.idtareas=llaves.tarea where nombre='"+nombre+"' and owner='"+owner+"' and version='"+version+"' and referencia='"+idref+"'";
       var url = "data/selectQuery.php";
       //alert(query);
       $.getJSON(url, {query: ""+query+""}).done(function(request) {
         var total = request["rows"];
-        if (total === 0) {
+        var id;
+        if (total > 0) {
+          id = request["resultado"][0]["idkeys"];
+        }
+        if (((total <= 1) && (llave === id)) || ((llave !== id) && (total < 1))){
           var query = "update llaves inner join tareas on llaves.tarea=tareas.idtareas set nombre='" + nombre + "', owner='" + owner + "', version='" + version + "', tipo='" + tipo + "', modoGeneracion='" + generacion + "', kcv='" + kcv + "', bits=" + bits + ", exponente=" + exponente + ", accion='"+accion+"', tareas.observaciones='"+obs+"', \n\
                    uso_encrypt="+uso_encrypt+", uso_decrypt="+uso_decrypt+", uso_sign="+uso_sign+", uso_verify="+uso_verify+", uso_wrap="+uso_wrap+", uso_unwrap="+uso_unwrap+", uso_import="+uso_import+", uso_export="+uso_export+", uso_derive="+uso_derive+", \n\
                    att_sensitive="+att_sensitive+", att_trusted="+att_trusted+", att_modifiable="+att_modifiable+", att_wrapwtrusted="+att_wrapwtrusted+", att_private="+att_private+", att_unwrapmask="+att_unwrapmask+", att_extractable="+att_extractable+", att_derivemask="+att_derivemask+", att_exportable="+att_exportable+", att_deletable="+att_deletable+" where idkeys='" + llave + "'";
@@ -2735,7 +3059,7 @@ $(document).on("click", "#actualizarLlave", function (){
         }
       });
     }
-  });
+  });//*** fin del click actualizarLlave ***
   
 ///Disparar función al hacer click en el botón Nueva Llave.
 ///Se vuelve al DIV #main-content y se genera un form en blanco para agregar los datos de la llave.
@@ -2847,7 +3171,7 @@ $(document).on("click", "#nuevaLlave", function() {
   cargar += volver;
   vaciarContent("#main-content");
   $("#main-content").html(cargar);  
-});
+});//*** fin del click nuevaLlave ***
 
 ///Disparar función al hacer click en el botón Agregar Llave.
 ///Se validan los datos para la llave, luego 
@@ -2962,7 +3286,7 @@ $(document).on("click", "#agregarLlave", function(){
         }
     }); 
   }
-});
+});//*** fin del click agregarLlave ***
 
 /**************************************************************************************************************************
 /// ***************************************************** FIN LLAVES ******************************************************
@@ -3036,7 +3360,7 @@ $(document).on("click", "#eliminarCertificado", function () {
   else {
     //alert('no quiso borrar');
   }
-});
+});//*** fin del click eliminarCertificado ***
 
 ///Disparar funcion al hacer clic en el botón actualizar.
 ///Se validan todos los campos antes de hacer la actualización, y una vez hecha se inhabilita el form y parte de los botones.
@@ -3058,12 +3382,16 @@ $(document).on("click", "#actualizarCertificado", function (){
       var obs = (document.getElementById("observaciones").value).trim();
       //alert('idcert: '+idcert+'\nidref: '+idref+'\nactividad: '+actividad+'\nnombre: '+nombre +'\nowner: '+owner+'\nbandera: '+bandera+'\naccion: '+accion+'\nversion: '+version+'\nobs: '+obs);
       
-      var query = "select nombre from certificados inner join tareas on tareas.idtareas=certificados.tarea where nombre='"+nombre+"' and owner='"+owner+"' and version='"+version+"' and referencia='"+idref+"'";
+      var query = "select idcertificados, nombre from certificados inner join tareas on tareas.idtareas=certificados.tarea where nombre='"+nombre+"' and owner='"+owner+"' and version='"+version+"' and referencia='"+idref+"'";
       var url = "data/selectQuery.php";
       //alert(query);
       $.getJSON(url, {query: ""+query+""}).done(function(request) {
         var total = request["rows"];
-        if (total === 0) {
+        var id;
+        if (total > 0) {
+          id = request["resultado"][0]["idcertificados"];
+        }
+        if (((total <= 1) && (idcert === id)) || ((idcert !== id) && (total < 1))) {
           var query = "update certificados inner join tareas on certificados.tarea=tareas.idtareas set nombre='" + nombre + "', owner='" + owner + "', vencimiento='"+vencimiento+"' , bandera='"+bandera+"', version='" + version + "', accion='"+accion+"', tareas.observaciones='"+obs+"' where idcertificados='" + idcert + "'";
           var url = "data/updateQuery.php";
           //alert(query);
@@ -3087,7 +3415,7 @@ $(document).on("click", "#actualizarCertificado", function (){
         }
       });  
     }
-  });
+  });//*** fin del click actualizarCertificado ***
 
 ///Disparar función al hacer click en el botón Nuevo Certificado.
 ///Se vuelve al DIV #main-content y se genera un form en blanco para agregar los datos del certificado.
@@ -3096,7 +3424,6 @@ $(document).on("click", "#nuevoCertificado", function() {
   var codigo = document.getElementById("codigo").value;
   var resumen = document.getElementById("resumen").value;
   var slot = document.getElementById("slot").value;
-  //var actividad = document.getElementById("actividad").value;
   var nom = slot.split('_');
   var cliente = nom[0];
   var encabezado = '<h1 class="encabezado">NUEVO CERTIFICADO</h1>';
@@ -3155,7 +3482,7 @@ $(document).on("click", "#nuevoCertificado", function() {
   cargar += volver;
   vaciarContent("#main-content");
   $("#main-content").html(cargar);  
-});
+});//*** fin del click nuevoCertificado ***
 
 ///Disparar función al hacer click en el botón Agregar Certificado.
 ///Se validan los datos para el certificado, luego 
@@ -3241,7 +3568,7 @@ $(document).on("click", "#agregarCertificado", function(){
         }
     });  
   }
-});
+});//*** fin del click agregarCertificado ***
 
 /**************************************************************************************************************************
 /// ************************************************** FIN CERTIFICADOS ***************************************************
@@ -3258,16 +3585,14 @@ $(document).on("click", "#agregarCertificado", function(){
 $(document).on("click", ".detailUser", function () {
     var user = $(this).attr("id");
     cargarDetalleUsuario(user);
-  });//*** fin del click ***
+  });//*** fin del click detailUser ***
   
 ///Disparar funcion al hacer click en el botón eliminar.
-///Esto hace que el registro correspondiente al certificado pase a estado de inactivo.
+///Esto hace que el registro correspondiente al usuario pase a estado de inactivo.
 ///Además, se "limpia" el form del div #selector quitando el usuario eliminado.
 $(document).on("click", "#eliminarUsuario", function () {
   var pregunta = confirm('Está a punto de eliminar el registro. ¿Desea continuar?');
   if (pregunta) {
-    ///Se hace consulta primero para averiguar todos los idcerts correspondientes a la actividad.
-    ///De esta forma, al eliminar el certificado se resalta automáticamente el anterior (si hay).
     var url = "data/selectQuery.php";
     var user = document.getElementById("iduser").value;
     var query = "select idusuarios as iduser from usuarios where estado='activo' order by empresa asc, apellido asc, idusuarios asc";
@@ -3319,7 +3644,7 @@ $(document).on("click", "#eliminarUsuario", function () {
   else {
     //alert('no quiso borrar');
   }
-});
+});//*** fin del click eliminarUsuario ***
 
 ///Disparar funcion al hacer clic en el botón actualizar.
 ///Se validan todos los campos antes de hacer la actualización, y una vez hecha se inhabilita el form y parte de los botones.
@@ -3339,12 +3664,16 @@ $(document).on("click", "#actualizarUsuario", function (){
       var obs = (document.getElementById("observaciones").value).trim();
       //alert('iduser: '+iduser+'\nnombre: '+nombre +'\napellido: '+apellido+'\nempresa: '+empresa+'\nmail: '+mail+'\ntel: '+tel+'\nobs: '+obs);
       
-      var query = "select apellido from usuarios where nombre='"+nombre+"' and apellido='"+apellido+"' and empresa='"+empresa+"'";
+      var query = "select idusuarios as id, apellido from usuarios where nombre='"+nombre+"' and apellido='"+apellido+"' and empresa='"+empresa+"'";
       var url = "data/selectQuery.php";
       //alert(query);
       $.getJSON(url, {query: ""+query+""}).done(function(request) {
         var total = request["rows"];
-        if (total === 0) {
+        var id;
+        if (total > 0) {
+          id = request["resultado"][0]["id"];
+        }
+        if (((total <= 1) && (iduser === id)) || ((iduser !== id) && (total < 1))) {  
           var query = "update usuarios set nombre='" + nombre + "', apellido='" + apellido + "', empresa='"+empresa+"' , mail='"+mail+"', telefono='" + tel +"', observaciones='"+obs+"' where idusuarios='" + iduser + "'";
           var url = "data/updateQuery.php";
           //alert(query);
@@ -3368,13 +3697,12 @@ $(document).on("click", "#actualizarUsuario", function (){
         }
       });  
     }
-  });
+  });//*** fin del click actualizarUsuario ***
   
 ///Disparar función al hacer click en el botón Nuevo Usuario.
 ///Se vuelve al DIV #main-content y se genera un form en blanco para agregar los datos del usuario.
 $(document).on("click", "#nuevoUsuario", function() {
   var encabezado = '<h1 class="encabezado">NUEVO USUARIO</h1>';
-  //encabezado += '<h3>'+codigo+' <b>('+cliente+')<b></h3>';
   var tabla = '<table id="datosUsuario" name="datosUsuario" class="tabla2" style="max-width:40%">';
   var tr = '<tr>\n\
               <th colspan="4" class="tituloTabla">DATOS DEL USUARIO</th>\n\
@@ -3420,7 +3748,7 @@ $(document).on("click", "#nuevoUsuario", function() {
   cargar += volver;
   vaciarContent("#main-content");
   $("#main-content").html(cargar);  
-});
+});//*** fin del click nuevoUsuario ***
 
 ///Disparar función al hacer click en el botón Agregar Usuario.
 ///Se validan los datos para el usuario, luego 
@@ -3482,12 +3810,327 @@ $(document).on("click", "#agregarUsuario", function(){
       }
     });
   }
-});
+});//*** fin del click agregarUsuario ***
     
 /**************************************************************************************************************************
 /// **************************************************** FIN USUARIOS *****************************************************
 ***************************************************************************************************************************
-*/    
+*/
+
+/**************************************************************************************************************************
+/// Comienzan las funciones que manejan los eventos relacionados a las SLOTS como ser creación, edición y eliminación.
+***************************************************************************************************************************
+*/
+
+///Disparar funcion al hacer clic en el link del slot.
+///Se cargan en el DIV #content los datos del mismo.
+$(document).on("click", ".detailSlot", function () {
+    var slot = $(this).attr("id");
+    var nombreSlot = $(this).attr("name");
+    cargarDetalleSlot(slot, nombreSlot);
+  });//*** fin del click detailSlot ***
+  
+///Disparar funcion al cambiar alguno de los nombres del select del nombre del HSM.
+///Se buscan los datos correspondientes al nuevo hsm y se actualiza el valor del input nombrehsm.
+$(document).on("change", "#nombrehsm", function (){
+  var idhsm = this.value;
+  var url = "data/selectQuery.php";
+  var query = 'select nombre, serie, modelo, marca, observaciones from hsm where idhsm ='+idhsm;
+  
+  $.getJSON(url, {query: ""+query+""}).done(function(request){
+    var hsm = request["resultado"][0];
+    $("#serie").val(hsm["serie"]);
+    $("#modelo").val(hsm["modelo"]);
+    $("#marca").val(hsm["marca"]);
+    $("#observaciones").val(hsm["observaciones"]);
+    //inhabilitarSlot();      
+  });
+  
+});//*** fin del change nombrehsm *** 
+
+///Disparar funcion al hacer clic en el botón actualizar.
+///Se validan todos los campos antes de hacer la actualización, y una vez hecha se inhabilita el form y parte de los botones.
+$(document).on("click", "#actualizarSlot", function (){
+    var seguir = true;
+    seguir = validarSlot();
+
+    var elementos = $(".nombreUsuario");
+    var ids = $(".slotUserId");
+    var tam = elementos.size();
+    var arrayID = [];
+    var slotUsersId = [];
+    for (var i=0; i<tam; i++) {
+      var selectActual = $(elementos[i]);
+      var id = $(selectActual).val();
+      var actual = $(ids[i]);
+      var userId = $(actual).val();
+      arrayID.push(id);
+      slotUsersId.push(userId);
+    }
+    //alert(arrayID);
+    var arrayRoles = [];
+    var elem = $(".rolUsuario");
+    for (var i=0; i<tam; i++) {
+      var rol = $(elem[i]).val();
+      arrayRoles.push(rol);
+    }
+    //alert(arrayRoles);
+    var i = 1;
+    var j = 0;
+    var usuariosRepetidos = false;
+    var continuar = true;
+    var subArray = arrayID.slice(0);
+    
+    while ((i<arrayID.length) && (continuar===true)) {
+      subArray.splice(0, 1);
+      var ind = subArray.indexOf(arrayID[j]);
+      if (ind === -1) { 
+        i++;
+        j++;
+      }
+      else {
+        usuariosRepetidos = true;
+        continuar = false;
+      }
+    }
+    
+    if (usuariosRepetidos) {
+      alert('Hay usuarios que están repetidos. Por favor verifique.');
+      seguir = false;
+    }
+
+    var rolesRepetidos = false;
+    var continuar = true;
+    
+    var i = 0;
+    while ((i<arrayRoles.length - 1) && (continuar===true)) {
+      var elemento = arrayRoles[i].split("/");//alert('i: '+ i + ' - elemento 1: '+elemento[0]);
+      var j = i + 1;
+      var continuar1 = true;
+      while ((j<arrayRoles.length) && (continuar1 === true)) {
+        var existe = arrayRoles[j].includes(elemento[0]);//alert('j: '+ j +' - ' + arrayRoles[j]);
+        if (existe) {
+          continuar1 = false;
+          continuar = false;
+          rolesRepetidos = true;//alert('existió para el elemento 1');
+        }
+        else {
+          j++;
+        }
+      }
+      if ((continuar1 === true) && (elemento[1] !== "undefined"))
+        {
+        var k = i + 1;
+        var continuar2 = true;//alert('i: '+ i + '- elemento 2: '+elemento[1]);
+        while ((k<arrayRoles.length) && (continuar2 === true)) {
+          var existe = arrayRoles[k].includes(elemento[1]);//alert('k: '+ k +' - ' + arrayRoles[k]);
+          if (existe) {
+            continuar2 = false;
+            continuar = false;
+            rolesRepetidos = true;//alert('existió para el segundo elemento');
+          }
+          else {
+            k++;
+          }
+        }
+      }
+      i++;
+    }
+    
+    if (rolesRepetidos) {
+      alert('Hay usuarios que tienen el mismo rol. Por favor verifique.');
+      seguir = false;
+    }
+
+    ///En caso de que se valide todo, se prosigue a enviar la consulta con la actualización en base a los parámetros pasados
+    if (seguir) {
+      ///Recupero valores editados y armo la consulta para el update:
+      var idslot = document.getElementById("idslot").value;
+      var nombre = (document.getElementById("slot").value).trim();
+      var obs = (document.getElementById("slotobserva").value).trim();
+      var hsm = document.getElementById("nombrehsm").value;
+      //alert('idslot: '+idslot+'\nnombre: '+nombre +'\nhsm:'+hsm+'\nobs: '+obs);
+      
+      var query = "select idslots as id, nombre from slots where nombre='"+nombre+"' and hsm="+hsm+"";
+      var url = "data/selectQuery.php";
+      //alert(query);
+      $.getJSON(url, {query: ""+query+""}).done(function(request) {
+        var total = request["rows"];
+        var id;
+        if (total > 0) {
+          id = request["resultado"][0]["id"];
+        }
+        if (((total <= 1) && (idslot === id)) || ((idslot !== id) && (total < 1))) {  
+          var query = "update slots set nombre='" + nombre + "', observaciones='" + obs + "', hsm="+hsm+" where idslots='" + idslot + "'";
+          var url = "data/updateQuery.php";
+          //alert(query);
+          ///Ejecuto la consulta y en caso de que se haya realizado sin problemas continúo con el update de los ususarios:
+          $.getJSON(url, {query: ""+query+""}).done(function(request) {
+            var resultado = request["resultado"];
+            if (resultado === "OK") {
+              var query = "update slotusers set usuariokms = case idslotusers ";
+              for (var i in slotUsersId){
+                query += "when "+slotUsersId[i]+" then '"+arrayRoles[i]+"' ";
+              }
+              query += " end where idslotusers in (";
+              var tope = parseInt(slotUsersId.length, 10) - 1;
+              for (var j in slotUsersId){
+                if (j == tope) {
+                  query += slotUsersId[j]+")";
+                }
+                else {
+                  query += slotUsersId[j]+", ";
+                } 
+              }
+              //alert(query);
+              ///Ejecuto la consulta y muestro mensaje según resultado:
+              $.getJSON(url, {query: ""+query+""}).done(function(request) {
+                var resultado = request["resultado"];
+                if (resultado === "OK") {
+                  alert('Registro modificado correctamente!');  
+                  inhabilitarSlot();
+                  cargarSlots("#selector", idslot);
+                }
+                else {
+                  alert('Hubo un error. Por favor verifique.');
+                }
+              });
+            }  
+            else {
+              alert('Hubo un error. Por favor verifique.');
+            }
+          });
+        }
+        else {
+          alert('Ya existe un slot con esos datos. Por favor verifique.');
+        }
+      });  
+    }
+  });//*** fin del click actualizarSlot ***
+
+///Disparar funcion al hacer click en el botón eliminar.
+///Esto hace que el registro correspondiente al slot pase a estado de inactivo.
+///Además, se "limpia" el form del div #selector quitando el slot eliminado.
+$(document).on("click", "#eliminarSlot", function () {
+  var pregunta = confirm('Está a punto de eliminar el registro. ¿Desea continuar?');
+  if (pregunta) {
+    var url = "data/selectQuery.php";
+    var slot = document.getElementById("idslot").value;
+    var query = "select idslots, nombre from slots where estado='activo' order by nombre asc, idslots asc";
+        
+    $.getJSON(url, {query: ""+query+""}).done(function(request) {
+      var idks = request["resultado"];
+      var total = request["rows"];
+      var ids = new Array();
+      var nombres = new Array();
+      for (var index in idks) {
+        ids.push(idks[index]["idslots"]);
+        nombres.push(idks[index]["nombre"]);
+      }
+      
+      var indiceActual = ids.indexOf(slot);//alert(indiceActual);
+      var slot1 = 0;
+      
+      if (total === 1)  {//alert('total = 1. Este es el último');
+        var volver = '<br><a href="index.php">Volver</a>';
+        var texto = '<h2>Ya NO quedan slots!.</h2>';
+        texto += volver;
+        vaciarContent("#main-content");
+        $("#main-content").html(texto);
+      }
+      else {
+        if ((indiceActual !== 0)&&(indiceActual !== -1)) {
+          slot1 = indiceActual - 1;
+        }
+        else {
+          if (indiceActual === 0) {
+            slot1 = indiceActual + 1;
+          }
+        }
+      }
+      var url = "data/updateQuery.php";
+      var query = "update slots set estado='inactivo' where idslots='" + slot + "'";
+      
+      $.getJSON(url, {query: ""+query+""}).done(function(request) {
+        var resultado = request["resultado"];
+        if (resultado === "OK") {
+          if (total > 1) {
+            cargarDetalleSlot(ids[slot1], nombres[slot1]);
+          }
+        }
+        else {
+          alert('Hubo un error. Por favor verifique.');
+        }
+      });
+    });
+  }
+  else {
+    //alert('no quiso borrar');
+  }
+});//*** fin del click eliminarSlot ***
+
+///Disparar funcion al hacer clic en el botón de Quitar de alguno de los usuarios del slot.
+///Se cargan en el DIV #content los datos del mismo.
+$(document).on("click", ".quitarUser", function () {
+  var iduser = $(this).parent().next().children().val();
+  var nombreUser = $(this).parent().prev().prev().prev().children().val();
+  var idslot = document.getElementById("idslot").value;
+  var nombreslot = document.getElementById("slot").value;
+  var url = "data/updateQuery.php"; 
+  var query = "update slotusers set estado='inactivo' where idslotusers='"+iduser+"'";
+  var pregunta = confirm('Está a punto de quitar a '+nombreUser+' del slot '+nombreslot+'. ¿Desea continuar?');
+  if (pregunta) {
+    $.getJSON(url, {query: ""+query+""}).done(function(request) {
+      var resultado = request["resultado"];
+      if (resultado === "OK") {
+        //alert('Registro modificado correctamente!');  
+        cargarDetalleSlot(idslot, nombreslot);
+        inhabilitarSlot();
+      }
+      else {
+        alert('Hubo un error. Por favor verifique.');
+      }
+    });
+  }
+  else {
+    //alert('no quiso quitar al usuario');
+  } 
+});//*** fin del click quitarUser ***
+
+///Disparar funcion al hacer clic en el botón de Agregar que está luego de los usuarios del slot.
+///Se cargan en la tabla una nueva fila para agregar el nuevo usuario.
+$(document).on("click", "#nuevoUsuarioSlot", function () {
+  var trs=$("#detalleSlot tr").length;
+  var nuevaFila = '<tr><td colspan="6">ALGO</td></tr>';
+  var indice = trs - 3;
+  var selector = '#detalleSlot tr:eq('+indice+')';
+  
+  
+  $(selector).after(nuevaFila);
+  //$("#detalleSlot").append(nuevaFila);
+});
+
+/*
+///Disparar funcion al cambiar alguno de los nombres del select de nombreUsuario.
+///Se busca la empresa a la que corresponde el nuevo usuario y se actualiza el valor del input empresaUsuario.
+$(document).on("change", "#nombreUsuario", function (){
+  var iduser = this.value;
+  var url = "data/selectQuery.php";
+  var query = 'select empresa from usuarios where idusuarios = "'+iduser+'"';
+  var selector = $(this).parent().next().children("input");
+  $.getJSON(url, {query: ""+query+""}).done(function(request){
+    var empresa = request["resultado"][0]["empresa"];
+    $(selector).val(empresa);
+  });
+});//*** fin del change nombreUsuario ***
+*/
+
+/**************************************************************************************************************************
+/// ***************************************************** FIN SLOTS *******************************************************
+***************************************************************************************************************************
+*/
+
+
 }
 
 /**

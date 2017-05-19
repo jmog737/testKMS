@@ -31,12 +31,14 @@
             <ul class="dropdown-menu menu hidden-xs">
               <li><a href="index.php">Actividades</a></li>
               <li><a href="usuario.php">Usuarios</a></li>
+              <li><a href="slot.php">Slots</a></li>
               <li role="separator" class="divider"></li>
               <li><a href="#">Administrar</a></li>
             </ul>
             
             <li class='visible-xs'><a href="index.php">Actividades</a></li>
             <li class='visible-xs'><a href="usuario.php">Usuarios</a></li>
+            <li class="visible-xs"><a href="slot.php">Slots</a></li>
             <li role="separator" class="divider visible-xs"></li>
             <li class='visible-xs'><a href="#">Administrar</a></li>
             
