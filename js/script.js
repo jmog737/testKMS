@@ -633,8 +633,8 @@ function mostrarReferencia(parametros) {
       var usuarios = request.resultado;
       
       url = "data/selectQuery.php";
-      query = "select usuario, rol from involucrados inner join usuarios on involucrados.usuario=usuarios.idusuarios where referencia='"+idref+"' order by usuarios.empresa asc, usuarios.apellido asc";
-      
+      query = "select usuario, rol, idinvolucrados from involucrados inner join usuarios on involucrados.usuario=usuarios.idusuarios where involucrados.referencia="+idref+" and involucrados.estado='activo' order by usuarios.empresa asc, usuarios.apellido asc";
+
       $.getJSON(url, {query: ""+query+""}).done(function(request) {
         var involucrados = request.resultado;
         
@@ -708,15 +708,17 @@ function mostrarReferencia(parametros) {
         for (var i in involucrados) {
           tr += '<tr>\n\
                     <td colspan="2">\n\
-                      <select id="nombreUsuario" name="nombreUsuario" class="nombreUsuario">';
+                      <select name="nombreUsuario" class="nombreUsuario">';
           var empresa = '';
           var rol = '';
+          var idinvolucrado = involucrados[i]["idinvolucrados"];
           for (var index in usuarios)
             {
             if (involucrados[i]["usuario"] === usuarios[index]["id"]) {
               elegido = 'selected';
               empresa = usuarios[index]["empresa"];
               rol = involucrados[i]["rol"];
+              var nombre = usuarios[index]["nombre"]+' '+usuarios[index]["apellido"];
             }
             else {
               elegido = '';
@@ -742,9 +744,13 @@ function mostrarReferencia(parametros) {
             tr += '<option value="'+roles[index]+'" '+elegido+'>'+roles[index]+'</option>';
           }
           tr += '</select>\n\
+                <input type="button" name="quitarInvolucrado" class="quitarInvolucrado" value="Quitar">\n\
+                <td style="display:none"><input type="text" name="referenceUserId" class="referenceUserId" value="'+idinvolucrado+'">\n\
+                                         <input type="text" name="nombreUser" class="nombreUser" value="'+nombre+'">\n\
                 </td>\n\
               </tr>';
           }
+        tr += '<tr><td colspan="6"><input type="button" name="nuevoInvolucrado" id="nuevoInvolucrado" value="Agregar"></td></tr>';  
         tr += '<tr>\n\
                  <td colspan="2" class="pieTablaIzquierdo"><input type="button" id="editarReferencia" name="editarReferencia" value="EDITAR" onclick="cambiarEdicion()" class="btn-info"></td>\n\
                  <td colspan="2"><input type="button" id="actualizarReferencia" name="actualizarReferencia" value="ACTUALIZAR" class="btn-warning"></td>\n\
@@ -2135,24 +2141,25 @@ function cargarDetalleSlot(slot, nombreSlot) {
               {
               tr += '<tr>\n\
                        <td colspan="2">\n\
-                         <select id="nombreUsuario" name="nombreUsuario" style="width:100%" disabled="true" class="nombreUsuario">';
+                         <select name="nombreUsuario" style="width:100%" disabled="true" class="nombreUsuario">';
               var empresa = '';
               for (var i in posiblesUsuarios) {
                 if (posiblesUsuarios[i]["idusuarios"] === slotUsers[index]) {
                   elegido = 'selected';
                   empresa = posiblesUsuarios[i]["empresa"];
+                  var nombre = posiblesUsuarios[i]["nombre"]+' '+posiblesUsuarios[i]["apellido"];
                 }
                 else {
                   elegido = '';
                 }
-                tr += '<option id="'+posiblesUsuarios[i]["idusuarios"]+'" value="'+posiblesUsuarios[i]["nombre"]+' '+posiblesUsuarios[i]["apellido"]+'" '+elegido+'>'+posiblesUsuarios[i]["nombre"]+' '+posiblesUsuarios[i]["apellido"]+'</option>';
+                tr += '<option id="'+posiblesUsuarios[i]["idusuarios"]+'" value="'+posiblesUsuarios[i]["idusuarios"]+'" '+elegido+'>'+posiblesUsuarios[i]["nombre"]+' '+posiblesUsuarios[i]["apellido"]+'</option>';
               }
               tr += ' </select>\n\
                   </td>\n\
                   <td>\n\
                     <input type="text" name="empresaUsuario" value="'+empresa+'" disabled="true">\n\
                   </td>';
-              tr += '<td colspan="2"><select id="rolUsuario" name="rolUsuario" style="width:100%" disabled="true" class="rolUsuario">';
+              tr += '<td colspan="2"><select name="rolUsuario" style="width:100%" disabled="true" class="rolUsuario">';
               for (var j in roles) {
                 if (roles[j] === rolUsers[index]) {
                   elegido = 'selected';
@@ -2165,7 +2172,11 @@ function cargarDetalleSlot(slot, nombreSlot) {
               tr += '</select>\n\
                     </td>\n\
                     <td><input type="button" name="quitarUser" class="quitarUser" value="Quitar"></td>\n\
-                    <td style="display:none"><input type="text" id="slotUserId" name="slotUserId" class="slotUserId" value="'+slotUsersIds[index]+'"></td></tr>';
+                    <td style="display:none">\n\
+                      <input type="text" name="slotUserId" class="slotUserId" value="'+slotUsersIds[index]+'">\n\
+                      <input type="text" name="nombreUser" class="nombreUser" value="'+nombre+'">\n\
+                    </td>\n\
+                  </tr>';
             }
           }
           tr += '<tr><td colspan="6"><input type="button" name="nuevoUsuarioSlot" id="nuevoUsuarioSlot" value="Agregar"></td></tr>';
@@ -2175,6 +2186,7 @@ function cargarDetalleSlot(slot, nombreSlot) {
                     <td class="pieTablaDerecho"><input type="button" id="eliminarSlot" name="eliminarSlot" value="ELIMINAR" class="btn-danger"></td>\n\
                     <td style="display:none"><input type="text" id="fuente" name="fuente" value="slot"></td>\n\
                     <td style="display:none"><input type="text" id="idslot" name="idslot" value="'+slot+'"></td>\n\
+                    <td style="display:none"><input type="text" id="nombreSlot" name="nombreSlot" value="'+nombreSlot+'"></td>\n\
                 </tr>'; 
           tr += '</table>';
           tabla += tr;
@@ -2226,9 +2238,8 @@ function validarSlot()
 ************************************************************************************************************************
 **/
 
-
 /**
-  \brief Función que se ejecuta al cargar la página.
+\brief Función que se ejecuta al cargar la página.
 En la misma se ve primero desde que página se llamó, y en base a eso
 se llama a la función correspondiente para cargar lo que corresponda (actividades, referencias, etc.)
 Además, en la función también están los handlers para los distintos eventos jquery.
@@ -2584,7 +2595,7 @@ $(document).on("click", "#actualizarReferencia", function (){
     var tam = elementos.size();
     var arrayID = [];
     for (var i=0; i<tam; i++) {
-      var selectActual = $(elementos[i]);
+      var selectActual = elementos[i];
       var id = $(selectActual).val();
       arrayID.push(id);
     }
@@ -2670,7 +2681,7 @@ $(document).on("click", "#actualizarReferencia", function (){
                   query += invo[j]["idinvolucrados"]+", ";
                 } 
               }
-              alert(query);  
+              //alert(query);  
               $.getJSON(url, {query: ""+query+""}).done(function(request){
                 var resultado = request["resultado"];
                 if (resultado === "OK") {
@@ -2873,7 +2884,7 @@ $(document).on("click", "#addRef", function () {
 ///Disparar funcion al cambiar alguno de los nombres del select de involucrados.
 ///Se busca la empresa a la que corresponde el nuevo usuario y se actualiza el valor del input empresaUsuario.
 $(document).on("change", "#nombreUsuario", function (){
-  var iduser = this.value;
+  var iduser = $("#nombreUsuario option:selected").attr("id");
   var url = "data/selectQuery.php";
   var query = 'select empresa from usuarios where idusuarios = "'+iduser+'"';
   var selector = $(this).parent().next().children("input");
@@ -2882,6 +2893,163 @@ $(document).on("change", "#nombreUsuario", function (){
     $(selector).val(empresa);
   });
 });//*** fin del change nombreUsuario ***
+
+///Disparar funcion al hacer clic en el botón Quitar de alguno de los involucrados de la referencia.
+$(document).on("click", ".quitarInvolucrado", function () {
+  var idinvo = $(this).parent().next().children(":first-child").val();
+  var nombreUser = $(this).parent().next().children(":last-child").val();
+
+  var url = "data/updateQuery.php"; 
+  var query = "update involucrados set estado='inactivo' where idinvolucrados='"+idinvo+"'";
+  var pregunta = confirm('Está a punto de quitar a '+nombreUser+' como involucrado. ¿Desea continuar?');
+  if (pregunta) {
+    $.getJSON(url, {query: ""+query+""}).done(function(request) {
+      var resultado = request["resultado"];
+      if (resultado === "OK") {
+        //alert('Registro modificado correctamente!');
+        var parametros = jQuery(location).attr('search');
+        if (parametros) {
+          mostrarReferencia(parametros);
+        }
+      }
+      else {
+        alert('Hubo un error. Por favor verifique.');
+      }
+    });
+  }
+  else {
+    //alert('no quiso quitar al usuario');
+  }
+});//*** fin del click quitarInvolucrado ***
+
+///Disparar funcion al hacer clic en el botón de Agregar que está luego de los involucrados de la referencia.
+///Se cargan en la tabla una nueva fila para agregar el nuevo usuario.
+$(document).on("click", "#nuevoInvolucrado", function () {
+  var trs=$("#ref tr").length;
+  var indice = trs - 4;
+  var selector = '#ref tr:eq('+indice+')';
+  var slot = document.getElementById("slot").value;
+  var empresa = slot.split("_")[0];
+  var nuevaFila = '<tr>';
+  
+  var url = "data/selectQuery.php"; 
+  /// levanto datos de los posibles usuarios del slot. Los que pertenecen al banco o a EMSA
+  var query = "select idusuarios, apellido, nombre, empresa from usuarios where empresa='EMSA' or empresa='"+empresa+"' and estado='activo' order by empresa";
+    
+  $.getJSON(url, {query: ""+query+""}).done(function(request) {
+    var posiblesUsuarios = request["resultado"];
+    var totalUsuarios = request.rows;
+    if (totalUsuarios > 0) {
+      var roles = ['user/officer', 'Testigo', 'User', 'Officer'];
+      nuevaFila += '<td colspan="2">\n\
+                      <select id="nombreUsuario" name="nombreUsuario" disabled="true" class="nombreUsuario">\n\
+                        <option value="Seleccionar">--Seleccionar--</option>';
+      for (var i in posiblesUsuarios) {
+        nuevaFila += '<option id="'+posiblesUsuarios[i]["idusuarios"]+'" value="'+posiblesUsuarios[i]["idusuarios"]+'">'+posiblesUsuarios[i]["nombre"]+' '+posiblesUsuarios[i]["apellido"]+'</option>';
+      }
+      nuevaFila += ' </select>\n\
+                    </td>\n\
+                    <td colspan="2">\n\
+                      <input type="text" name="empresaUsuario" value="------" disabled="true">\n\
+                    </td>';
+      nuevaFila += '<td colspan="2"><select id="rolUsuario" name="rolUsuario" disabled="true" class="rolUsuario">';
+      for (var j in roles) {
+        nuevaFila += '<option id="'+roles[j]+'" value="'+roles[j]+'">'+roles[j]+'</option>';
+      }
+      nuevaFila += '</select>\n\
+                  <input type="button" id="agregarInvolucrado" name="agregarInvolucrado" class="agregarInvolucrado btn-success" value="Añadir"></td></tr>';
+    }
+    $(selector).after(nuevaFila);
+    habilitarReferencia();
+  });  
+});//*** fin del click nuevoInvolucrado ***
+
+///Disparar funcion al hacer clic en el botón de Añadir que está luego de los involucrados de la referencia.
+///Se valida y en caso exitoso se agrega el registro en la base de datos.
+$(document).on("click", "#agregarInvolucrado", function () {
+  var seguir = true;
+  //var verificarRoles = true;
+  var ref = document.getElementById("idref").value;
+  var elementos = $(".nombreUsuario");
+  var tam = elementos.size();// pongo el tamaño menos 1 dado que aún no está hecho el insert para el slotUsersId.
+  var arrayID = [];
+  var newID = $(this).parent().prev().prev().children().val();
+  var nuevoRol = $(this).siblings().val();
+      
+  for (var i=0; i<tam; i++) {
+    var selectActual = $(elementos[i]);
+    var id = $(selectActual).val();
+    arrayID.push(id);
+  } 
+  
+  var arrayRoles = [];
+  var elem = $(".rolUsuario");
+  for (var i=0; i<tam; i++) {
+    var rol = $(elem[i]).val();
+    arrayRoles.push(rol);
+  }
+  
+  //alert(arrayID);
+  //alert(arrayRoles);
+  
+  var i = 1;
+  var j = 0;
+  var usuariosRepetidos = false;
+  var continuar = true;
+  var subArray = arrayID.slice(0);
+
+  while ((i<arrayID.length) && (continuar===true)) {
+    if (arrayID[i] === 'Seleccionar') {
+      alert('Debe seleccionar un usuario. Por favor verifique.');
+      continuar = false;
+      seguir = false;
+    }
+    else 
+      {
+      subArray.splice(0, 1);
+      var ind = subArray.indexOf(arrayID[j]);
+      if (ind === -1) { 
+        i++;
+        j++;
+      }
+      else {
+        usuariosRepetidos = true;
+        continuar = false;
+      }
+    }
+  }
+
+  if (usuariosRepetidos) {
+    alert('Hay usuarios que están repetidos. Por favor verifique.');
+    seguir = false;
+  }
+
+  ///En caso de que se valide todo, se prosigue a enviar la consulta con la actualización en base a los parámetros pasados
+  if (seguir) {
+    var url = "data/updateQuery.php";
+    
+    ///Hago el insert con los datos del nuevo usuario:
+    var query = "insert into involucrados (usuario, referencia, rol, estado) values ("+newID+", "+ref+", '"+nuevoRol+"', 'activo')";
+    //alert(query);
+    
+    ///Ejecuto la consulta y muestro mensaje según resultado:
+    $.getJSON(url, {query: ""+query+""}).done(function(request) {
+      var resultado = request["resultado"];
+      if (resultado === "OK") {
+        alert('Registro modificado correctamente!');  
+        inhabilitarReferencia();
+        var parametros = jQuery(location).attr('search');
+        if (parametros) {
+          mostrarReferencia(parametros);
+        }
+        cargarObjetos();
+      }
+      else {
+        alert('Hubo un error. Por favor verifique.');
+      }
+    });
+  } 
+});//*** fin del click agregarInvolucrado ***
    
 /**************************************************************************************************************************
 /// ************************************************** FIN REFERENCIAS ****************************************************
@@ -3851,161 +4019,164 @@ $(document).on("change", "#nombrehsm", function (){
 ///Disparar funcion al hacer clic en el botón actualizar.
 ///Se validan todos los campos antes de hacer la actualización, y una vez hecha se inhabilita el form y parte de los botones.
 $(document).on("click", "#actualizarSlot", function (){
-    var seguir = true;
-    seguir = validarSlot();
+  var seguir = true;
+  var validarRoles = true;
+  
+  seguir = validarSlot();
 
-    var elementos = $(".nombreUsuario");
-    var ids = $(".slotUserId");
-    var tam = elementos.size();
-    var arrayID = [];
-    var slotUsersId = [];
-    for (var i=0; i<tam; i++) {
-      var selectActual = $(elementos[i]);
-      var id = $(selectActual).val();
-      var actual = $(ids[i]);
-      var userId = $(actual).val();
-      arrayID.push(id);
-      slotUsersId.push(userId);
+  var elementos = $(".nombreUsuario");
+  var ids = $(".slotUserId");
+  var tam = elementos.size();
+  var arrayID = [];
+  var slotUsersId = [];
+  for (var i=0; i<tam; i++) {
+    var selectActual = $(elementos[i]);
+    var id = $(selectActual).val();
+    var actual = $(ids[i]);
+    var userId = $(actual).val();
+    arrayID.push(id);
+    slotUsersId.push(userId);
+  }
+  //alert(arrayID);
+  var arrayRoles = [];
+  var elem = $(".rolUsuario");
+  for (var i=0; i<tam; i++) {
+    var rol = $(elem[i]).val();
+    arrayRoles.push(rol);
+  }
+  //alert(arrayRoles);
+  var i = 1;
+  var j = 0;
+  var usuariosRepetidos = false;
+  var continuar = true;
+  var subArray = arrayID.slice(0);
+
+  while ((i<arrayID.length) && (continuar===true)) {
+    subArray.splice(0, 1);
+    var ind = subArray.indexOf(arrayID[j]);
+    if (ind === -1) { 
+      i++;
+      j++;
     }
-    //alert(arrayID);
-    var arrayRoles = [];
-    var elem = $(".rolUsuario");
-    for (var i=0; i<tam; i++) {
-      var rol = $(elem[i]).val();
-      arrayRoles.push(rol);
+    else {
+      usuariosRepetidos = true;
+      continuar = false;
     }
-    //alert(arrayRoles);
-    var i = 1;
-    var j = 0;
-    var usuariosRepetidos = false;
-    var continuar = true;
-    var subArray = arrayID.slice(0);
-    
-    while ((i<arrayID.length) && (continuar===true)) {
-      subArray.splice(0, 1);
-      var ind = subArray.indexOf(arrayID[j]);
-      if (ind === -1) { 
-        i++;
-        j++;
+  }
+
+  if (usuariosRepetidos) {
+    alert('Hay usuarios que están repetidos. Por favor verifique.');
+    seguir = false;
+    validarRoles = false;
+  }
+
+  var rolesRepetidos = false;
+  var continuar = true;
+
+  var i = 0;
+  while ((i<arrayRoles.length - 1) && (continuar===true) && (validarRoles === true)) {
+    var elemento = arrayRoles[i].split("/");//alert('i: '+ i + ' - elemento 1: '+elemento[0]);
+    var j = i + 1;
+    var continuar1 = true;
+    while ((j<arrayRoles.length) && (continuar1 === true)) {
+      var existe = arrayRoles[j].includes(elemento[0]);//alert('j: '+ j +' - ' + arrayRoles[j]);
+      if (existe) {
+        continuar1 = false;
+        continuar = false;
+        rolesRepetidos = true;//alert('existió para el elemento 1');
       }
       else {
-        usuariosRepetidos = true;
-        continuar = false;
+        j++;
       }
     }
-    
-    if (usuariosRepetidos) {
-      alert('Hay usuarios que están repetidos. Por favor verifique.');
-      seguir = false;
-    }
-
-    var rolesRepetidos = false;
-    var continuar = true;
-    
-    var i = 0;
-    while ((i<arrayRoles.length - 1) && (continuar===true)) {
-      var elemento = arrayRoles[i].split("/");//alert('i: '+ i + ' - elemento 1: '+elemento[0]);
-      var j = i + 1;
-      var continuar1 = true;
-      while ((j<arrayRoles.length) && (continuar1 === true)) {
-        var existe = arrayRoles[j].includes(elemento[0]);//alert('j: '+ j +' - ' + arrayRoles[j]);
+    if ((continuar1 === true) && (elemento[1] !== "undefined"))
+      {
+      var k = i + 1;
+      var continuar2 = true;//alert('i: '+ i + '- elemento 2: '+elemento[1]);
+      while ((k<arrayRoles.length) && (continuar2 === true)) {
+        var existe = arrayRoles[k].includes(elemento[1]);//alert('k: '+ k +' - ' + arrayRoles[k]);
         if (existe) {
-          continuar1 = false;
+          continuar2 = false;
           continuar = false;
-          rolesRepetidos = true;//alert('existió para el elemento 1');
+          rolesRepetidos = true;//alert('existió para el segundo elemento');
         }
         else {
-          j++;
+          k++;
         }
       }
-      if ((continuar1 === true) && (elemento[1] !== "undefined"))
-        {
-        var k = i + 1;
-        var continuar2 = true;//alert('i: '+ i + '- elemento 2: '+elemento[1]);
-        while ((k<arrayRoles.length) && (continuar2 === true)) {
-          var existe = arrayRoles[k].includes(elemento[1]);//alert('k: '+ k +' - ' + arrayRoles[k]);
-          if (existe) {
-            continuar2 = false;
-            continuar = false;
-            rolesRepetidos = true;//alert('existió para el segundo elemento');
-          }
-          else {
-            k++;
-          }
-        }
-      }
-      i++;
     }
-    
-    if (rolesRepetidos) {
-      alert('Hay usuarios que tienen el mismo rol. Por favor verifique.');
-      seguir = false;
-    }
+    i++;
+  }
 
-    ///En caso de que se valide todo, se prosigue a enviar la consulta con la actualización en base a los parámetros pasados
-    if (seguir) {
-      ///Recupero valores editados y armo la consulta para el update:
-      var idslot = document.getElementById("idslot").value;
-      var nombre = (document.getElementById("slot").value).trim();
-      var obs = (document.getElementById("slotobserva").value).trim();
-      var hsm = document.getElementById("nombrehsm").value;
-      //alert('idslot: '+idslot+'\nnombre: '+nombre +'\nhsm:'+hsm+'\nobs: '+obs);
-      
-      var query = "select idslots as id, nombre from slots where nombre='"+nombre+"' and hsm="+hsm+"";
-      var url = "data/selectQuery.php";
-      //alert(query);
-      $.getJSON(url, {query: ""+query+""}).done(function(request) {
-        var total = request["rows"];
-        var id;
-        if (total > 0) {
-          id = request["resultado"][0]["id"];
-        }
-        if (((total <= 1) && (idslot === id)) || ((idslot !== id) && (total < 1))) {  
-          var query = "update slots set nombre='" + nombre + "', observaciones='" + obs + "', hsm="+hsm+" where idslots='" + idslot + "'";
-          var url = "data/updateQuery.php";
-          //alert(query);
-          ///Ejecuto la consulta y en caso de que se haya realizado sin problemas continúo con el update de los ususarios:
-          $.getJSON(url, {query: ""+query+""}).done(function(request) {
-            var resultado = request["resultado"];
-            if (resultado === "OK") {
-              var query = "update slotusers set usuariokms = case idslotusers ";
-              for (var i in slotUsersId){
-                query += "when "+slotUsersId[i]+" then '"+arrayRoles[i]+"' ";
-              }
-              query += " end where idslotusers in (";
-              var tope = parseInt(slotUsersId.length, 10) - 1;
-              for (var j in slotUsersId){
-                if (j == tope) {
-                  query += slotUsersId[j]+")";
-                }
-                else {
-                  query += slotUsersId[j]+", ";
-                } 
-              }
-              //alert(query);
-              ///Ejecuto la consulta y muestro mensaje según resultado:
-              $.getJSON(url, {query: ""+query+""}).done(function(request) {
-                var resultado = request["resultado"];
-                if (resultado === "OK") {
-                  alert('Registro modificado correctamente!');  
-                  inhabilitarSlot();
-                  cargarSlots("#selector", idslot);
-                }
-                else {
-                  alert('Hubo un error. Por favor verifique.');
-                }
-              });
-            }  
-            else {
-              alert('Hubo un error. Por favor verifique.');
+  if (rolesRepetidos) {
+    alert('Hay usuarios que tienen el mismo rol. Por favor verifique.');
+    seguir = false;
+  }
+
+  ///En caso de que se valide todo, se prosigue a enviar la consulta con la actualización en base a los parámetros pasados
+  if (seguir) {
+    ///Recupero valores editados y armo la consulta para el update:
+    var idslot = document.getElementById("idslot").value;
+    var nombre = (document.getElementById("slot").value).trim();
+    var obs = (document.getElementById("slotobserva").value).trim();
+    var hsm = document.getElementById("nombrehsm").value;
+    //alert('idslot: '+idslot+'\nnombre: '+nombre +'\nhsm:'+hsm+'\nobs: '+obs);
+
+    var query = "select idslots as id, nombre from slots where nombre='"+nombre+"' and hsm="+hsm+"";
+    var url = "data/selectQuery.php";
+    //alert(query);
+    $.getJSON(url, {query: ""+query+""}).done(function(request) {
+      var total = request["rows"];
+      var id;
+      if (total > 0) {
+        id = request["resultado"][0]["id"];
+      }
+      if (((total <= 1) && (idslot === id)) || ((idslot !== id) && (total < 1))) {  
+        var query = "update slots set nombre='" + nombre + "', observaciones='" + obs + "', hsm="+hsm+" where idslots='" + idslot + "'";
+        var url = "data/updateQuery.php";
+        //alert(query);
+        ///Ejecuto la consulta y en caso de que se haya realizado sin problemas continúo con el update de los ususarios:
+        $.getJSON(url, {query: ""+query+""}).done(function(request) {
+          var resultado = request["resultado"];
+          if (resultado === "OK") {
+            var query = "update slotusers set usuariokms = case idslotusers ";
+            for (var i in slotUsersId){
+              query += "when "+slotUsersId[i]+" then '"+arrayRoles[i]+"' ";
             }
-          });
-        }
-        else {
-          alert('Ya existe un slot con esos datos. Por favor verifique.');
-        }
-      });  
-    }
+            query += " end where idslotusers in (";
+            var tope = parseInt(slotUsersId.length, 10) - 1;
+            for (var j in slotUsersId){
+              if (j == tope) {
+                query += slotUsersId[j]+")";
+              }
+              else {
+                query += slotUsersId[j]+", ";
+              } 
+            }
+            //alert(query);
+            ///Ejecuto la consulta y muestro mensaje según resultado:
+            $.getJSON(url, {query: ""+query+""}).done(function(request) {
+              var resultado = request["resultado"];
+              if (resultado === "OK") {
+                alert('Registro modificado correctamente!');  
+                inhabilitarSlot();
+                cargarSlots("#selector", idslot);
+              }
+              else {
+                alert('Hubo un error. Por favor verifique.');
+              }
+            });
+          }  
+          else {
+            alert('Hubo un error. Por favor verifique.');
+          }
+        });
+      }
+      else {
+        alert('Ya existe un slot con esos datos. Por favor verifique.');
+      }
+    });  
+  }
   });//*** fin del click actualizarSlot ***
 
 ///Disparar funcion al hacer click en el botón eliminar.
@@ -4069,11 +4240,10 @@ $(document).on("click", "#eliminarSlot", function () {
   }
 });//*** fin del click eliminarSlot ***
 
-///Disparar funcion al hacer clic en el botón de Quitar de alguno de los usuarios del slot.
-///Se cargan en el DIV #content los datos del mismo.
+///Disparar funcion al hacer clic en el botón Quitar de alguno de los usuarios del slot.
 $(document).on("click", ".quitarUser", function () {
   var iduser = $(this).parent().next().children().val();
-  var nombreUser = $(this).parent().prev().prev().prev().children().val();
+  var nombreUser = $(this).parent().next().children(":last-child").val();
   var idslot = document.getElementById("idslot").value;
   var nombreslot = document.getElementById("slot").value;
   var url = "data/updateQuery.php"; 
@@ -4101,14 +4271,205 @@ $(document).on("click", ".quitarUser", function () {
 ///Se cargan en la tabla una nueva fila para agregar el nuevo usuario.
 $(document).on("click", "#nuevoUsuarioSlot", function () {
   var trs=$("#detalleSlot tr").length;
-  var nuevaFila = '<tr><td colspan="6">ALGO</td></tr>';
   var indice = trs - 3;
   var selector = '#detalleSlot tr:eq('+indice+')';
+  var slot = document.getElementById("slot").value;
+  var empresa = slot.split("_")[0];
+  var nuevaFila = '<tr>';
   
+  var url = "data/selectQuery.php"; 
+  /// levanto datos de los posibles usuarios del slot. Los que pertenecen al banco o a EMSA
+  var query = "select idusuarios, apellido, nombre, empresa from usuarios where empresa='EMSA' or empresa='"+empresa+"' and estado='activo' order by empresa";
+    
+  $.getJSON(url, {query: ""+query+""}).done(function(request) {
+    var posiblesUsuarios = request["resultado"];
+    var totalUsuarios = request.rows;
+    if (totalUsuarios > 0) {
+      var roles = ['so01/us01', 'so02/us02', 'so03/us03', 'so04/us04', 'so01', 'so02', 'so03', 'so04', 'us01', 'us02', 'us03', 'us04'];
+      
+      nuevaFila += '<td colspan="2">\n\
+                      <select id="nombreUsuario" name="nombreUsuario" style="width:100%" disabled="true" class="nombreUsuario">\n\
+                        <option value="Seleccionar">--Seleccionar--</option>';
+      for (var i in posiblesUsuarios) {
+        nuevaFila += '<option id="'+posiblesUsuarios[i]["idusuarios"]+'" value="'+posiblesUsuarios[i]["idusuarios"]+'">'+posiblesUsuarios[i]["nombre"]+' '+posiblesUsuarios[i]["apellido"]+'</option>';
+      }
+      nuevaFila += ' </select>\n\
+                    </td>\n\
+                    <td>\n\
+                      <input type="text" name="empresaUsuario" value="------" disabled="true">\n\
+                    </td>';
+      nuevaFila += '<td colspan="2"><select id="rolUsuario" name="rolUsuario" style="width:100%" disabled="true" class="rolUsuario">';
+      for (var j in roles) {
+        nuevaFila += '<option id="'+roles[j]+'" value="'+roles[j]+'">'+roles[j]+'</option>';
+      }
+      nuevaFila += '</select>\n\
+                  </td>\n\
+                  <td><input type="button" id="agregarUser" name="agregarUser" class="agregarUser btn-success" value="Añadir"></td></tr>';
+    }
+    $(selector).after(nuevaFila);
+    habilitarSlot();
+  });  
+});//*** fin del click nuevoUsuarioSlot ***
+
+///Disparar funcion al hacer clic en el botón de Añadir que está luego de los usuarios del slot.
+///Se valida y en caso exitoso se agrega el registro en la base de datos.
+$(document).on("click", "#agregarUser", function () {
+  var seguir = true;
+  var verificarRoles = true;
+  var slot = document.getElementById("idslot").value;
+  var nombreSlot = document.getElementById("nombreSlot").value;
+  var elementos = $(".nombreUsuario");
+  var ids = $(".slotUserId");
+  var tam = elementos.size()-1;// pongo el tamaño menos 1 dado que aún no está hecho el insert para el slotUsersId.
+  var arrayID = [];
+  var slotUsersId = [];
+  var newID = $(this).parent().prev().prev().prev().children().val();
+  var nuevoRol = $(this).parent().prev().children().val();
+      
+  for (var i=0; i<tam; i++) {
+    var selectActual = $(elementos[i]);
+    var actual = $(ids[i]);
+    var id = $(selectActual).val();
+    var userId = $(actual).val();
+    arrayID.push(id);
+    slotUsersId.push(userId);
+  }
+  arrayID.push(newID);  
   
-  $(selector).after(nuevaFila);
-  //$("#detalleSlot").append(nuevaFila);
-});
+  var arrayRoles = [];
+  var elem = $(".rolUsuario");
+  for (var i=0; i<tam+1; i++) {
+    var rol = $(elem[i]).val();
+    arrayRoles.push(rol);
+  }
+  
+  //alert(arrayID);
+  //alert(slotUsersId);
+  //alert(arrayRoles);
+  
+  var i = 1;
+  var j = 0;
+  var usuariosRepetidos = false;
+  var continuar = true;
+  var subArray = arrayID.slice(0);
+
+  while ((i<arrayID.length) && (continuar===true)) {
+    if (arrayID[i] === 'Seleccionar') {
+      alert('Debe seleccionar un usuario. Por favor verifique.');
+      continuar = false;
+      seguir = false;
+      verificarRoles = false;
+    }
+    else 
+      {
+      subArray.splice(0, 1);
+      var ind = subArray.indexOf(arrayID[j]);
+      if (ind === -1) { 
+        i++;
+        j++;
+      }
+      else {
+        usuariosRepetidos = true;
+        continuar = false;
+      }
+    }
+  }
+
+  if (usuariosRepetidos) {
+    alert('Hay usuarios que están repetidos. Por favor verifique.');
+    seguir = false;
+    verificarRoles = false;
+  }
+
+  var rolesRepetidos = false;
+  var continuar = true;
+
+  var i = 0;
+  while ((i<arrayRoles.length - 1) && (continuar===true) && (verificarRoles === true)) {
+    var elemento = arrayRoles[i].split("/");//alert('i: '+ i + ' - elemento 1: '+elemento[0]);
+    var j = i + 1;
+    var continuar1 = true;
+    while ((j<arrayRoles.length) && (continuar1 === true)) {
+      var existe = arrayRoles[j].includes(elemento[0]);//alert('j: '+ j +' - ' + arrayRoles[j]);
+      if (existe) {
+        continuar1 = false;
+        continuar = false;
+        rolesRepetidos = true;//alert('existió para el elemento 1');
+      }
+      else {
+        j++;
+      }
+    }
+    if ((continuar1 === true) && (elemento[1] !== "undefined"))
+      {
+      var k = i + 1;
+      var continuar2 = true;//alert('i: '+ i + '- elemento 2: '+elemento[1]);
+      while ((k<arrayRoles.length) && (continuar2 === true)) {
+        var existe = arrayRoles[k].includes(elemento[1]);//alert('k: '+ k +' - ' + arrayRoles[k]);
+        if (existe) {
+          continuar2 = false;
+          continuar = false;
+          rolesRepetidos = true;//alert('existió para el segundo elemento');
+        }
+        else {
+          k++;
+        }
+      }
+    }
+    i++;
+  }
+
+  if (rolesRepetidos) {
+    alert('Hay usuarios que tienen el mismo rol. Por favor verifique.');
+    seguir = false;
+  }
+  
+  ///En caso de que se valide todo, se prosigue a enviar la consulta con la actualización en base a los parámetros pasados
+  if (seguir) {
+    var url = "data/updateQuery.php";
+    //primero hago el insert con los datos del nuevo usuario:
+    var query = "insert into slotusers (usuario, slot, usuariokms, estado) values ("+newID+", "+slot+", '"+nuevoRol+"', 'activo')";
+    //alert(query);
+    
+    ///Ejecuto la consulta y muestro mensaje según resultado:
+    $.getJSON(url, {query: ""+query+""}).done(function(request) {
+      var resultado = request["resultado"];
+      if (resultado === "OK") {
+        var query = "update slotusers set usuariokms = case idslotusers ";
+        for (var i in slotUsersId){
+          query += "when "+slotUsersId[i]+" then '"+arrayRoles[i]+"' ";
+        }
+        query += " end where idslotusers in (";
+        var tope = parseInt(slotUsersId.length, 10) - 1;
+        for (var j in slotUsersId){
+          if (j == tope) {
+            query += slotUsersId[j]+")";
+          }
+          else {
+            query += slotUsersId[j]+", ";
+          } 
+        }
+        //alert(query);
+        ///Ejecuto la consulta y muestro mensaje según resultado:
+        $.getJSON(url, {query: ""+query+""}).done(function(request) {
+          var resultado = request["resultado"];
+          if (resultado === "OK") {
+            alert('Registro modificado correctamente!');  
+            inhabilitarSlot();
+            cargarSlots("#selector", slot);
+            cargarDetalleSlot(slot, nombreSlot);
+          }
+          else {
+            alert('Hubo un error. Por favor verifique.');
+          }
+        });
+      }
+      else {
+        alert('Hubo un error. Por favor verifique.');
+      }
+    });
+  }
+});//*** fin del click agregarUser ***
 
 /*
 ///Disparar funcion al cambiar alguno de los nombres del select de nombreUsuario.
