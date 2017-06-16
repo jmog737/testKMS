@@ -30,6 +30,7 @@
             </a>
             <ul class="dropdown-menu menu hidden-xs">
               <li><a href="index.php">Actividades</a></li>
+              <li><a href="busquedas.php">Búsquedas</a></li>
               <li><a href="usuario.php">Usuarios</a></li>
               <li><a href="slot.php">Slots</a></li>
               <li role="separator" class="divider"></li>

@@ -2238,6 +2238,28 @@ function validarSlot()
 ************************************************************************************************************************
 **/
 
+
+
+/***********************************************************************************************************************
+/// ************************************************* FUNCIONES BÚSQUEDAS **********************************************
+************************************************************************************************************************
+*/
+
+/**
+ * \brief Función que carga en el form pasado como parámetro todos los slots.
+ * @param {String} selector String con el DIV donde se deben de cargar los datos.
+ * @param {Int} slot Id del slot a resaltar en el listado.
+ */ 
+function cargarSlots(selector, slot) {
+
+}
+      
+/***********************************************************************************************************************
+/// ********************************************** FIN FUNCIONES BÚSQUEDAS *********************************************
+************************************************************************************************************************
+**/
+
+
 /**
 \brief Función que se ejecuta al cargar la página.
 En la misma se ve primero desde que página se llamó, y en base a eso
@@ -2327,6 +2349,11 @@ function todo () {
     case "/testKMS/slot.php": 
       {
       cargarSlots("#main-content", 0);
+      break;
+    }
+    case "/testKMS/busquedas.php": 
+      {
+      
       break;
     }
     default: break;
