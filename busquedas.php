@@ -27,19 +27,19 @@
             </tr>
             <tr>
               <td>
-                <input type="radio" name="criterio" value="nombreActividad">
+                <input type="radio" name="criterio" value="motivo" checked="checked">
               </td>
               <td>Motivo:</td>
-              <td colspan="3"><input type="text" name="motivo"></td>
+              <td colspan="3"><input type="text" name="motivo" id="motivo"></td>
             </tr>
             <tr>
               <td>
                 <input type="radio" name="criterio" value="fecha">
               </td>
               <td>Entre:</td>
-              <td><input type="date" name="inicio"></td>
+              <td><input type="date" name="inicio" id="inicio" style="width:100%; text-align: center" min="2016-10-01"></td>
               <td>y:</td>
-              <td><input type="date" name="fin"></td>
+              <td><input type="date" name="fin" id="fin" style="width:100%; text-align: center" min="2016-10-01"></td>
             </tr>
             <tr>
               <th colspan="5">REFERENCIAS</th>
@@ -50,7 +50,7 @@
               </td>
               <td>Código:</td>
               <td colspan="3">
-                <input type="text" name="codigo">
+                <input type="text" name="codigo" id="codigo">
               </td>  
             </tr>
             <tr>
@@ -60,16 +60,17 @@
               <td rowspan="2"><input type="radio" name="criterio" value="slot"></td>
               <td>HSM:</td>
               <td colspan="3">
-                <select>
-                  <option></option>
-                  <option></option>
-                  <option></option>
+                <select id="nombreHsm" name="nombreHsm" style="width:100%">
+                  <option value="ninguno" selected="yes">---SELECCIONAR---</option>
+                  <option value="1">Producción</option>
+                  <option value="2">Back Up</option>
+                  <option value="3">Test</option>
                 </select>
               </td>
             </tr>
             <tr>
               <td>Nombre:</td>
-              <td colspan="3"><input type="text" name="nombreSlot"></td>
+              <td colspan="3"><input type="text" name="nombreSlot" id="nombreSlot"></td>
             </tr>
             <tr>
               <th colspan="5">USUARIOS</th>
@@ -77,11 +78,11 @@
             <tr>
               <td rowspan="2"><input type="radio" name="criterio" value="usuario"></td>
               <td>Nombre:</td>
-              <td colspan="3"><input type="text" name="nombreUsuario"></td>
+              <td colspan="3"><input type="text" name="nombreUsuario" id="nombreUsuario"></td>
             </tr>
             <tr>
               <td>Empresa:</td>
-              <td colspan="3"><input type="text" name="empresa"></td>
+              <td colspan="3"><input type="text" name="empresa" id="empresa"></td>
             </tr>
             <tr>
               <th colspan="5">LLAVES</th>
@@ -89,15 +90,15 @@
             <tr>
               <td rowspan="3"><input type="radio" name="criterio" value="llave"></td>
               <td>Nombre:</td>
-              <td colspan="3"><input type="text" name="nombreLlave"></td>
+              <td colspan="3"><input type="text" name="nombreLlave" id="nombreLlave"></td>
             </tr>
             <tr>
               <td>Owner:</td>
-              <td colspan="3"><input type="text" name="ownerLlave"></td>
+              <td colspan="3"><input type="text" name="ownerLlave" id="ownerLlave"></td>
             </tr>
             <tr>
               <td>Versión:</td>
-              <td colspan="3"><input type="text" name="versionLlave"></td>
+              <td colspan="3"><input type="text" name="versionLlave" id="versionLlave"></td>
             </tr>
             <tr>
               <th colspan="5">CERTIFICADOS</th>
@@ -105,18 +106,20 @@
             <tr>
               <td rowspan="3"><input type="radio" name="criterio" value="cert"></td>
               <td>Nombre:</td>
-              <td colspan="3"><input type="text" name="nombreCert"></td>
+              <td colspan="3"><input type="text" name="nombreCert" id="nombreCert"></td>
             </tr>
             <tr>
               <td>Owner:</td>
-              <td colspan="3"><input type="text" name="ownerCert"></td>
+              <td colspan="3"><input type="text" name="ownerCert" id="ownerCert"></td>
             </tr>
             <tr>
               <td>Versión:</td>
-              <td colspan="3"><input type="text" name="versionCert"></td>
+              <td colspan="3"><input type="text" name="versionCert" id="versionCert"></td>
             </tr>
             <tr>
-              <td colspan="5" class="pieTabla"><input type="button" class="btn-success" name="consultar" value="Consultar"></td>
+              <td colspan="5" class="pieTabla">
+                <input type="button" class="btn-success" name="consultar" id="realizarBusqueda" value="Consultar">
+              </td>
             </tr>
           </table>
         </div>

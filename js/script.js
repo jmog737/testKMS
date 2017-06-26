@@ -2244,16 +2244,10 @@ function validarSlot()
 /// ************************************************* FUNCIONES BÚSQUEDAS **********************************************
 ************************************************************************************************************************
 */
-
-/**
- * \brief Función que carga en el form pasado como parámetro todos los slots.
- * @param {String} selector String con el DIV donde se deben de cargar los datos.
- * @param {Int} slot Id del slot a resaltar en el listado.
- */ 
-function cargarSlots(selector, slot) {
-
+function validarBusqueda() {
+  
 }
-      
+
 /***********************************************************************************************************************
 /// ********************************************** FIN FUNCIONES BÚSQUEDAS *********************************************
 ************************************************************************************************************************
@@ -2907,7 +2901,8 @@ $(document).on("click", "#addRef", function () {
       });
     }
   });//*** fin del click addRef ***
-  
+
+/*  
 ///Disparar funcion al cambiar alguno de los nombres del select de involucrados.
 ///Se busca la empresa a la que corresponde el nuevo usuario y se actualiza el valor del input empresaUsuario.
 $(document).on("change", "#nombreUsuario", function (){
@@ -2920,6 +2915,7 @@ $(document).on("change", "#nombreUsuario", function (){
     $(selector).val(empresa);
   });
 });//*** fin del change nombreUsuario ***
+*/
 
 ///Disparar funcion al hacer clic en el botón Quitar de alguno de los involucrados de la referencia.
 $(document).on("click", ".quitarInvolucrado", function () {
@@ -4498,10 +4494,10 @@ $(document).on("click", "#agregarUser", function () {
   }
 });//*** fin del click agregarUser ***
 
-/*
+
 ///Disparar funcion al cambiar alguno de los nombres del select de nombreUsuario.
 ///Se busca la empresa a la que corresponde el nuevo usuario y se actualiza el valor del input empresaUsuario.
-$(document).on("change", "#nombreUsuario", function (){
+$(document).on("change", ".nombreUsuario", function (){
   var iduser = this.value;
   var url = "data/selectQuery.php";
   var query = 'select empresa from usuarios where idusuarios = "'+iduser+'"';
@@ -4511,13 +4507,153 @@ $(document).on("change", "#nombreUsuario", function (){
     $(selector).val(empresa);
   });
 });//*** fin del change nombreUsuario ***
-*/
 
 /**************************************************************************************************************************
 /// ***************************************************** FIN SLOTS *******************************************************
 ***************************************************************************************************************************
 */
 
+/**************************************************************************************************************************
+/// Comienzan las funciones que manejan los eventos relacionados a las BÚSQUEDAS como ser creación, edición y eliminación.
+***************************************************************************************************************************
+*/
+
+$(document).on("click", "#realizarBusqueda", function () {
+  var radio = $('input:radio[name=criterio]:checked').val();
+  var inicio = document.getElementById("inicio").value;
+  var fin = document.getElementById("fin").value;
+  var motivo = document.getElementById("motivo").value;
+  var codigo = document.getElementById("codigo").value;
+  var nombreHsm = document.getElementById("nombreHsm").value;
+  var nombreSlot = document.getElementById("nombreSlot").value;
+  var nombreUsuario = document.getElementById("nombreUsuario").value;
+  var empresa = document.getElementById("empresa").value;
+  var nombreLlave = document.getElementById("nombreLlave").value;
+  var ownerLlave = document.getElementById("ownerLlave").value;
+  var versionLlave = document.getElementById("versionLlave").value;
+  var nombreCert = document.getElementById("nombreCert").value;
+  var ownerCert = document.getElementById("ownerCert").value;
+  var versionCert = document.getElementById("versionCert").value;
+  //alert('radio: '+radio+'\nmotivo: '+motivo+'\ninicio: '+inicio+'\nfin: '+fin+'\ncódigo: '+codigo+'\nnombre HSM: '+nombreHsm+'\nnombre Slot: '+nombreSlot+'\nUsuario: '+nombreUsuario+'\nempresa: '+empresa+'\nLlave: '+nombreLlave+'\nownerLlave: '+ownerLlave+'\nversion llave: '+versionLlave+'\nCert: '+nombreCert+'\nowner Cert: '+ownerCert+'\nversion Cert: '+versionCert);
+  var query = '';
+    
+  switch (radio) {
+    case 'motivo':  if (motivo === '') {
+                      alert('Debe ingresar el motivo a consultar para este tipo de búsqueda. Por favor verifique!.');
+                      return false;
+                    }
+                    else {
+                      query = 'select idactividades, fecha, motivo from actividades where motivo like "%'+motivo+'%"';
+                      return true;
+                    }
+                    break;
+    case 'fecha': if ((inicio === '') && (fin === '')) {
+                    alert('Debe seleccionar al menos una de las dos fechas. Por favor verifique!.');
+                    return false;
+                  }
+                  else {
+                    if (inicio === '') {
+                      //inicio = new Date("2016-10-01");
+                      $("#inicio").val($.datepicker.formatDate('YYYY-MM-dd', new Date()));
+                      //inicio = inicio.toLocaleDateString();
+                      alert(inicio);
+                    }
+                    if (fin === '') {
+                      var temp = new Date();
+                      fin = '"'+temp.getFullYear()+'-'+temp.getMonth()+'-'+temp.getDate()+'"';
+                      //document.getElementById("fin").value = fin;
+                      //alert(fin);
+                    }
+                    query = 'select idactividades, fecha, motivo from actividades where fecha>="'+inicio+'" and fecha<="'+fin+'" order by fecha';
+                    
+                  }
+                  break;
+    case 'codigo':  if (codigo === '') {
+                      alert('Debe ingresar el código a consultar para este tipo de búsqueda. Por favor verifique!.');
+                    }
+                    else {
+                      query = 'select idreferencias, codigo, detalles from referencias where codigo like "%'+codigo+'%"';
+                    }
+                    break;
+    case 'slot':  if (nombreHsm === 'ninguno') {
+                    query = 'select idslots, slots.nombre, slots.estado, hsm.nombre from slots inner join hsm on slots.hsm=hsm.idhsm where slots.nombre like "%'+nombreSlot+'%"';
+                  }
+                  else {
+                    if (nombreSlot === '') {
+                      query = 'select idslots, slots.nombre, slots.estado, hsm.nombre from slots inner join hsm on slots.hsm=hsm.idhsm where hsm.idhsm="'+nombreHsm+'"';
+                    }
+                    else {
+                      query = 'select idslots, slots.nombre, slots.estado, hsm.nombre from slots inner join hsm on slots.hsm=hsm.idhsm where slots.nombre like "%'+nombreSlot+'%" and hsm.idhsm="'+nombreHsm+'"';
+                    }
+                  }
+                  break;
+    case 'usuario': if (nombreUsuario === '') {
+                      query = 'select idusuarios, nombre, apellido, empresa, estado from usuarios where empresa like "%'+empresa+'%" order by empresa, apellido';
+                    }
+                    else {
+                      if (empresa === '') {
+                        query = 'select idusuarios, nombre, apellido, empresa, estado from usuarios where nombre like "%'+nombreUsuario+'%" or apellido like "%'+nombreUsuario+'%" order by empresa, apellido';
+                      }
+                      else {
+                        query = 'select idusuarios, nombre, apellido, empresa, estado from usuarios where empresa like "%'+empresa+'%" and (nombre like "%'+nombreUsuario+'%" or apellido like "%'+nombreUsuario+'%") order by empresa, apellido';
+                      }
+                    }
+                    break;
+    case 'llave': query = 'select idkeys, nombre, owner, version, kcv from llaves where ';
+                  if (nombreLlave !== '') {
+                    query += 'nombre like "%'+nombreLlave+'%" ';
+                  }
+                  if (ownerLlave !== '') {
+                    if (nombreLlave !== '') {
+                    query += 'and llaves.owner like "%'+ownerLlave+'%" ';
+                    }
+                    else {
+                      query += 'llaves.owner like "%'+ownerLlave+'%" ';
+                    }
+                  }
+                  if (versionLlave !== '') {
+                    if ((ownerLlave !== '') || (nombreLlave !== '')) {
+                    query += 'and version like "%'+versionLlave+'%" ';
+                    }
+                    else {
+                      query += 'version like "%'+versionLlave+'%" ';
+                    }
+                  }
+                  query += 'order by nombre, llaves.owner, version';
+                  break;
+    case 'cert':  query = 'select idcertificados, nombre, owner, version, bandera, vencimiento, estado from certificados where ';
+                  if (nombreCert !== '') {
+                    query += 'nombre like "%'+nombreCert+'%" ';
+                  }
+                  if (ownerCert !== '') {
+                    if (nombreCert !== '') {
+                    query += 'and certificados.owner like "%'+ownerCert+'%" ';
+                    }
+                    else {
+                      query += 'certificados.owner like "%'+ownerCert+'%" ';
+                    }
+                  }
+                  if (versionCert !== '') {
+                    if ((ownerCert !== '') || (nombreCert !== '')) {
+                    query += 'and version like "%'+versionCert+'%" ';
+                    }
+                    else {
+                      query += 'version like "%'+versionCert+'%" ';
+                    }
+                  }
+                  query += 'order by nombre, certificados.owner, version';
+                  break;
+    default: break;
+  }
+  alert (query);
+  return false;
+  
+});
+
+/**************************************************************************************************************************
+/// *************************************************** FIN BÚSQUEDAS *****************************************************
+***************************************************************************************************************************
+*/
 
 }
 
