@@ -37,7 +37,7 @@
                 <input type="radio" name="criterio" value="fecha">
               </td>
               <td>Entre:</td>
-              <td><input type="date" name="inicio" id="inicio" style="width:100%; text-align: center" min="2016-10-01"></td>
+              <td><input type="date" name="inicio" id="inicio" style="width:100%; text-align: center" min="2016-07-01"></td>
               <td>y:</td>
               <td><input type="date" name="fin" id="fin" style="width:100%; text-align: center" min="2016-10-01"></td>
             </tr>
@@ -123,10 +123,8 @@
             </tr>
           </table>
         </div>
+        <div id='resultado' class='col-md-6 col-sm-12'></div>
       </div>
-      <div id='fila' class='row'>
-        <div id='resultado' class='col-md-5 col-sm-12'></div>
-      </div> 
     </div>
     
     <?php require_once('footer.php');?>
