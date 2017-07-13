@@ -190,8 +190,10 @@ function cargarActividades (selector, editar, actualizar, eliminar){
                 <td style="display:none"><input type="text" id="fuente" name="fuente" value="actividad"></td>\n\
                 <td style="display:none"><input type="text" id="ultimaActividad" name="ultimaActividad" value='+mayor+'></tr>';
         tr += '<tr>\n\
-                 <td colspan="4" class="pieTabla"><input type="button" id="agregarActividad" value="NUEVA" class="btn-success"></td>\n\
-               </tr>';     
+                <td colspan="3" class="pieTabla"><input type="button" id="agregarActividad" value="NUEVA" class="btn-success">\n\
+                  <input type="button" id="1" name="exportarActividades" value="EXPORTAR" class="btn-info exportar">\n\
+                </td>\n\
+              </tr>';     
         tabla += tr;
         tabla += '</table>';
         var cargar = '<h2>ACTIVIDADES</h2>';
@@ -556,7 +558,10 @@ function cargarDetalleActividad(activity){
               </tr>';
       }
     }
-    tr += '<tr><td colspan="6" class="pieTabla"><input type="button" id="nuevaRef" name="nuevaRef" value="NUEVA REFERENCIA" class="btn-success"></td></tr>'
+    tr += '<tr><td colspan="6" class="pieTabla"><input type="button" id="nuevaRef" name="nuevaRef" value="NUEVA REFERENCIA" class="btn-success">\n\
+                                                <input type="button" id="2" name="exportarDetalleActividad" value="EXPORTAR" class="btn-info exportar">\n\
+                </td>\n\
+           </tr>';
     tr += '<tr><td style="display:none"><input type="text" id="activity" name="activity" value='+activity+'></td></tr>';
     tabla += tr;
     tabla += '</table>';
@@ -750,7 +755,10 @@ function mostrarReferencia(parametros) {
                 </td>\n\
               </tr>';
           }
-        tr += '<tr><td colspan="6"><input type="button" name="nuevoInvolucrado" id="nuevoInvolucrado" value="Agregar"></td></tr>';  
+        tr += '<tr><td colspan="6"><input type="button" name="nuevoInvolucrado" id="nuevoInvolucrado" value="Agregar" class="btn-success">\n\
+                    <input type="button" id="3" name="exportarReferencia" value="EXPORTAR" class="btn-info exportar">\n\
+                   </td>\n\
+               </tr>';  
         tr += '<tr>\n\
                  <td colspan="2" class="pieTablaIzquierdo"><input type="button" id="editarReferencia" name="editarReferencia" value="EDITAR" onclick="cambiarEdicion()" class="btn-info"></td>\n\
                  <td colspan="2"><input type="button" id="actualizarReferencia" name="actualizarReferencia" value="ACTUALIZAR" class="btn-warning"></td>\n\
@@ -1315,6 +1323,7 @@ function mostrarLlave(id, selector) {
               <td colspan="2" style="text-align: left"><input id="att_derivemask" name="att_derivemask" type="checkbox"'+ att_derivemask +'> Derive Mask</td>\n\
               <td colspan="2" style="text-align: left"><input id="att_deletable" name="att_deletable" type="checkbox"'+ att_deletable +'> Deletable</td>\n\
           </tr>';
+    tr += '<tr><td colspan="10"><input type="button" id="4" name="exportarLlave" value="EXPORTAR" class="btn-info exportar"></td></tr>';                              
     tr += '<tr>\n\
               <td colspan="4" class="pieTablaIzquierdo"><input type="button" id="editarLlave" name="editarLlave" value="EDITAR" onclick="cambiarEdicion()" class="btn-info"></td>\n\
               <td colspan="3"><input type="button" id="actualizarLlave" name="actualizarLlave" disabled="true" value="ACTUALIZAR" class="btn-warning"></td>\n\
@@ -1640,6 +1649,7 @@ function mostrarCertificado(id, selector){
                <textarea id="observaciones" name="observaciones" style="width: 100%;resize: none">'+ obs +'</textarea>\n\
              </td>\n\
            </tr>';
+    tr += '<tr><td colspan="8"><input type="button" id="5" name="exportarCertificado" value="EXPORTAR" class="btn-info exportar"></td></tr>';                      
     tr += '<tr>\n\
               <td colspan="2" class="pieTablaIzquierdo"><input type="button" id="editarCertificado" name="editarCertificado" value="EDITAR" onclick="cambiarEdicion()" class="btn-info"></td>\n\
               <td colspan="3"><input type="button" id="actualizarCertificado" name="actualizarCertificado" disabled="true" value="ACTUALIZAR" class="btn-warning"></td>\n\
@@ -4578,6 +4588,8 @@ $(document).on("click", "#realizarBusqueda", function () {
   var versionCert = document.getElementById("versionCert").value;
   //alert('radio: '+radio+'\nmotivo: '+motivo+'\ninicio: '+inicio+'\nfin: '+fin+'\ncódigo: '+codigo+'\nnombre HSM: '+nombreHsm+'\nnombre Slot: '+nombreSlot+'\nUsuario: '+nombreUsuario+'\nempresa: '+empresa+'\nLlave: '+nombreLlave+'\nownerLlave: '+ownerLlave+'\nversion llave: '+versionLlave+'\nCert: '+nombreCert+'\nowner Cert: '+ownerCert+'\nversion Cert: '+versionCert);
   var query = '';
+  var campos;
+  var largos;
   var validado = true;
   switch (radio) {
     case 'motivo':  if (motivo === '') {
@@ -4586,7 +4598,9 @@ $(document).on("click", "#realizarBusqueda", function () {
                       return false;
                     }
                     else {
-                      query = 'select idactividades, fecha, motivo from actividades where motivo like "%'+motivo+'%"';
+                      query = "select idactividades, fecha, motivo from actividades where motivo like '%"+motivo+"%'";
+                      campos = "Id-Fecha-Motivo";
+                      largos = "c1-c2-c3-c6";
                     }
                     break;
     case 'fecha': if ((inicio === '') && (fin === '')) {
@@ -4617,8 +4631,10 @@ $(document).on("click", "#realizarBusqueda", function () {
                       return false;
                     }
                     else {
-                      query = 'select idactividades, fecha, motivo from actividades where fecha>="'+inicio+'" and fecha<="'+fin+'" order by fecha';
+                      query = "select idactividades, fecha, motivo from actividades where fecha>='"+inicio+"' and fecha<='"+fin+"' order by fecha";
                     }
+                    campos = "Id-Fecha-Motivo";
+                    largos = "c1-c2-c3-c6";
                   }
                   break;
     case 'codigo':  if (codigo === '') {
@@ -4627,7 +4643,9 @@ $(document).on("click", "#realizarBusqueda", function () {
                       return false;
                     }
                     else {
-                      query = 'select idreferencias, codigo, detalles from referencias where codigo like "%'+codigo+'%"';
+                      query = "select idreferencias, codigo, detalles from referencias where codigo like '%"+codigo+"%'";
+                      campos = "Id-Código-Detalles";
+                      largos = "c1-c1-c3-c5";
                     }
                     break;
     case 'slot':  if ((nombreHsm === 'ninguno') && (nombreSlot === '')) {
@@ -4637,16 +4655,18 @@ $(document).on("click", "#realizarBusqueda", function () {
                   }
                   else {
                     if (nombreSlot === '') {
-                      query = 'select idslots, slots.nombre, slots.estado, hsm.nombre as hsm from slots inner join hsm on slots.hsm=hsm.idhsm where hsm.idhsm="'+nombreHsm+'"';
+                      query = "select idslots, slots.nombre, slots.estado, hsm.nombre as hsm from slots inner join hsm on slots.hsm=hsm.idhsm where hsm.idhsm='"+nombreHsm+"'";
                     }
                     else {
                       if (nombreHsm === 'ninguno') {
-                        query = 'select idslots, slots.nombre, slots.estado, hsm.nombre as hsm from slots inner join hsm on slots.hsm=hsm.idhsm where slots.nombre like "%'+nombreSlot+'%"';
+                        query = "select idslots, slots.nombre, slots.estado, hsm.nombre as hsm from slots inner join hsm on slots.hsm=hsm.idhsm where slots.nombre like '%"+nombreSlot+"%'";
                       }
                       else {
-                        query = 'select idslots, slots.nombre, slots.estado, hsm.nombre as hsm from slots inner join hsm on slots.hsm=hsm.idhsm where slots.nombre like "%'+nombreSlot+'%" and hsm.idhsm="'+nombreHsm+'"';
-                      }  
+                        query = "select idslots, slots.nombre, slots.estado, hsm.nombre as hsm from slots inner join hsm on slots.hsm=hsm.idhsm where slots.nombre like '%"+nombreSlot+"%' and hsm.idhsm='"+nombreHsm+"'";
+                      }
                     }
+                  campos = "Id-Nombre-HSM-Estado";
+                  largos = "c1-c1-c1-c1-c4";
                   }
                   break;
     case 'usuario': if ((nombreUsuario === '') && (empresa === '')){
@@ -4656,16 +4676,18 @@ $(document).on("click", "#realizarBusqueda", function () {
                     }
                     else {
                       if (nombreUsuario === '') {
-                        query = 'select idusuarios, nombre, apellido, empresa, estado from usuarios where empresa like "%'+empresa+'%" order by empresa, apellido';
+                        query = "select idusuarios, nombre, apellido, empresa, estado from usuarios where empresa like '%"+empresa+"%' order by empresa, apellido";
                       }
                       else {
                         if (empresa === '') {
-                          query = 'select idusuarios, nombre, apellido, empresa, estado from usuarios where nombre like "%'+nombreUsuario+'%" or apellido like "%'+nombreUsuario+'%" order by empresa, apellido';
+                          query = "select idusuarios, nombre, apellido, empresa, estado from usuarios where nombre like '%"+nombreUsuario+"%' or apellido like '%"+nombreUsuario+"%' order by empresa, apellido";
                         }
                         else {
-                          query = 'select idusuarios, nombre, apellido, empresa, estado from usuarios where empresa like "%'+empresa+'%" and (nombre like "%'+nombreUsuario+'%" or apellido like "%'+nombreUsuario+'%") order by empresa, apellido';
+                          query = "select idusuarios, nombre, apellido, empresa, estado from usuarios where empresa like '%"+empresa+"%' and (nombre like '%"+nombreUsuario+"%' or apellido like '%"+nombreUsuario+"%') order by empresa, apellido";
                         }
                       }
+                      campos = "Id-Apellido-Nombre-Empresa-Estado";
+                      largos = "c1-c15-c15-c1-c5";
                     }
                     break;
     case 'llave': if ((ownerLlave === '') && (nombreLlave === '') && (versionLlave === '')) {
@@ -4674,27 +4696,29 @@ $(document).on("click", "#realizarBusqueda", function () {
                     return false;
                   }
                   else {
-                    query = 'select idkeys, llaves.nombre, llaves.owner, llaves.version, llaves.estado, llaves.kcv, tareas.referencia, slots.nombre as slot, hsm.nombre as hsm from llaves inner join tareas on tareas.idtareas=llaves.tarea inner join referencias on referencias.idreferencias=tareas.referencia inner join slots on slots.idslots=referencias.slot inner join hsm on hsm.idhsm=slots.hsm where ';
+                    query = "select idkeys, llaves.nombre, llaves.owner, llaves.version, llaves.estado, llaves.kcv, tareas.referencia, slots.nombre as slot, hsm.nombre as hsm from llaves inner join tareas on tareas.idtareas=llaves.tarea inner join referencias on referencias.idreferencias=tareas.referencia inner join slots on slots.idslots=referencias.slot inner join hsm on hsm.idhsm=slots.hsm where ";
                     if (nombreLlave !== '') {
-                      query += 'llaves.nombre like "%'+nombreLlave+'%" ';
+                      query += "llaves.nombre like '%"+nombreLlave+"%' ";
                     }
                     if (ownerLlave !== '') {
                       if (nombreLlave !== '') {
-                        query += 'and llaves.owner like "%'+ownerLlave+'%" ';
+                        query += "and llaves.owner like '%"+ownerLlave+"%' ";
                       }
                       else {
-                        query += 'llaves.owner like "%'+ownerLlave+'%" ';
+                        query += "llaves.owner like '%"+ownerLlave+"%' ";
                       }
                     }
                     if (versionLlave !== '') {
                       if ((ownerLlave !== '') || (nombreLlave !== '')) {
-                        query += 'and llaves.version like "%'+versionLlave+'%" ';
+                        query += "and llaves.version like '%"+versionLlave+"%' ";
                       }
                       else {
-                        query += 'llaves.version like "%'+versionLlave+'%" ';
+                        query += "llaves.version like '%"+versionLlave+"%' ";
                       }
                     }
-                    query += 'order by hsm.nombre desc, slots.nombre, llaves.owner, llaves.nombre, llaves.version';
+                    query += "order by hsm.nombre desc, slots.nombre, llaves.owner, llaves.nombre, llaves.version";
+                    campos = "Id-Nombre-Owner-Versión-KCV-HSM-Slot-Estado";
+                    largos = "c1-c1-c1-c1-c1-c1-c1-c1-c8";
                   }
                   break;
     case 'cert':  if ((ownerCert === '') && (nombreCert === '') && (versionCert === '')) {
@@ -4703,32 +4727,34 @@ $(document).on("click", "#realizarBusqueda", function () {
                     return false;
                   }
                   else {
-                    query = 'select idcertificados, certificados.nombre, certificados.owner, certificados.version, certificados.estado, certificados.bandera, certificados.vencimiento, tareas.referencia, slots.nombre as slot, hsm.nombre as hsm from certificados inner join tareas on tareas.idtareas=certificados.tarea inner join referencias on referencias.idreferencias=tareas.referencia inner join slots on slots.idslots=referencias.slot inner join hsm on hsm.idhsm=slots.hsm where ';
+                    query = "select idcertificados, certificados.nombre, certificados.owner, certificados.version, certificados.estado, certificados.bandera, certificados.vencimiento, tareas.referencia, slots.nombre as slot, hsm.nombre as hsm from certificados inner join tareas on tareas.idtareas=certificados.tarea inner join referencias on referencias.idreferencias=tareas.referencia inner join slots on slots.idslots=referencias.slot inner join hsm on hsm.idhsm=slots.hsm where ";
                     if (nombreCert !== '') {
-                      query += 'certificados.nombre like "%'+nombreCert+'%" ';
+                      query += "certificados.nombre like '%"+nombreCert+"%' ";
                     }
                     if (ownerCert !== '') {
                       if (nombreCert !== '') {
-                      query += 'and certificados.owner like "%'+ownerCert+'%" ';
+                      query += "and certificados.owner like '%"+ownerCert+"%' ";
                       }
                       else {
-                        query += 'certificados.owner like "%'+ownerCert+'%" ';
+                        query += "certificados.owner like '%"+ownerCert+"%' ";
                       }
                     }
                     if (versionCert !== '') {
                       if ((ownerCert !== '') || (nombreCert !== '')) {
-                      query += 'and certificados.version like "%'+versionCert+'%" ';
+                      query += "and certificados.version like '%"+versionCert+"%' ";
                       }
                       else {
-                        query += 'certificados.version like "%'+versionCert+'%" ';
+                        query += "certificados.version like '%"+versionCert+"%' ";
                       }
                     }
-                    query += 'order by hsm.nombre desc, slots.nombre, certificados.nombre, certificados.owner, certificados.version';
+                    query += "order by hsm.nombre desc, slots.nombre, certificados.nombre, certificados.owner, certificados.version";
+                    campos = "Id-Nombre-Owner-Versión-Bandera-Vencimiento-HSM-Slot-Estado";
+                    largos = "c1-c1-c1-c1-c1-c1-c1-c1-c1-c9";
                   }
                   break;
     default: break;
   }
-  //alert (query);
+  
   if (validado) {
     var url = "data/selectQuery.php";
     $.getJSON(url, {query: ""+query+""}).done(function(request){
@@ -4824,6 +4850,9 @@ $(document).on("click", "#realizarBusqueda", function () {
                   <td colspan="3"><input type="text" name="versionCert" id="versionCert"></td>\n\
                 </tr>';
         tr1 += '<tr>\n\
+                  <td style="display:none"><input type="text" id="query" name="consulta" value="'+query+'"></td>\n\
+                  <td style="display:none"><input type="text" id="campos" name="campos" value="'+campos+'"></td>\n\
+                  <td style="display:none"><input type="text" id="largos" name="largos" value="'+largos+'"></td>\n\
                   <td colspan="5" class="pieTabla"><input type="button" class="btn-success" name="consultar" id="realizarBusqueda" value="Consultar"></td>\n\
                 </tr>';
         tr1 += '</table>';
@@ -5079,6 +5108,7 @@ $(document).on("click", "#realizarBusqueda", function () {
                       break;
           default: break;
         }
+        tr += '<tr><td><input type="button" id="6" name="exportarBusqueda" value="EXPORTAR" class="btn-info exportar"></td></tr>';
         tr += '</table>';
         tabla += tr;
         cargar += encabezado;
@@ -5099,6 +5129,53 @@ $(document).on("click", "#realizarBusqueda", function () {
   }
   
 });
+
+///Disparar función al hacer click en botón de exportar.
+///Esto hace que se recupere el id que corresponde a este tipo de exportación (listado de actividades) y se 
+///redirija a la página exportar.php pasando ese parámetro:
+$(document).on("click", ".exportar", function (){
+  //alert('Está a punto de exportar el listado con las actividades. ¿Desea continuar?.');
+  ///Levanto el id que identifica lo que se va a exportar, a saber:
+  /// 1- listado de actividades.
+  /// 2- detalle de una actividad.
+  /// 3- detalle de una referencia.
+  /// 4- detalle de una llave.
+  /// 5- detalle de un certificado.
+  /// 6- resultado de una búsqueda.
+  var id = $(this).attr("id");
+
+  var url = "exportar.php?type="+id+"";
+  var campos = $("#campos").val();
+  var largos = $("#largos").val();
+  ///En base al id, veo si es necesario o no enviar parámetros:
+  switch (id) {
+    case "1": break;
+    case "2": var actividad = $("#activity").val();
+              url += '&actividad='+actividad+'&campos='+campos+'&largos='+largos;
+              break;
+    case "3": alert('Detalle de una referencia');
+              var idref = $("#idref").val();
+              var idslot = $("#idslot").val();
+              url += '&idref='+idref+'&idslot='+idslot+'&campos="'+campos+'&largos='+largos;
+              break;
+    case "4": alert('Detalle de una llave');
+              var idref = $("#idref").val();
+              var idkey = $("#idkey").val();
+              url += '&idref='+idref+'&idkey='+idkey+'&campos='+campos+'&largos='+largos;
+              break;
+    case "5": alert('Detalle de un certificado');
+              var idref = $("#idref").val();
+              var idcert = $("#idcert").val();
+              url += '&idref='+idref+'&idcert='+idcert+'&campos='+campos+'&largos='+largos;
+              break;
+    case "6": var query = $("#query").val();
+              var campos = $("#campos").val();
+              url += '&query='+query+'&campos='+campos+'&largos='+largos;
+              break;
+    default: break;
+  } 
+  window.location.href = url;
+});//*** fin del click .exportar ***
 
 /**************************************************************************************************************************
 /// *************************************************** FIN BÚSQUEDAS *****************************************************

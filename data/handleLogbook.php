@@ -6,6 +6,7 @@ $dbc = crearConexion(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 
 $query = $_GET["query"];
 $actividad = $_GET["actividad"];
+
 //$query = "select * from actividades where estado='activa' and idactividades=3";$actividad = 3;
 $result = consultarBD($query, $dbc);
 

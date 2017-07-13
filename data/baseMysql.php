@@ -55,6 +55,17 @@ function obtenerResultados($resultado)
       }   
   return $salida;
   }
+  
+function obtenerResultadosArray($resultado)
+  {
+  $i = 1;
+  while ($row = $resultado->fetch_array(MYSQLI_NUM))
+      {
+      $salida[$i] = $row;
+      $i++;
+      }
+  return $salida;
+  }  
 
 function mostrarResultados($resultado)
   {
