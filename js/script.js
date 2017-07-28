@@ -573,7 +573,7 @@ function cargarDetalleActividad(activity){
     tabla += '</table>';
     var cargar = '<h2>DETALLES</h2>';
     cargar += tabla;
-    var formu = '<form name="activity" id="resultadoBusqueda" method="post" action="exportar.php" class="exportarForm">';
+    var formu = '<form name="activity" id="detalleActividad" method="post" action="exportar.php" class="exportarForm">';
     //formu += '<h2></h2>';
     formu += cargar;
     formu += '</form>';
@@ -1637,7 +1637,7 @@ function mostrarCertificado(id, selector){
             </td>\n\
            </tr>';
     tr += '<tr>\n\
-            <th>Fecha</th>\n\
+            <th>Vencimiento:</th>\n\
             <td><input id="vencimiento" name="vencimiento" type="date" value="'+vencimiento+'" style="width:100%; text-align: center" min="2016-10-01"></td>\n\
             <th>Acción:</th>\n\
             <td colspan="2">\n\
@@ -2105,7 +2105,7 @@ function cargarDetalleSlot(slot, nombreSlot) {
 
           cargarSlots('#selector', slot);
           $("#selector").css('padding-right', '30px');
-
+          var formu = '<form name="slotDetail" id="slotDetail" method="post" action="exportar.php" class="exportarForm">';
           var tabla = '<table id="detalleSlot" name="detalleSlot" class="tabla2">';
           var tr = '<tr>\n\
                       <th colspan="6" class="tituloTabla">DATOS DEL SLOT</th>\n\
@@ -2207,20 +2207,24 @@ function cargarDetalleSlot(slot, nombreSlot) {
             }
           }
           tr += '<tr><td colspan="6"><input type="button" name="nuevoUsuarioSlot" id="nuevoUsuarioSlot" value="Agregar"></td></tr>';
+          tr += '<tr><td colspan="6"><input type="button" id="8" name="exportarSlot" value="EXPORTAR" class="btn-info exportar"></td>';
           tr += '<tr>\n\
                     <td class="pieTablaIzquierdo"><input type="button" id="editarSlot" name="editarSlot" value="EDITAR" onclick="cambiarEdicion()" class="btn-info"></td>\n\
                     <td colspan="2"><input type="button" id="actualizarSlot" name="actualizarSlot" disabled="true" value="ACTUALIZAR" class="btn-warning"></td>\n\
                     <td class="pieTablaDerecho"><input type="button" id="eliminarSlot" name="eliminarSlot" value="ELIMINAR" class="btn-danger"></td>\n\
                     <td style="display:none"><input type="text" id="fuente" name="fuente" value="slot"></td>\n\
                     <td style="display:none"><input type="text" id="idslot" name="idslot" value="'+slot+'"></td>\n\
+                    <td style="display:none"><input type="text" id="param" name="param" value=""></td>\n\
                     <td style="display:none"><input type="text" id="nombreSlot" name="nombreSlot" value="'+nombreSlot+'"></td>\n\
                 </tr>'; 
           tr += '</table>';
+          tr += '</form>';
           tabla += tr;
+          formu += tabla;
           var encabezado = '<h3 id="titulo" class="encabezado">DETALLES DEL SLOT</h3>';
           var cargar = '';
           cargar += encabezado;
-          cargar += tabla;
+          cargar += formu;
           $("#content").html(cargar);
         });    
       });
@@ -4726,7 +4730,7 @@ $(document).on("click", "#realizarBusqueda", function () {
                       if (nombreUsuario === '') {
                         query = "select idusuarios, nombre, apellido, empresa, estado from usuarios where empresa like '%"+empresa+"%' order by empresa, apellido";
                         consulta = "select apellido, nombre, empresa, estado from usuarios where empresa like '%"+empresa+"%' order by empresa, apellido";
-                        tipoConsulta = "Listado de los usuarios de la empresa: "+empresa;
+                        tipoConsulta = "Listado de los usuarios cuya empresa contiene: "+empresa;
                       }
                       else {
                         if (empresa === '') {
@@ -4737,7 +4741,7 @@ $(document).on("click", "#realizarBusqueda", function () {
                         else {
                           query = "select idusuarios, nombre, apellido, empresa, estado from usuarios where empresa like '%"+empresa+"%' and (nombre like '%"+nombreUsuario+"%' or apellido like '%"+nombreUsuario+"%') order by empresa, apellido";
                           consulta = "select apellido, nombre, empresa, estado from usuarios where empresa like '%"+empresa+"%' and (nombre like '%"+nombreUsuario+"%' or apellido like '%"+nombreUsuario+"%') order by empresa, apellido";
-                          tipoConsulta = "Listado de los usuarios de la empresa: "+empresa+" y cuyos nombres y/o apellidos contienen: "+nombreUsuario;
+                          tipoConsulta = "Listado de los usuarios cuya empresa contiene: "+empresa+" y cuyos nombres y/o apellidos contienen: "+nombreUsuario;
                         }
                       }
                       campos = "Id-Apellido-Nombre-Empresa-Estado";
@@ -5275,15 +5279,17 @@ $(document).on("click", ".exportar", function (){
               param += '&iduser:'+iduser;
               $("#param").val(param);
               break;
-    case "8": break;
+    case "8": var idslot = $("#idslot").val();
+              param += '&idslot:'+idslot;
+              $("#param").val(param);
+              break;
     default: break;
   } 
-  
+  //alert($("#param").val());
   if (nombreFormu === 'exportarActividades') {
     $("#listadoActividades").submit();
   }
   else {
-    alert($("#param").val());
     $(".exportarForm").submit();
   }
   
