@@ -776,15 +776,16 @@ function mostrarReferencia(parametros) {
                   <td style="display:none"><input type="text" id="fuente" name="fuente" value="referencia"></td>\n\
                   <td style="display:none"><input type="text" id="idslot" name="idslot" value="'+idslot+'"></td>\n\
                   <td style="display:none"><input type="text" id="idref" name="idref" value="'+idref+'"></td>\n\
+                  <td style="display:none"><input type="text" id="param" name="param" value=""></td>\n\
               </tr>';
         //tr += '<tr><td colspan="6"><input type="button" name="newReference" id="newReference" value="AGREGAR" class="btn-success"></td></tr>';
         tabla += tr;
         tabla += '</table>';    
-        var formu = '<form name="reference" method="post" action="index.php">';
+        var formu = '<form name="reference" method="post" action="exportar.php" class="exportarForm">';
         formu += tabla;
         var volver = '<br><a href="#" name="'+actividad+'" id="volverActividad">Volver</a>';
         var cargar = '';
-        cargar += tabla;
+        cargar += formu;
         cargar += volver;
         var encabezado = '<h1 id="titulo" class="encabezado">' + codigo + '</h1>';
         encabezado += '<h3>'+resumen+' <b>('+cliente+')</b></h3>';
@@ -922,7 +923,7 @@ function cargarObjetos(ref, selector, link, origen, idobject) {
     var totalLlaves = parseInt(request.rows, 10);
     var llaves = request.resultado;
     
-    var query = 'select referencias.codigo, referencias.resumen, tareas.accion, slots.nombre as slot, certificados.idcertificados, certificados.nombre, certificados.owner from slots inner join referencias on referencias.slot=slots.idslots inner join tareas on referencias.idreferencias=tareas.referencia inner join certificados on tareas.idtareas=certificados.tarea where idreferencias="'+ref+'" and certificados.estado="activo" order by certificados.owner';
+    var query = 'select referencias.codigo, referencias.resumen, tareas.accion, slots.nombre as slot, certificados.idcertificados, certificados.nombre, certificados.owner, DATE_FORMAT(vencimiento, "%d/%m/%Y") as vencimiento from slots inner join referencias on referencias.slot=slots.idslots inner join tareas on referencias.idreferencias=tareas.referencia inner join certificados on tareas.idtareas=certificados.tarea where idreferencias="'+ref+'" and certificados.estado="activo" order by certificados.owner';
     
     $.getJSON(url, {query: ""+query+""}).done(function(request) {
       var totalCertificados = parseInt(request.rows, 10);
@@ -958,7 +959,7 @@ function cargarObjetos(ref, selector, link, origen, idobject) {
         }
       }
       tabla = '<table id="objects" class="tabla2">';
-      tabla += '<tr><th colspan="5" class="tituloTabla">LLAVES</th></tr>';
+      tabla += '<tr><th colspan="6" class="tituloTabla">LLAVES</th></tr>';
       tabla += '<tr>\n\
                   <td style="display:none"><input type="text" id="codigo" name="codigo" value="'+codigo+'"></td>\n\
                   <td style="display:none"><input type="text" id="slot" name="slot" value="'+slot+'"></td>\n\
@@ -971,7 +972,7 @@ function cargarObjetos(ref, selector, link, origen, idobject) {
                  <th>Acción</th>\n\
                  <th>Nombre</th>\n\
                  <th>Owner</th>\n\
-                 <th>KCV</th>\n\
+                 <th colspan="2">KCV</th>\n\
                </tr>';
         var j = 0;
         var id = 0;
@@ -996,18 +997,19 @@ function cargarObjetos(ref, selector, link, origen, idobject) {
             tr += '<td><a name="llave" href="#titulo" id="'+id+'" class="detailObject '+clase+'">'+llaves[index]["nombre"]+'</a></td>';
           }
           tr +=  '<td>'+llaves[index]["owner"]+'</td>\n\
-                  <td style="background-color: #efd874"><b>'+llaves[index]["kcv"]+'</b></td>\n\
+                  <td style="background-color: #efd874" colspan="2"><b>'+llaves[index]["kcv"]+'</b></td>\n\
                 </tr>';
         }
       }
-      tr += '<tr><td colspan="5"><input type="button" id="nuevaLlave" name="'+ref+'" value="NUEVA LLAVE" class="btn-success"></td></tr>';
-      var tr1 = '<tr><th colspan="5">CERTIFICADOS</th></tr>';
+      tr += '<tr><td colspan="6"><input type="button" id="nuevaLlave" name="'+ref+'" value="NUEVA LLAVE" class="btn-success"></td></tr>';
+      var tr1 = '<tr><th colspan="6">CERTIFICADOS</th></tr>';
       if (totalCertificados > 0) {
         tr1 += '<tr>\n\
                  <th>Ítem</th>\n\
                  <th>Acción</th>\n\
                  <th colspan="2">Nombre</th>\n\
                  <th>Owner</th>\n\
+                 <th>Vencimiento</th>\n\
               </tr>';
         var i = 0;
         var id1 = 0;
@@ -1031,10 +1033,11 @@ function cargarObjetos(ref, selector, link, origen, idobject) {
             tr1 += '<td colspan="2"><a name="certificado" href="#titulo" id="'+id1+'" class="detailObject '+clase1+'">'+certificados[index]["nombre"]+'</a></td>';
           }
           tr1 += '<td>'+certificados[index]["owner"]+'</td>\n\
+                  <td>'+certificados[index]["vencimiento"]+'</td>\n\
                  </tr>';
         }
       }
-      tr1 += '<tr><td colspan="5" class="pieTabla"><input type="button" id="nuevoCertificado" name="'+ref+'" value="NUEVO CERT." class="btn-success"></td></tr>';
+      tr1 += '<tr><td colspan="6" class="pieTabla"><input type="button" id="nuevoCertificado" name="'+ref+'" value="NUEVO CERT." class="btn-success"></td></tr>';
       tabla += tr;
       tabla += tr1;
       tabla += '</table>';
@@ -2209,9 +2212,11 @@ function cargarDetalleSlot(slot, nombreSlot) {
           tr += '<tr><td colspan="6"><input type="button" name="nuevoUsuarioSlot" id="nuevoUsuarioSlot" value="Agregar"></td></tr>';
           tr += '<tr><td colspan="6"><input type="button" id="8" name="exportarSlot" value="EXPORTAR" class="btn-info exportar"></td>';
           tr += '<tr>\n\
-                    <td class="pieTablaIzquierdo"><input type="button" id="editarSlot" name="editarSlot" value="EDITAR" onclick="cambiarEdicion()" class="btn-info"></td>\n\
-                    <td colspan="2"><input type="button" id="actualizarSlot" name="actualizarSlot" disabled="true" value="ACTUALIZAR" class="btn-warning"></td>\n\
-                    <td class="pieTablaDerecho"><input type="button" id="eliminarSlot" name="eliminarSlot" value="ELIMINAR" class="btn-danger"></td>\n\
+                    <td class="pieTablaIzquierdo" colspan="1"><input type="button" id="editarSlot" name="editarSlot" value="EDITAR" onclick="cambiarEdicion()" class="btn-info"></td>\n\
+                    <td colspan="3"><input type="button" id="actualizarSlot" name="actualizarSlot" disabled="true" value="ACTUALIZAR" class="btn-warning"></td>\n\
+                    <td class="pieTablaDerecho" colspan="2"><input type="button" id="eliminarSlot" name="eliminarSlot" value="ELIMINAR" class="btn-danger"></td>\n\
+                  </tr>';
+          tr += '<tr>\n\
                     <td style="display:none"><input type="text" id="fuente" name="fuente" value="slot"></td>\n\
                     <td style="display:none"><input type="text" id="idslot" name="idslot" value="'+slot+'"></td>\n\
                     <td style="display:none"><input type="text" id="param" name="param" value=""></td>\n\
@@ -4622,8 +4627,8 @@ $(document).on("click", "#realizarBusqueda", function () {
                       return false;
                     }
                     else {
-                      query = "select idactividades, DATE_FORMAT(fecha, '%d/%c/%Y') as fecha, motivo from actividades where motivo like '%"+motivo+"%'";
-                      consulta = "select DATE_FORMAT(fecha, '%d/%c/%Y') as fecha, motivo from actividades where motivo like '%"+motivo+"%'";
+                      query = "select idactividades, DATE_FORMAT(fecha, '%d/%m/%Y') as fecha, motivo from actividades where motivo like '%"+motivo+"%'";
+                      consulta = "select DATE_FORMAT(fecha, '%d/%m/%Y') as fecha, motivo from actividades where motivo like '%"+motivo+"%'";
                       campos = "Id-Fecha-Motivo";
                       largos = "1-1.5-3.5";
                       x = 55;
@@ -4658,9 +4663,9 @@ $(document).on("click", "#realizarBusqueda", function () {
                       return false;
                     }
                     else {
-                      query = "select idactividades, DATE_FORMAT(fecha, '%d/%c/%Y') as fecha, motivo from actividades where fecha>='"+inicio+"' and fecha<='"+fin+"' order by fecha";
+                      query = "select idactividades, DATE_FORMAT(fecha, '%d/%m/%Y') as fecha, motivo from actividades where fecha>='"+inicio+"' and fecha<='"+fin+"' order by fecha";
                     }
-                    consulta = "select DATE_FORMAT(fecha, '%d/%c/%Y') as fecha, motivo from actividades where fecha>='"+inicio+"' and fecha<='"+fin+"' order by fecha";
+                    consulta = "select DATE_FORMAT(fecha, '%d/%m/%Y') as fecha, motivo from actividades where fecha>='"+inicio+"' and fecha<='"+fin+"' order by fecha";
                     campos = "Id-Fecha-Motivo";
                     largos = "1-1.5-3.5";
                     x = 55;
@@ -4800,8 +4805,8 @@ $(document).on("click", "#realizarBusqueda", function () {
                     return false;
                   }
                   else {
-                    query = "select idcertificados, certificados.nombre, certificados.owner, certificados.version, certificados.estado, certificados.bandera, DATE_FORMAT(certificados.vencimiento, '%d/%c/%Y') as vencimiento, tareas.referencia, slots.nombre as slot, hsm.nombre as hsm from certificados inner join tareas on tareas.idtareas=certificados.tarea inner join referencias on referencias.idreferencias=tareas.referencia inner join slots on slots.idslots=referencias.slot inner join hsm on hsm.idhsm=slots.hsm where ";
-                    consulta = "select certificados.nombre, certificados.owner, certificados.version, certificados.bandera, DATE_FORMAT(certificados.vencimiento, '%d/%c/%Y') as vencimiento, slots.nombre as slot, hsm.nombre as hsm, certificados.estado from certificados inner join tareas on tareas.idtareas=certificados.tarea inner join referencias on referencias.idreferencias=tareas.referencia inner join slots on slots.idslots=referencias.slot inner join hsm on hsm.idhsm=slots.hsm where ";
+                    query = "select idcertificados, certificados.nombre, certificados.owner, certificados.version, certificados.estado, certificados.bandera, DATE_FORMAT(certificados.vencimiento, '%d/%m/%Y') as vencimiento, tareas.referencia, slots.nombre as slot, hsm.nombre as hsm from certificados inner join tareas on tareas.idtareas=certificados.tarea inner join referencias on referencias.idreferencias=tareas.referencia inner join slots on slots.idslots=referencias.slot inner join hsm on hsm.idhsm=slots.hsm where ";
+                    consulta = "select certificados.nombre, certificados.owner, certificados.version, certificados.bandera, DATE_FORMAT(certificados.vencimiento, '%d/%m/%Y') as vencimiento, slots.nombre as slot, hsm.nombre as hsm, certificados.estado from certificados inner join tareas on tareas.idtareas=certificados.tarea inner join referencias on referencias.idreferencias=tareas.referencia inner join slots on slots.idslots=referencias.slot inner join hsm on hsm.idhsm=slots.hsm where ";
                     if (nombreCert !== '') {
                       query += "certificados.nombre like '%"+nombreCert+"%' ";
                       consulta += "certificados.nombre like '%"+nombreCert+"%' ";
@@ -4834,7 +4839,7 @@ $(document).on("click", "#realizarBusqueda", function () {
                     query += "order by hsm.nombre desc, slots.nombre, certificados.nombre, certificados.owner, certificados.version";
                     consulta += "order by hsm.nombre desc, slots.nombre, certificados.nombre, certificados.owner, certificados.version";
                     campos = "Id-Nombre-Owner-Versión-Bandera-Vencimiento-Slot-HSM-Estado";
-                    largos = "0.6-1.5-1.5-0.8-1-1.4-1.5-1.5-1";
+                    largos = "0.6-1.6-1.3-1-1-1.4-1.5-1.4-1";
                     x = 8;
                   }
                   break;
@@ -5253,10 +5258,9 @@ $(document).on("click", ".exportar", function (){
               param += '&actividad:'+actividad+'&x:55';
               $("#paramDetail").val(param);
               break;
-    case "3": alert('Detalle de una referencia');
-              var idref = $("#idref").val();
+    case "3": var idref = $("#idref").val();
               var idslot = $("#idslot").val();
-              param += '&idref:'+idref+'&idslot:'+idslot+'&campos:"'+campos+'&largos:'+largos+'&x:40';
+              param += '&idref:'+idref+'&idslot:'+idslot;
               $("#param").val(param);
               break;
     case "4": var idref = $("#idref").val();
