@@ -1,18 +1,13 @@
 <?php
-require('data\baseMysql.php');
+require_once('data\baseMysql.php');
 require_once('..\..\fpdf\mc_table.php');
 //***************************** DESTINATARIOS CORREOS ***********************************************************************************************
 $paraListados = array();
 $copiaListados = array();
 $ocultosListados = array();
 
-$paraRemito = array();
-$copiaRemito = array();
-$ocultosRemito = array();
-
 //**************** PRUEBAS ************************************************************
 $copiaListados['Juan Martín Ortega'] = "juanortega@emsa.com.uy";
-$copiaRemito['Juan Martín Ortega'] = "juanortega@emsa.com.uy";
 //**************** FIN PRUEBAS ********************************************************
 
 //****************************************************IMPORTANTE:************************************************************************************
@@ -957,6 +952,15 @@ class PDF extends PDF_MC_Table
     if ($totalLlaves > 0) {
       $titulo = "DETALLE DE LOS OBJETOS";
       $this->AddPage();
+      $this->SetY(25);
+      $this->SetX($x+4);
+      $this->SetTextColor(255, 0, 0);
+      $this->SetFont('Courier', 'BUI', 22);
+      $this->Cell(6.9*$c1, $h, $codigo, 0, 0, 'C', 0);
+      $this->Ln(16);
+      $this->SetTextColor(0, 0, 0);
+    
+      $this->SetX($x);
       $this->SetFillColor(153, 255, 102);
       $this->SetFont('Courier', 'B', 12);
       $this->Cell(6.9*$c1, $h, 'LLAVES', 1, 0, 'C', 1);
@@ -994,6 +998,15 @@ class PDF extends PDF_MC_Table
     if ($totalCerts > 0) {
       $titulo = "DETALLE DE LOS OBJETOS";
       $this->AddPage();
+      $this->SetY(25);
+      $this->SetX($x+4);
+      $this->SetTextColor(255, 0, 0);
+      $this->SetFont('Courier', 'BUI', 22);
+      $this->Cell(6.9*$c1, $h, $codigo, 0, 0, 'C', 0);
+      $this->Ln(16);
+      $this->SetTextColor(0, 0, 0);
+    
+      $this->SetX($x);
       $this->SetFillColor(153, 255, 102);
       $this->SetFont('Courier', 'B', 12);
       $this->Cell(6.9*$c1, $h, 'CERTIFICADOS', 1, 0, 'C', 1);
@@ -1072,6 +1085,88 @@ function recuperarActividad($actividad) {
     }
   return $datos;
   }
+  
+function enviarMail($para, $copia, $ocultos, $asunto, $cuerpo, $correo, $adjunto, $path)
+    {
+    require_once('..\..\mail\class.phpmailer.php');
+
+    //************* DATOS DEL USUARIO Y DEL SERVIDOR **************************************************
+    $host = "mail.emsa.com.uy";
+    $usuario = "ensobrado@emsa.com.uy";
+    $deMail = "ensobrado@emsa.com.uy";
+    $deNombre = "Key Manager";
+    $pwd = "em123sa";
+    $responderMail = "ensobrado@emsa.com.uy";
+    $responderNombre = "KM";
+    //**************************************************************************************************
+    
+    $mail = new PHPMailer(true);
+    $mail->IsSMTP();
+
+    try
+        {
+        //Datos del HOST:
+        $mail->Host       = $host; // SMTP server
+        $mail->SMTPAuth   = true;                  // enable SMTP authentication
+        $mail->Host       = $host; // sets the SMTP server
+        $mail->Port       = 25;                    // set the SMTP port for the GMAIL server
+
+        //Datos del usuario del correo:
+        $mail->Username   = $usuario; // SMTP account username
+        $mail->Password   = $pwd;        // SMTP account password
+
+        //Direcciones del remitente y a quien responder:
+        $mail->SetFrom($deMail, $deNombre);
+        $mail->AddReplyTo($responderMail, $responderNombre);
+
+        foreach ($para as $ind => $dir)
+            {
+            //Direcciones a las cuales se manda el mail (Para):
+            $mail->AddAddress($dir, $ind);
+            }
+
+        if (count($copia)>0)
+            {    
+            foreach ($copia as $ind => $dir)
+                {
+                //Direcciones a las cuales se manda el mail (Cc):
+                $mail->AddCC($dir, $ind);
+                }
+            }    
+
+        if (count($ocultos)>0)
+            {   
+            foreach ($ocultos as $ind => $dir)
+                {
+                //Direcciones a las cuales se manda el mail (Bcc):
+                $mail->AddBCC($dir, $ind);
+                }
+            }
+
+        //Datos del mail a enviar:
+        $mail->Subject = $asunto;
+        $mail->AltBody = 'Para ver este mensaje por favor use un cliente de correo con compatibilidad con HTML!'; // optional - MsgHTML will create an alternate automatically
+        $mail->MsgHTML($cuerpo);
+        
+        if (!empty($adjunto))
+            {
+            $mail->AddAttachment($path, $adjunto);
+            }
+
+        $mail->Send();
+
+        $mensajeMail = "Mail con el $correo enviado.";
+        }
+    catch (phpmailerException $e)
+        {
+        $mensajeMail = "Error al enviar el mail con el $correo. Por favor verifique.<br>".$e->errorMessage();
+        }
+    catch (Exception $e)
+        {
+        $mensajeMail = $mensajeMail." ".$e->getMessage();
+        }
+    return $mensajeMail;
+    }
 
 //********************************************* Defino tamaño de la celda base: c1, y el número ************************************************
 $pag = 1;
@@ -1079,20 +1174,8 @@ $c1 = 18;
 //******************************************************** FIN tamaños de celdas ***************************************************************
 
 //******************************************************** INICIO Hora y título ****************************************************************
-$hoy = getdate();
-$fecha = $hoy[mday] . '/' . $hoy[mon] . '/' . $hoy[year];
-$horaLocal = localtime(time(), true);//var_dump( $horaLocal);
-//Acomodo formato de la hora para que siempre tengan 2 dígitos:
-if ($horaLocal["tm_min"] < 10)
-  {
-  $horaLocal["tm_min"] = "0" . $horaLocal["tm_min"];
-  }
-if ($horaLocal["tm_sec"] < 10)
-  {
-  $horaLocal["tm_sec"] = "0" . $horaLocal["tm_sec"];
-  }
-$hora = $horaLocal["tm_hour"] . ":" . $horaLocal["tm_min"] ;//. ":" . $horaLocal["tm_sec"];
-
+$fecha = date('d/m/Y');
+$hora = date('H:i');
 //********************************************************** FIN Hora y título *****************************************************************
 
 //RECUPERO ID PASADO con el tipo de dato a exportar y sus parámetros:
@@ -1126,9 +1209,12 @@ foreach ($temp1 as $valor) {
               break;
     case 'iduser': $iduser = $temp2[1];
                    break;
+    case 'mails': $mails = $temp2[1];
+                  break;
     default: break;                
   }
 }
+
 $largoCampos = array();
 $largoTotal = 0;
 foreach ($temp as $valor) {
@@ -1147,6 +1233,8 @@ switch ($id) {
             $campos = array("Id", "Fecha", "Motivo");
             $tituloTabla = utf8_decode("LISTADO DE ACTIVIDADES");
             $titulo = "LISTADO DE ACTIVIDADES";
+            $nombreReporte = "listadoActividades";
+            $asunto = "Reporte KM con el Listado de las Actividades";
             $x = 55;
             break;
   case "2": $datos = recuperarActividad($idactivity);
@@ -1171,6 +1259,8 @@ switch ($id) {
   case "6": $tituloTabla =  utf8_decode("DETALLES DE LA CONSULTA");
             $tipoConsulta = utf8_decode($_POST["tipoConsulta"]);
             $titulo = 'RESULTADO DE LA CONSULTA';
+            $nombreReporte = "detalleConsulta";
+            $asunto = "Reporte KM con el detalle de la consulta realizada";
             break;
   case "7": $tituloTabla =  utf8_decode("DETALLES DEL USUARIO");
             $query = "select * from usuarios where idusuarios = ".$iduser;
@@ -1217,6 +1307,8 @@ else {
   switch ($id) {
     case "2": $x = 45;
               $pdfResumen->detalleActividad($datos);
+              $nombreReporte = "detalleActividad";
+              $asunto = "Reporte KM con el detalle de la Actividad";
               break;
     case "3": $x = 45;
               $resultado2 = consultarBD($query1, $con);
@@ -1226,25 +1318,53 @@ else {
               $resultado4 = consultarBD($query3, $con);
               $registros4 = obtenerResultados($resultado4);
               $pdfResumen->detalleReferencia($registro, $registros2, $registros3, $registros4);
+              $nombreReporte = "detalleReferencia";
+              $asunto = "Reporte KM con el detalle de la Referencia";
               break;
     case "4": $x = 54;
               $pdfResumen->detalleLlave($registro);
+              $nombreReporte = "detalleLlave";
+              $asunto = "Reporte KM con el detalle de la llave";
               break;
     case "5": $x = 45;
               $pdfResumen->detalleCertificado($registro);
+              $nombreReporte = "detalleCertificado";
+              $asunto = "Reporte KM con el detalle del Certificado";
               break;
     case "7": $x = 65;
               $pdfResumen->detalleUsuario($registro);
+              $nombreReporte = "detalleUsuario";
+              $asunto = "Reporte KM con el detalle del Usuario";
               break;
     case "8": $x = 47;
               $resultado2 = consultarBD($query1, $con);
               $registros2 = obtenerResultados($resultado2);
               $pdfResumen->detalleSlot($registro, $registros2);
+              $nombreReporte = "detalleSlot";
+              $asunto = "Reporte KM con el detalle del Slot";
               break;
     default: break;
   }
 }
-$nombreReporte = "resultadoExportacion.pdf";
-$dir = $dir . "/" . $nombreReporte;
-$pdfResumen->Output($dir, 'I');
+
+//$nombreReporte = "resultado";
+$timestamp = date('Ymd_His');
+$nombreArchivo = $nombreReporte.$timestamp.".pdf";
+$salida = $dir."/".$nombreArchivo;
+
+///Guardo el archivo en el disco, y además lo muestro en pantalla:
+$pdfResumen->Output($salida, 'F');
+$pdfResumen->Output($salida, 'I');
+
+if (isset($mails)){
+  $destinatarios = explode(",", $mails);
+  foreach ($destinatarios as $valor){
+    $para["$valor"] = $valor;
+  }
+  $asunto = $asunto." (MAIL DE TEST!!!)";
+  $cuerpo = utf8_decode("<html><body><h4>Se adjunta el reporte generado de KM</h4></body></html>");
+  enviarMail($para, '', '', $asunto, $cuerpo, "REPORTE", $nombreArchivo, $salida);
+}
+
+
 ?>

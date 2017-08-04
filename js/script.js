@@ -5249,6 +5249,30 @@ $(document).on("click", ".exportar", function (){
     
   var param = "id:"+id+"";
   var x = $("#x").val();
+  
+  var enviarMail = confirm('¿Desea enviar por correo electrónico el pdf?');
+  var continuar = true;
+  if (enviarMail === true) {
+    var dir = prompt('Dirección/es: (SEPARADAS POR COMAS)');
+    if (dir === '') {
+      alert('Error, la dirección no puede quedar vacía. Por favor verifique.');
+      continuar = false;
+    }
+    else {
+      if (dir !== null) {
+        alert('Se enviará el reporte a: '+dir);
+        param += "&mails:"+dir+"";
+      }
+      else {
+        alert('Error, se debe ingresar la dirección a la cual enviar el reporte y dar aceptar.');
+        continuar = false;
+      }
+    }
+  }  
+  else {
+    alert('Se optó por no enviar el mail. Se sigue con el guardado en disco y muestra en pantalla.');
+  }
+  
   ///En base al id, veo si es necesario o no enviar parámetros:
   switch (id) {
     case "1": param += '&x:55';
@@ -5289,14 +5313,15 @@ $(document).on("click", ".exportar", function (){
               break;
     default: break;
   } 
-  //alert($("#param").val());
-  if (nombreFormu === 'exportarActividades') {
-    $("#listadoActividades").submit();
+  //alert ($("#param").val());
+  if (continuar) {
+    if (nombreFormu === 'exportarActividades') {
+      $("#listadoActividades").submit();
+    }
+    else {
+      $(".exportarForm").submit();
+    }
   }
-  else {
-    $(".exportarForm").submit();
-  }
-  
 });//*** fin del click .exportar ***
 
 /**************************************************************************************************************************
